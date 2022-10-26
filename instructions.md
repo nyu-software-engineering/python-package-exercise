@@ -6,9 +6,19 @@ A little exercise to create a Python package, build it, test it, distribute it, 
 
 A _package_ is software that has been built, tested, and distributed in a way that makes it easy for other developers to download, install, and configure to add extra functionality to their own programs. Your job is to create a Python package that brings a little bit of joy and levity to the lives of other developers. The package you create should be lighthearted and not "serious" software. However, you will create it following _rigorous_ software engineering practices.
 
+## Inspiration
+
+Some inspirational Python packages, for example:
+
+- [pyjokes](https://pypi.org/project/pyjokes/)
+- [pyfiglet](https://github.com/pwaller/pyfiglet)
+- [pycowsay](https://pypi.org/project/pycowsay/)
+- [emoji](https://pypi.org/project/emoji/)
+- [freegames](https://pypi.org/project/freegames/)
+
 ## Requirements
 
-Create a Python package with at least **four functions** that is distributed in the [PyPI](https://pypi.org/) repository and installable via `pip`.
+Create a Python package with at least **four functions that accept arguments** which influence their behavior. The package must be distributed in the [PyPI](https://pypi.org/) repository and installable via `pip`.
 
 - Use [pipenv](https://packaging.python.org/en/latest/tutorials/managing-dependencies/) to manage the package dependencies and virtual environments with a `Pipfile`.
 - Use [pytest](https://docs.pytest.org/en/latest/) to write and run tests to validate that your package code behaves as expected. Create as many tests as necessary to thorooughly verify each function's expected behavior - this should be no fewer than three tests per package function.
