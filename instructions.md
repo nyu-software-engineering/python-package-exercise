@@ -18,7 +18,7 @@ Some inspirational Python packages, for example:
 
 ## Requirements
 
-Create a Python package with at least **four functions that accept arguments** which influence their behavior. The package must be distributed in the [PyPI](https://pypi.org/) repository and installable via `pip`.
+Create a Python package with at least **four functions that accept arguments** which influence their behavior. The package must be distributed in the [PyPI](https://pypi.org/) repository and installable via [pip](https://pypi.org/project/pip/).
 
 - Use [pipenv](https://packaging.python.org/en/latest/tutorials/managing-dependencies/) to manage the package dependencies and virtual environments with a `Pipfile`.
 - Use [pytest](https://docs.pytest.org/en/latest/) to write and run tests to validate that your package code behaves as expected. Create as many tests as necessary to thorooughly verify each function's expected behavior - this should be no fewer than three tests per package function.
