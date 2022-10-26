@@ -24,7 +24,7 @@ Create a Python package with at least **four functions that accept arguments** w
 
 - Use [pipenv](https://packaging.python.org/en/latest/tutorials/managing-dependencies/) to manage the package dependencies and virtual environments with a `Pipfile`.
 - Use [pytest](https://docs.pytest.org/en/latest/) to write and run tests to validate that your package code behaves as expected. Create as many tests as necessary to thorooughly verify each function's expected behavior - this should be no fewer than three tests per package function.
-- Use [setuptools](https://setuptools.readthedocs.io/en/latest/) to create the package artifacts.
+- Use [build](https://pypa-build.readthedocs.io/en/stable/index.html) to create the package artifacts.
 - Use [twine](https://pypi.org/project/twine/) to upload the package to PyPI.
 - Use [GitHub Actions](https://github.com/actions) to build your package and run your tests on two different recent versions of Python with every pull request to the `main` branch of your GitHub repository.
 
@@ -32,7 +32,7 @@ Create an example program that uses all functions of your package and demonstrat
 
 ## Developer workflow
 
-All team members must have visibly contributed to the code using their own git/GitHub accounts in order to claim that they contributed to the project.
+All team members must have visibly contributed to the code using their own git & GitHub accounts in order to claim that they contributed to the project.
 
 All code changes must be done in feature branches and not directly in the `main` branch.
 
