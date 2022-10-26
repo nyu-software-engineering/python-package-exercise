@@ -14,6 +14,8 @@ Some inspirational Python packages, for example:
 - [pyfiglet](https://github.com/pwaller/pyfiglet)
 - [pycowsay](https://pypi.org/project/pycowsay/)
 - [emoji](https://pypi.org/project/emoji/)
+- [python-lorem](https://pypi.org/project/python-lorem/)
+- [horoscope](https://pypi.org/project/horoscope/)
 - [freegames](https://pypi.org/project/freegames/)
 
 ## Requirements
@@ -50,9 +52,8 @@ To merge code from a feature branch into the `main` branch, do the following:
 
 Replace the contents of the [README.md](./README.md) file with a beautifully-formatted Markdown file including a plain-language **description** of your project and **clear instructions**, including exact **code examples**, for:
 
-- how to install your package
-- how to run the tests included in your package
-- how to use your package in a Python program
+- how a developer who wants to contribute to your project can set up the virtual environment, install dependencies, and build and test your package for themselves.
+- how a developer who wants to import your project into their own code can do so - include documentation for all functions in your package and a link to an example Python program that uses each of them.
 
 Include a [badge](https://docs.github.com/en/actions/monitoring-and-troubleshooting-workflows/adding-a-workflow-status-badge) at the top of the `README.md` file showing the result of the latest build/test workflow run.
 
