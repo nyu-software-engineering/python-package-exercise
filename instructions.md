@@ -58,3 +58,5 @@ Replace the contents of the [README.md](./README.md) file with a beautifully-for
 Include a [badge](https://docs.github.com/en/actions/monitoring-and-troubleshooting-workflows/adding-a-workflow-status-badge) at the top of the `README.md` file showing the result of the latest build/test workflow run.
 
 Include the names of all teammates as links to their GitHub profiles in the README.md file.
+
+Include a link to your package's page on the PyPI website.
