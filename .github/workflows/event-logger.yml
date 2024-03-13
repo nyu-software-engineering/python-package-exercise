@@ -1,10 +1,10 @@
 name: log github events
 on:
   push:
-    branches: [main, master]
+    branches: [pipfile-experiment]
   pull_request:
     types: [opened, closed]
-    branches: [main, master]
+    branches: [pipfile-experiment]
 jobs:
   log:
     runs-on: ubuntu-latest
