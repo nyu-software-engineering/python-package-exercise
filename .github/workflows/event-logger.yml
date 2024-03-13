@@ -32,7 +32,6 @@ jobs:
           pip install --user pipenv
           pipenv --python $(which python)
           pipenv install
-          pipenv --rm
       - name: Log pull request opened
         if: github.event_name == 'pull_request' && github.event.action == 'opened'
         run: |
