@@ -18,12 +18,12 @@
     "default": {
         "gitcommitlogger": {
             "hashes": [
-                "sha256:c0986b168f23935037d1ed5a98fd3049e4e610563a3fcbfad44d6a726e35c3da",
-                "sha256:c2cdb8977dc5367bc267a5b1ff51440d18679326415b4b33682aaf2546d6da0d"
+                "sha256:3badf5db541d81cc3473882d9d255dabc66cd413e780ccb4fe6b320afddedcd0",
+                "sha256:7bafd58d46441b8c01b0f5706e7242df0ff841b3f87a7f621979577758546869"
             ],
             "index": "pypi",
             "markers": "python_version >= '3.7'",
-            "version": "==1.2.4"
+            "version": "==1.2.5"
         }
     },
     "develop": {}

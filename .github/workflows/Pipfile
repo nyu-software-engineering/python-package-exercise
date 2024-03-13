@@ -5,6 +5,9 @@ name = "pypi"
 
 [packages]
 gitcommitlogger = "*"
+requests = "*"
+pytz = "*"
+python-dateutil = "*"
 
 [dev-packages]
 
