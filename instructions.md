@@ -23,7 +23,7 @@ Some inspirational Python packages, for example:
 Create a Python package with at least **four functions that accept arguments** which influence their behavior. The package must be distributed in the [PyPI](https://pypi.org/) repository and installable via [pip](https://pypi.org/project/pip/).
 
 - Use [pipenv](https://packaging.python.org/en/latest/tutorials/managing-dependencies/) to manage the package dependencies and virtual environments with a `Pipfile`.
-- Use [pytest](https://docs.pytest.org/en/latest/) to write and run tests to validate that your package code behaves as expected. Create as many tests as necessary to thorooughly verify each function's expected behavior - this should be no fewer than three tests per package function.
+- Use [pytest](https://docs.pytest.org/en/latest/) to write and run tests to validate that your package code behaves as expected. Create as many assertions and test functions as necessary to thoroughly verify each function's expected behavior - this should be no fewer than three assertions per package function. But there is no magic number - your job is to make sure all possible function scenarios -- valid and invalid alike -- are tested.
 - Use [build](https://pypa-build.readthedocs.io/en/stable/index.html) to create the package artifacts.
 - Use [twine](https://pypi.org/project/twine/) to upload the package to PyPI.
 - Use [GitHub Actions](https://github.com/actions) to build your package and run your tests on two different recent versions of Python with every pull request to the `main` branch of your GitHub repository.
