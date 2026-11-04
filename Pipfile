@@ -1,3 +1,4 @@
+
 [[source]]
 url = "https://pypi.org/simple"
 verify_ssl = true
@@ -10,6 +11,3 @@ pyfakefacts = {path = ".", editable = true}
 pytest = "*"
 build = "*"
 twine = "*"
-
-[requires]
-python_version = "3.15"
