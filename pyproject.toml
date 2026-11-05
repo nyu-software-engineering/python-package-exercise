@@ -1,0 +1,15 @@
+[build-system]
+requires = ["setuptools>=77.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ascend-runitback"
+version = "0.1.0"
+description = "A lighthearted Python package from the Run It Back team."
+readme = "README.md"
+requires-python = ">=3.13"
+license = "GPL-3.0-or-later"
+license-files = ["LICENSE"]
+
+[project.urls]
+Repository = "https://github.com/software-students-fall2026/python-package-exercise-runitback"
