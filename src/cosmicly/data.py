@@ -5,8 +5,8 @@ PLANETS = {
         "distance_from_sun_km": 57_900_000
     },
     "moon":{
-        "orbital_period_days": 88.0,
-        "gravity_m_s2": 365.2,
+        "orbital_period_days": 365.2,
+        "gravity_m_s2": 1.6,
         "distance_from_sun_km": 149_600_000
     },
     "venus": {
