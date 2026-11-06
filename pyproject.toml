@@ -7,13 +7,16 @@ name = "desktop-cat"
 description = "A tiny desktop pet you can control from Python."
 version = "0.1.0"
 authors = [
-    { name = "Angelina Zhu", github="https://github.com/ange285" },
-    { name = "Daran Tung", github="https://github.com/slvrtngd" },
-    { name = "Anthony Wang", github="https://github.com/aw4580" },
-    { name = "Sara Herschmann ", github="https://github.com/saramhersch" },
-    { name = "Tristan McCrea", github="https://github.com/Trisolis" },
+    { name = "Angelina Zhu", email="az3231@nyu.edu" },
+    { name = "Daran Tung", email="dyt2010@nyu.edu" },
+    { name = "Anthony Wang", email="aw4580@nyu.edu" },
+    { name = "Sara Herschmann ", email="smh9864@nyu.edu" },
+    { name = "Tristan McCrea", email="ttm2041@nyu.edu" },
 ]
 license = "GPL-3.0-or-later"
 license-files = ["LICENSE"]
 readme = "README.md"
 requires-python = ">=3.11"
+
+[project.urls]
+"Homepage" = "https://github.com/software-students-fall2026/python-package-exercise-busy-bees"
