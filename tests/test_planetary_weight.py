@@ -1,0 +1,62 @@
+import pytest
+from cosmicly.planetary_weight import weight_on_planet
+
+
+
+def test_value_weight_function():
+    assert weight_on_planet("w", 70, "earth") == 70.0
+    assert weight_on_planet("w", 70, "mars") == 26.43
+    assert weight_on_planet("w", 70, "moon") == 11.43
+
+    assert weight_on_planet("m", 70, "earth") == 686.0
+    assert weight_on_planet("m", 70, "mars") == 259.0
+    assert weight_on_planet("m", 70, "moon") == 112.0
+
+
+def test_type_weight_function():
+    assert weight_on_planet("w", 70, "earth") == 70.0
+    assert weight_on_planet("weight", 70, "earth") == 70.0
+    assert weight_on_planet("Weight", 70, "earth") == 70.0
+    assert weight_on_planet("WeIGhT", 70, "earth") == 70.0
+    assert weight_on_planet("W", 70, "earth") == 70.0
+
+    assert weight_on_planet("m", 70, "earth") == 686.0
+    assert weight_on_planet("M", 70, "earth") == 686.0
+    assert weight_on_planet("Mass", 70, "earth") == 686.0
+    assert weight_on_planet("mass", 70, "earth") == 686.0
+    assert weight_on_planet("MASS", 70, "earth") == 686.0
+
+    assert weight_on_planet("w", 0, "mars") == 0.0
+    assert weight_on_planet("w", 0, "earth") == 0.0
+    assert weight_on_planet("m", 0, "mars") == 0.0
+    assert weight_on_planet("m", 0, "earth") == 0.0
+
+def test_unknown_planet():
+    with pytest.raises(ValueError):
+        weight_on_planet("w", 70, "pluto")
+    with pytest.raises(ValueError):
+         weight_on_planet("w", 70, "a2-18b")
+    with pytest.raises(TypeError):
+        weight_on_planet("w", 70, 111)
+
+def test_unknown_type():
+    with pytest.raises(ValueError):
+        weight_on_planet("a", 70, "pluto")
+    with pytest.raises(ValueError):
+        weight_on_planet("mas", 70, "pluto")
+    with pytest.raises(ValueError):
+        weight_on_planet("ww", 70, "pluto")
+
+def test_wrong_value():
+    with pytest.raises(ValueError):
+        weight_on_planet("w", -5, "mars")
+    with pytest.raises(TypeError):
+        weight_on_planet("w", "70", "mars")
+    with pytest.raises(TypeError):
+        weight_on_planet("w", None, "mars")
+
+
+def test_planet_name():
+    assert weight_on_planet("w", 70, "MARS") == 26.43
+    assert weight_on_planet("w", 70, "Mars") == 26.43
+    assert weight_on_planet("w", 70, "MArS") == 26.43
