@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=77.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "desktop-cat"
+description = "A tiny desktop pet you can control from Python."
+version = "0.1.0"
+authors = [
+    { name = "Angelina Zhu", github="https://github.com/ange285" },
+    { name = "Daran Tung", github="https://github.com/slvrtngd" },
+    { name = "Anthony Wang", github="https://github.com/aw4580" },
+    { name = "Sara Herschmann ", github="https://github.com/saramhersch" },
+    { name = "Tristan McCrea", github="https://github.com/Trisolis" },
+]
+license = "GPL-3.0-or-later"
+license-files = ["LICENSE"]
+readme = "README.md"
+requires-python = ">=3.11"
