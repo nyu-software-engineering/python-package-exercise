@@ -35,3 +35,40 @@ def weight_on_planet(_type_, value, planet):
 if __name__ == "__main__":
   
     print(weight_on_planet('w',900,'mercury'))
+
+
+
+#Think about adding the following
+#def draw_moon(radius, phase):
+ #   if type(radius) != int:
+  #      raise TypeError("radius must be an integer")
+   # if type(phase) != int and type(phase) != float:
+    #    raise TypeError("phase must be a number")
+    #if radius < 2:
+     #   raise ValueError("radius must be at least 2")
+    #if phase < 0 or phase > 1:
+    #    raise ValueError("phase must be between 0 and 1")
+
+    #boundary = 1 - 2 * phase
+    #lines = []
+
+    #for row in range(-radius, radius + 1):
+    #    line = ""
+     #   for col in range(-2 * radius, 2 * radius + 1):
+      #      x = col / (2 * radius + 1)
+       #     y = row / (radius + 0.5)
+        #    if x * x + y * y > 1:
+         #       line += " "
+          #  elif x >= boundary:
+           #     line += "#"
+            #else:
+            #    line += "."
+       # lines.append(line.rstrip())
+
+   # return "\n".join(lines)
+
+
+#if __name__ == "__main__":
+#   print(draw_moon(8, 1))
+ #   print()
+  #  print(draw_moon(8, 0.5))
