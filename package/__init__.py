@@ -1,5 +1,2 @@
-# init = initalize
-# Automatically runs when packge is imported
-# put functions here
-# users can import functions here, like for ex:
-# from package import addFunction, subFunction
+from .energy import drain_energy, restore_energy
+from .health import update_health, wellness
