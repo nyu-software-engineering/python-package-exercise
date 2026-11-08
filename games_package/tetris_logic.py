@@ -60,7 +60,7 @@ def lock_piece(board: list[list[int]], piece: dict) -> list[list[int]]:
     for r, row in enumerate(piece["shape"]):
         for c, val in enumerate(row):
             if val:
-                new_board[piece["y"] + r][piece["x"]+c] = 1
+                new_board[piece["y"] + r][piece["x"]+c] = piece["kind"]
     return new_board
 
 def clear_lines(board: list[list[int]]) -> tuple[list[list[int]], int]:
