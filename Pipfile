@@ -5,12 +5,13 @@ name = "pypi"
 
 [packages]
 pygame = "*"
+pyspellchecker = "*"
 
 [dev-packages]
 pytest = "*"
+pytest-cov = "*"
 build = "*"
 twine = "*"
 
 [requires]
 python_version = "3.12"
-python_full_version = "3.12.5"
