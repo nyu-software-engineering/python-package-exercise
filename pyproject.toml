@@ -1,0 +1,11 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "Team2-Virtual-Pet" # name that'll be on PyPI, must be unique, change later?
+version = "0.1.0"
+description = "This package gives you an interactable virtual pet!"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = []

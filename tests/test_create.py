@@ -1,0 +1,1 @@
+# put tests for creating / naming tamogotchi here
