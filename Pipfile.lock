@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "2b3d41af17fa24f2f29abf5fd6f73b5558b8972e351bd708b13928838bff4f66"
+            "sha256": "198f904cd8ec49da8176ca95d76e96b851887f729816bff095edc7aebdb54bd8"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -9,9 +9,9 @@
         },
         "sources": [
             {
-                "name": "pip_conf_index_global",
-                "url": "https://pypi.tuna.tsinghua.edu.cn/simple",
-                "verify_ssl": false
+                "name": "pypi",
+                "url": "https://pypi.org/simple",
+                "verify_ssl": true
             }
         ]
     },
@@ -54,7 +54,7 @@
                 "sha256:07acdcf88ec174f907dc01af70bf52d49b014bbab03faeeade31c96b18c2e588",
                 "sha256:97c4f3b1f3c7414aa36465e09b8220f1d03627993bd51b1282e193753c80557b"
             ],
-            "index": "pip_conf_index_global",
+            "index": "pypi",
             "markers": "python_version >= '3.10'",
             "version": "==9.2.0"
         }
