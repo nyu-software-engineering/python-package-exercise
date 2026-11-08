@@ -8,7 +8,7 @@ python-dateutil = "*"
 humanize = "*"
 
 [dev-packages]
-pytest = "*"
-pytest-cov = "*"
 build = "*"
 twine = "*"
+pytest = "*"
+pytest-cov = "*"
