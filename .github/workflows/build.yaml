@@ -30,7 +30,7 @@ jobs:
           pipenv install --dev
       
       - name: Install package
-        run: pipenv run pip install -e
+        run: pipenv run pip install -e .
 
       - name: Test package
         run: pipenv run pytest # run tests from /tests
