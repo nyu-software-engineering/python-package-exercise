@@ -63,8 +63,8 @@ def test_lock_piece_marks_cell():
     board = create_board(5, 5)
     p = new_piece("O", 1, 1)
     locked = lock_piece(board, p)
-    assert locked[1][1] == 1 and locked[1][2] == 1
-    assert locked[2][1] == 1 and locked[2][2] == 1
+    assert locked[1][1] == "O" and locked[1][2] == "O"
+    assert locked[2][1] == "O" and locked[2][2] == "O"
 
 def test_lock_prevent_mutate_original():
     board = create_board(5, 5)
