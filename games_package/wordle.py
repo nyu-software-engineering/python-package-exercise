@@ -1,11 +1,12 @@
 import random
 from collections import Counter
+from spellchecker import SpellChecker
 
 WORD_LENGTH = 5
 DEFAULT_WORDS = (
     "apple", "grape", "peach", "lemon", "berry", "melon", "candy",
     "mango", "bread", "chair", "flame", "stone", "plant", "heart",
-    "crane", "spear", "zebra", "brain", "tiger", "civic", "piano"
+    "crane", "spear", "zebra", "brain", "tiger", "civic", "piano",
     "ocean", "cloud", "river", "beach", "storm", "snake", "sheep",
     "light", "dream", "smile", "dance", "music", "horse", "train",
     "house", "table", "clock", "phone", "brush", "queen", "magic",
@@ -16,6 +17,9 @@ DEFAULT_WORDS = (
     "pique", "axiom", "proxy", "jumpy", "shyly", "ivory", "ozone",
     "mirth", "knack", "wrath", "punch", "gnome", "abyss", "equip",
 )
+
+VALID_WORDS = SpellChecker(language="en")
+VALID_WORDS.word_frequency.load_words(DEFAULT_WORDS)
 
 def _is_valid_word(word):
     return (isinstance(word, str) and len(word) == WORD_LENGTH and word.isascii() and word.isalpha())
@@ -82,6 +86,10 @@ def play_wordle(max_attempts=6, *, words=None, secret=None, input_fn=input, outp
         if not _is_valid_word(guess):
             output_fn("Invalid guess: enter exactly five letters.")
             continue
+        
+        if guess not in VALID_WORDS and guess != answer:
+            output_fn("Invalid guess: not a recognized English word.")
+            continue
 
         guesses.append(guess)
         statuses = _score_guess(answer, guess)
@@ -106,6 +114,3 @@ def play_wordle(max_attempts=6, *, words=None, secret=None, input_fn=input, outp
         "cancelled": False
     }
 
-
-if __name__ == "__main__":
-    play_wordle()

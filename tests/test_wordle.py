@@ -1,6 +1,6 @@
 import random
 import pytest
-from src.mini_games import wordle
+from games_package import wordle
 
 
 def scripted_input(*guesses):
@@ -21,6 +21,21 @@ class TestWordValidation:
         assert wordle._is_valid_word("a ple") is False
         assert wordle._is_valid_word("ápple") is False
         assert wordle._is_valid_word(None) is False
+
+
+def test_invalid_english_word():
+    guesses = iter(["prynt", "crypt"])
+    messages = []
+    result = wordle.play_wordle(
+        secret="crypt",
+        input_fn=lambda _: next(guesses),
+        output_fn=messages.append
+    )
+
+    assert result["won"] is True
+    assert result["attempts"] == 1
+    assert result["guesses"] == ("crypt",)
+    assert "Invalid guess: not a recognized English word." in messages
 
 
 class TestChooseWord:

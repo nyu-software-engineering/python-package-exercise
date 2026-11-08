@@ -4,10 +4,14 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+pygame = "*"
+pyspellchecker = "*"
 
 [dev-packages]
 pytest = "*"
 pytest-cov = "*"
+build = "*"
+twine = "*"
 
 [requires]
-python_version = "3.15"
+python_version = "3.12"
