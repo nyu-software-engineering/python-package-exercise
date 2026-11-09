@@ -1,8 +1,10 @@
 import pytest
 
-from create_egg import create_egg
+#from create_egg import create_egg
 
-from get_stage import get_stage
+#from get_stage import get_stage
+from terminal_pet_respin import create_egg, get_stage
+
 
 
 def test_default_egg():
