@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pyDeciders"
+version = "0.1.0"
+description = "Roll dice, flip coins, and spin a wheel, with tiny terminal animations."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { file = "LICENSE" }
+dependencies = ["rich"]
+
+[project.scripts]
+pyDeciders = "pyDeciders.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
