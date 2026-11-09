@@ -6,6 +6,7 @@ from .data import PLANETS
 from .planetary_age import age_on_planet
 from .planetary_weight import weight_on_planet
 
+
 def earth_age(birthdate: str | date) -> float:
     """Return how many Earth years have passed since a birthdate.
 
@@ -35,7 +36,7 @@ def earth_age(birthdate: str | date) -> float:
         raise ValueError("birthdate cannot be in the future")
 
     days_alive = (today - birthdate).days
-    return round(days_alive / 365.25, 2) #365.25 includes leap years
+    return round(days_alive / 365.25, 2)  # 365.25 includes leap years
 
 
 def compare_planets(
@@ -47,7 +48,7 @@ def compare_planets(
     """Return your age and weight on two different planets.
 
     Args:
-        planet_a: The first planet, for example "Mars". Not case-sensitive.
+        planet_a: The first planet, e.g. "Mars". Not case-sensitive.
         planet_b: The second planet. Must be different from planet_a.
         birthdate: A "YYYY-MM-DD" string, or a date or datetime object.
         weight: Your weight on Earth, in any unit (kg or lb).
