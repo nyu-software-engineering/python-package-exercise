@@ -365,7 +365,10 @@ def translate_sentence(text):
 
         if replacement is not None:
             last_index = word_index + matched_word_count - 1
-            if word[0].isupper():
+            matched_words = " ".join(parts[1] for parts in word_parts[word_index:last_index + 1])
+            if matched_words.isupper():
+                replacement = replacement.upper()
+            elif word[0].isupper():
                 replacement = replacement[0].upper() + replacement[1:]
             word = replacement
             trailing_punctuation = word_parts[last_index][2]

@@ -171,6 +171,9 @@ class Tests:
             "I feel great after gymmaxxing."
         )
 
+    def test_preserves_all_caps_and_line_breaks(self):
+        assert translator.translate_sentence("IT’S OVER") == "ITS JOVER"
+
     def test_leaves_context_and_already_maxxed_words_intact(self):
         assert translator.translate_sentence("I want to gymmaxx before my chemistry lab.") == (
             "I want to gymmaxx before my chemistry lab."
