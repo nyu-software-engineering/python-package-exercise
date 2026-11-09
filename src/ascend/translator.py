@@ -35,6 +35,7 @@ _IDIOM_SWAPS = {
     "very handsome guy": "chad",
     "proud of": "mirin",
     "got rejected": "got blackpilled",
+    "mihir": "HTN",
 }
 _END_PHRASE_SWAPS = {"the best": "peak", "the worst": "brutal"}
 

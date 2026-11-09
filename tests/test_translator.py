@@ -287,3 +287,10 @@ class Tests:
         assert translator.translate_sentence("   \t\n") is None
         assert translator.translate_sentence(None) is None
         assert translator.translate_sentence(["worked out"]) is None
+
+    def test_mihir_alias(self):
+        assert translator.translate_sentence("Mihir!") == "HTN!"
+        assert translator.translate_sentence("mihir") == "HTN"
+        assert translator.translate_sentence("mihir is a good guy") == "HTN is a good guy"
+        assert translator.translate_sentence("mihir is a bad guy") == "HTN is a bad guy"
+        assert translator.translate_sentence("mihir is a good guy") == "HTN is a good guy"
