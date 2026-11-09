@@ -1,6 +1,6 @@
 from .pet import MAX_STAT, STATS, check_count, check_pet, clamp
 
-HEALTHY_STAT = 60  # baselie happy stat level
+HEALTHY_STAT = 60  # baseline health stat level
 HEALTHY_HUNGER = 40  # hunger at or below this is healthy
 SICK_WELLNESS = 50  # wellness below this starts hurting health
 DAMAGE_DIVISOR = 5  # every 5 wellness points below SICK_WELLNESS costs 1 health
