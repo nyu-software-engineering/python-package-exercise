@@ -1,6 +1,6 @@
 import random
 
-def select_category():
+def select_category(number):
     numbers = list(range(9))
     random.shuffle(numbers)
 
@@ -8,7 +8,8 @@ def select_category():
     non_committal = numbers[3:6]
     negative = numbers[6:9]
 
-    number = int(input("Pick a number from 0 to 8 to find out your destiny: "))
+    if type(number) != int or number < 0 or number > 8:
+        return "Invalid number"
 
     if number in positive:
         return "Positive"
@@ -21,5 +22,6 @@ def select_category():
     
 
 if __name__ == "__main__":
-    category = select_category()
+    number = int(input("Pick a number from 0 to 8 to find out your destiny: "))
+    category = select_category(number)
     print("your category is:", category)
