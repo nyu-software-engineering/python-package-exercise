@@ -93,7 +93,16 @@ class Cat:
         return summary
 
     def set_name(self, name):
-        raise NotImplementedError
+        if not isinstance(name, str):
+            raise TypeError("Name must be a string")
+        name = name.strip()
+        if not name:
+            raise ValueError("Name cannot be empty")
+        if len(name) > 20:
+            raise ValueError("Name must be 20 characters or fewer")
+        old_name = self.name
+        self.name = name
+        return f"{old_name} is now called {self.name}!"
 
     def say(self, text):
         raise NotImplementedError
