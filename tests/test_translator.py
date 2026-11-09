@@ -163,6 +163,31 @@ class Tests:
         assert translator.translate_sentence("It’s really over.") == "Its jover."
         assert translator.translate_sentence("I really messed up.") == "I really fumbled."
 
+    def test_translates_comparisons_between_people(self):
+        assert translator.translate_sentence("He is taller than me.") == "He heightmogs me."
+        assert translator.translate_sentence("I'm taller than Ted.") == "I heightmog Ted."
+        assert translator.translate_sentence("They were faster than my brother.") == (
+            "They speedmogged my brother."
+        )
+        assert translator.translate_sentence("She is a lot smarter than my sister.") == (
+            "She really IQmogs my sister."
+        )
+        assert translator.translate_sentence("She is better than everyone.") == (
+            "She mogs the whole lobby."
+        )
+
+    def test_leaves_other_meanings_intact(self):
+        assert translator.translate_sentence("He is faster than last year.") == (
+            "He is faster than last year."
+        )
+        assert translator.translate_sentence("He is taller than my brother is.") == (
+            "He is taller than my brother is."
+        )
+        assert translator.translate_sentence("She is faster than her car.") == (
+            "She is faster than her car."
+        )
+        assert translator.translate_sentence("Beat the eggs.") == "Beat the eggs."
+
     def test_leaves_light_verbs_and_translates_the_activity(self):
         assert translator.translate_sentence("I need to learn how to cook. I want to hang out.") == (
             "I need to learn how to cook. I want to hang out."

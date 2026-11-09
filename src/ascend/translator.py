@@ -1,5 +1,5 @@
 _PUNCTUATION = ".,!?;:()[]{}\"'“”‘’…—"
-_MAX_PHRASE_WORDS = 5
+_MAX_PHRASE_WORDS = 8
 
 _IDIOM_SWAPS = {
     "femoid": "foid",
@@ -88,6 +88,19 @@ _BE_CONTRACTIONS = {
 _BE_CUES = _BE_VERBS + tuple(cue for cue in _BE_CONTRACTIONS if cue not in _BE_VERBS)
 _DESTINATIONS = ("home", "school", "work", "bed", "class", "college", "church", "town", "dinner")
 
+_COMPARISON_DIMENSIONS = {
+    "taller": "height",
+    "stronger": "gym",
+    "smarter": "IQ",
+    "richer": "money",
+    "faster": "speed",
+    "bigger": "frame",
+    "funnier": "jester",
+    "hotter": "looks",
+    "prettier": "looks",
+    "better": "",
+}
+
 _ACTION_MODIFIERS = (
     "always", "probably", "also", "still", "often", "usually", "sometimes",
     "definitely", "actually", "already", "even", "just", "then", "soon",
@@ -127,7 +140,7 @@ def _build_verb_swaps(verb_bases):
 _VERB_SWAPS = _build_verb_swaps(_VERB_BASES)
 _LIE_FORMS = _verb_forms("lie")
 _FRAUD_FORMS = _verb_forms("fraud")
-_MOG_PAST = _verb_forms("mog")[2]
+_MOG_BASE, _MOG_PRESENT, _MOG_PAST, _ = _verb_forms("mog")
 _ACTION_CUES = (
     _verb_forms("try") + _verb_forms("want") + _verb_forms("need") + _verb_forms("plan")
     + _verb_forms("decide") + ("have", "has", "had")
@@ -254,6 +267,56 @@ def _slot_swap(words, original_words, next_word):
     return None
 
 
+def _comparative_swap(be_verb, words, original_words, next_word):
+    if not words:
+        return None
+    adjective_index = 0
+    if words[:2] in (["so", "much"], ["a", "lot"]):
+        adjective_index = 2
+    elif words[0] == "way":
+        adjective_index = 1
+
+    if len(words) < adjective_index + 3:
+        return None
+    dimension = _COMPARISON_DIMENSIONS.get(words[adjective_index])
+    if dimension is None or words[adjective_index + 1] != "than":
+        return None
+    target_index = adjective_index + 2
+    target = _comparison_target(words[target_index:], original_words[target_index:], next_word)
+    if target is None:
+        return None
+
+    mog_verb = _MOG_BASE
+    if be_verb == "is":
+        mog_verb = _MOG_PRESENT
+    elif be_verb in ("was", "were"):
+        mog_verb = _MOG_PAST
+    emphasis = "really " if adjective_index else ""
+    return f"{emphasis}{dimension}{mog_verb} {target}"
+
+
+def _person_phrase_swap(words, original_words, next_word):
+    subject = original_words[0]
+    contraction = _BE_CONTRACTIONS.get(words[0].replace("'", ""))
+    if contraction is not None and words[0] not in _BE_VERBS:
+        subject_lookup, be_verb = contraction
+        if subject_lookup == "it":
+            return None
+        subject = subject[:len(subject_lookup)]
+        predicate_index = 1
+    elif len(words) >= 3 and words[1] in _BE_VERBS and _is_person_subject(subject):
+        be_verb = words[1]
+        predicate_index = 2
+    else:
+        return None
+
+    predicate = words[predicate_index:]
+    comparison = _comparative_swap(be_verb, predicate, original_words[predicate_index:], next_word)
+    if comparison is not None:
+        return f"{subject} {comparison}"
+    return None
+
+
 def _study_is_an_action(word_parts, lookup_words, word_index):
     previous_word = ""
     if word_index > 0 and _phrase_continues(word_parts, word_index - 1):
@@ -331,6 +394,8 @@ def _find_swap(word_parts, lookup_words, start_index):
             next_word = _next_word_in_phrase(word_parts, lookup_words, end_index)
             if len(words) >= 3:
                 candidate = _slot_swap(words, original_words, next_word)
+            if candidate is None:
+                candidate = _person_phrase_swap(words, original_words, next_word)
 
         if candidate is not None:
             replacement = candidate
