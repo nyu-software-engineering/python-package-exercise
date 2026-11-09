@@ -103,12 +103,21 @@ class Tests:
         assert translator.translate_sentence("She did better than everyone.") == (
             "She mogged the whole lobby."
         )
+        assert translator.translate_sentence("I was lying about my age, but she lied about her salary.") == (
+            "I was agefrauding, but she salaryfrauded."
+        )
+        assert translator.translate_sentence("I was lying about my new job.") == (
+            "I was lying about my new job."
+        )
         assert translator.translate_sentence("Maya messed up.") == "Maya fumbled."
         assert translator.translate_sentence("She did better than my brother.") == (
             "She mogged my brother."
         )
         assert translator.translate_sentence("She did better than Expected.") == (
             "She did better than Expected."
+        )
+        assert translator.translate_sentence("I was lying about my age to her.") == (
+            "I was agefrauding to her."
         )
 
     def test_maxx_rule_skips_one_common_modifier(self):

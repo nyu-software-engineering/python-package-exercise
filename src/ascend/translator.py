@@ -31,7 +31,6 @@ _IDIOM_SWAPS = {
     "normal person": "normie",
     "very handsome guy": "chad",
     "it's so over": "its jover",
-    "lying about my height": "heightfrauding",
 }
 
 _VERB_BASES = {
@@ -49,6 +48,7 @@ _VERB_BASES = {
 
 _VERB_FORM_EXCEPTIONS = {
     "get": ("gets", "got", "getting"),
+    "lie": ("lies", "lied", "lying"),
     "make": ("makes", "made", "making"),
     "mog": ("mogs", "mogged", "mogging"),
     "study": ("studies", "studied", "studying"),
@@ -105,6 +105,8 @@ def _build_verb_swaps(verb_bases):
 
 
 _VERB_SWAPS = _build_verb_swaps(_VERB_BASES)
+_LIE_FORMS = _verb_forms("lie")
+_FRAUD_FORMS = _verb_forms("fraud")
 _MOG_PAST = _verb_forms("mog")[2]
 _ACTION_CUES = (
     "try", "tries", "tried", "trying",
@@ -195,6 +197,7 @@ def _can_maxx_action(word_parts, word_index, lookup_word):
 
 def _slot_swap(words, original_words, next_word):
     first_word = original_words[0]
+    last_word = original_words[-1]
     if words[-2:] == ["messed", "up"] and _is_person_subject(first_word):
         modifiers = words[1:-2]
         if not modifiers:
@@ -203,6 +206,15 @@ def _slot_swap(words, original_words, next_word):
         target = _comparison_target(words[3:], original_words[3:], next_word)
         if target is not None:
             return f"{_MOG_PAST} {target}"
+    if len(words) != 4 or not last_word.isalpha():
+        return None
+
+    last_lookup = words[-1]
+    if words[0] in _LIE_FORMS and words[1] == "about" and words[2] in _POSSESSIVES:
+        slot_ends_here = not next_word or next_word in _SLOT_FOLLOWERS
+        if slot_ends_here and last_lookup not in _NOUN_CUES:
+            fraud_form = _FRAUD_FORMS[_LIE_FORMS.index(words[0])]
+            return last_word + fraud_form
     return None
 
 
