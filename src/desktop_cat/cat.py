@@ -1,3 +1,4 @@
+import random
 # Defines the states up front so everyone builds off of the same attributes/methods
 
 MOODS = ("happy", "sad", "angry", "tired", "hungry")
@@ -18,7 +19,29 @@ class Cat:
         raise NotImplementedError
 
     def feed(self, food):
-        raise NotImplementedError
+        reaction = ""
+        hungerchange = 0
+        if food not in FOODS:
+            raise ValueError(f"Invalid food: {food}")
+        if food in self.foods_eaten:
+            self.foods_eaten[food] += 1
+        else:
+            self.foods_eaten[food] = 1
+        liked = random.choice([True, True, False])
+        if liked:
+            hungerchange = random.randint(2, 5)
+            self.mood = "happy"
+            reaction = f"{self.name} loved the {food}!"
+        else:
+            hungerchange = random.randint(0, 2)
+            if hungerchange == 0:
+                self.mood = "angry"
+                reaction = f"{self.name} refused to eat the {food}."
+            else:
+                self.mood = "sad"
+                reaction = f"{self.name} did not like the {food}."
+        self.hunger = max(self.hunger-hungerchange, 0)
+        return reaction
 
     def pet(self, times=1):
         raise NotImplementedError
