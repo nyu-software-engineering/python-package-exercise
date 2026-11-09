@@ -45,16 +45,21 @@ _VERB_BASES = {
     "make a mistake": "fumble",
     "make stuff up": "larp",
     "fake height": "heightfraud",
+    "win the game": "mog the whole lobby",
 }
+_OUTCOME_BASES = {"win": "mog", "lose": "fumble", "fail": "fumble", "lie": "fraud"}
+_OUTCOME_OBJECTS = ("game", "match", "race", "round", "test", "exam", "class", "money")
 
 _VERB_FORM_EXCEPTIONS = {
     "get": ("gets", "got", "getting"),
     "lie": ("lies", "lied", "lying"),
+    "lose": ("loses", "lost", "losing"),
     "make": ("makes", "made", "making"),
     "mog": ("mogs", "mogged", "mogging"),
     "plan": ("plans", "planned", "planning"),
     "study": ("studies", "studied", "studying"),
     "try": ("tries", "tried", "trying"),
+    "win": ("wins", "won", "winning"),
 }
 _VERB_ALIASES = {"outshone": "outshined"}
 
@@ -173,6 +178,7 @@ _ACTION_CUES = (
     + _verb_forms("decide") + ("have", "has", "had")
 )
 _SUBJECT_LINKS = ("will", "should", "to", "gonna", "going") + _ACTION_CUES + _ACTION_MODIFIERS
+_OUTCOME_SWAPS = _build_verb_swaps(_OUTCOME_BASES)
 
 
 def _split_punctuation(token):
@@ -435,6 +441,30 @@ def _work_out_is_exercise(word_parts, lookup_words, start_index, end_index):
     return _has_person_subject(word_parts, lookup_words, start_index)
 
 
+def _outcome_swap(word_parts, lookup_words, word_index):
+    verb = lookup_words[word_index]
+    if verb not in _OUTCOME_SWAPS or not _has_person_subject(word_parts, lookup_words, word_index):
+        return None
+
+    next_word = _next_word_in_phrase(word_parts, lookup_words, word_index)
+    if verb in _LIE_FORMS:
+        if not next_word or next_word == "again":
+            return _OUTCOME_SWAPS[verb]
+        return None
+
+    object_index = word_index
+    while next_word in _NOUN_CUES + ("all",):
+        object_index += 1
+        next_word = _next_word_in_phrase(word_parts, lookup_words, object_index)
+    if (
+        not next_word
+        or next_word in _OUTCOME_OBJECTS
+        or next_word in ("at", "again", "today", "yesterday")
+    ):
+        return _OUTCOME_SWAPS[verb]
+    return None
+
+
 def _verb_phrase_swap(phrase, word_parts, lookup_words, start_index, end_index):
     replacement = _VERB_SWAPS.get(phrase)
     if replacement is None:
@@ -486,6 +516,8 @@ def _find_swap(word_parts, lookup_words, start_index, previous_comparison_verb):
             if word_parts[end_index][2] not in ("", ","):
                 matched_comparison_verb = None
 
+    if replacement is None:
+        replacement = _outcome_swap(word_parts, lookup_words, start_index)
     return replacement, matched_word_count, matched_comparison_verb
 
 

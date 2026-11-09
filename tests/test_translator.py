@@ -146,7 +146,7 @@ class Tests:
         assert translator.translate_sentence("I will always remember this.") == (
             "I will always remembermaxx this."
         )
-        assert translator.translate_sentence("She will probably win.") == "She will probably winmaxx."
+        assert translator.translate_sentence("She will probably win.") == "She will probably mog."
         assert translator.translate_sentence("I will also still remember this.") == (
             "I will also still remembermaxx this."
         )
@@ -198,6 +198,20 @@ class Tests:
             "She is faster than her car."
         )
         assert translator.translate_sentence("Beat the eggs.") == "Beat the eggs."
+
+    def test_translates_outcomes_in_context(self):
+        assert translator.translate_sentence("We won the game. I failed my exam.") == (
+            "We mogged the whole lobby. I fumbled my exam."
+        )
+        assert translator.translate_sentence("I lost all my money. He always wins.") == (
+            "I fumbled all my money. He always mogs."
+        )
+        assert translator.translate_sentence("That guy is always lying.") == (
+            "That guy is always frauding."
+        )
+        assert translator.translate_sentence("I lost my keys. He was lying on the floor.") == (
+            "I lost my keys. He was lying on the floor."
+        )
 
     def test_translates_adjectives_and_their_modifiers(self):
         assert translator.translate_sentence("I'm so tired. Really good. So annoying.") == (
