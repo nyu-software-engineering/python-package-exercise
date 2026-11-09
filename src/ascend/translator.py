@@ -93,7 +93,10 @@ _ACTION_MODIFIERS = (
     "definitely", "actually", "already", "even", "just", "then", "soon",
     "carefully", "quickly", "quietly", "slowly",
 ) + _INTENSIFIERS
-_SKIP_ACTIONS = ("be", "have", "do", "not", "never") + _NOUN_CUES + _ACTION_MODIFIERS
+_SKIP_ACTIONS = (
+    "be", "have", "do", "not", "never", "go", "get", "stop", "start", "keep",
+    "learn", "say", "hang",
+) + _NOUN_CUES + _ACTION_MODIFIERS
 
 
 def _verb_forms(base):

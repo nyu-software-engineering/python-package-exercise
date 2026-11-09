@@ -155,6 +155,11 @@ class Tests:
         assert translator.translate_sentence("It’s really over.") == "Its jover."
         assert translator.translate_sentence("I really messed up.") == "I really fumbled."
 
+    def test_leaves_light_verbs_and_translates_the_activity(self):
+        assert translator.translate_sentence("I need to learn how to cook. I want to hang out.") == (
+            "I need to learn how to cook. I want to hang out."
+        )
+
     def test_leaves_context_and_already_maxxed_words_intact(self):
         assert translator.translate_sentence("I want to gymmaxx before my chemistry lab.") == (
             "I want to gymmaxx before my chemistry lab."
