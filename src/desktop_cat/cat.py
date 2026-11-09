@@ -19,6 +19,7 @@ class Cat:
         raise NotImplementedError
 
     def feed(self, food):
+        food = food.strip().lower()
         reaction = ""
         hungerchange = 0
         if food not in FOODS:
