@@ -70,6 +70,27 @@ print(draw_pet("hatchling"))
 Raises `TypeError` if `stage` isn't a string, and `ValueError` if it isn't one
 of the five stage names.
 
+### `add_commands(pet, count=1)`
+
+Records that `count` more terminal commands were run, then updates the pet's
+stage. The pet is changed in place and also returned.
+
+- `pet`: a pet dictionary made by `create_egg`.
+- `count`: how many commands to add. Must be a positive integer.
+
+```python
+from terminal_pet_respin import add_commands, create_egg
+
+pet = create_egg("Monty", hatch_at=10)
+add_commands(pet)       # commands_run 1, stage "egg"
+add_commands(pet, 4)    # commands_run 5, stage "cracking"
+```
+
+Raises `TypeError` if `pet` isn't a dictionary or `count` isn't an integer
+(`True` and `False` are rejected), and `ValueError` if `pet` is missing a key
+or `count` is zero or negative.
+
+
 ## Running the tests
 
 ```bash
