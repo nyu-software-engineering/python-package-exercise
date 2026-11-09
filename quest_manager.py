@@ -16,3 +16,18 @@ def list_quests(quests, status=None):
             result.append(quest.copy())
 
     return result
+
+
+def get_quest(quests, quest_id):
+    """Return a quest copy by ID, or raise KeyError if it does not exist."""
+    if isinstance(quest_id, bool) or not isinstance(quest_id, (str, int)):
+        raise TypeError("quest_id must be a string or an integer")
+
+    if isinstance(quest_id, str) and not quest_id.strip():
+        raise ValueError("quest_id must not be blank")
+
+    for quest in list_quests(quests):
+        if quest.get("id") == quest_id:
+            return quest
+
+    raise KeyError(f"quest not found: {quest_id}")
