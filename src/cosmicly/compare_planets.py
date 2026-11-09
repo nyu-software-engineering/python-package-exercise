@@ -6,6 +6,37 @@ from .data import PLANETS
 from .planetary_age import age_on_planet
 from .planetary_weight import weight_on_planet
 
+def earth_age(birthdate: str | date) -> float:
+    """Return how many Earth years have passed since a birthdate.
+
+    Args:
+        birthdate: A "YYYY-MM-DD" string, or a date or datetime object.
+
+    Returns:
+        The age in fractional Earth years up to today, rounded to 2 decimals.
+
+    Raises:
+        TypeError: If birthdate is not a string, date or datetime.
+        ValueError: If birthdate is not a real date or is in the future.
+    """
+    today = date.today()
+
+    if isinstance(birthdate, datetime):
+        birthdate = birthdate.date()
+    elif isinstance(birthdate, str):
+        try:
+            birthdate = date.fromisoformat(birthdate)
+        except ValueError as error:
+            raise ValueError(f"'{birthdate}' is not a real YYYY-MM-DD date") from error
+    elif not isinstance(birthdate, date):
+        raise TypeError("birthdate must be a 'YYYY-MM-DD' string or a date")
+
+    if birthdate > today:
+        raise ValueError("birthdate cannot be in the future")
+
+    days_alive = (today - birthdate).days
+    return round(days_alive / 365.25, 2) #365.25 includes leap years
+
 
 def compare_planets(
     planet_a: str,
@@ -54,35 +85,3 @@ def compare_planets(
             "weight": weight_on_planet("w", weight, planet),
         }
     return comparison
-
-
-def earth_age(birthdate: str | date) -> float:
-    """Return how many Earth years have passed since a birthdate.
-
-    Args:
-        birthdate: A "YYYY-MM-DD" string, or a date or datetime object.
-
-    Returns:
-        The age in fractional Earth years up to today, rounded to 2 decimals.
-
-    Raises:
-        TypeError: If birthdate is not a string, date or datetime.
-        ValueError: If birthdate is not a real date or is in the future.
-    """
-    today = date.today()
-
-    if isinstance(birthdate, datetime):
-        birthdate = birthdate.date()
-    elif isinstance(birthdate, str):
-        try:
-            birthdate = date.fromisoformat(birthdate)
-        except ValueError as error:
-            raise ValueError(f"'{birthdate}' is not a real YYYY-MM-DD date") from error
-    elif not isinstance(birthdate, date):
-        raise TypeError("birthdate must be a 'YYYY-MM-DD' string or a date")
-
-    if birthdate > today:
-        raise ValueError("birthdate cannot be in the future")
-
-    days_alive = (today - birthdate).days
-    return round(days_alive / 365.25, 2) #365.25 is the average length of a year (includes leap years)
