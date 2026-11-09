@@ -1,6 +1,7 @@
 
 import random
 
+
 def generate_excuse(assignment):
     excuses = [
         "My laptop broke down from the academic pressure. Honestly, I think we both need an extension.",
@@ -72,4 +73,3 @@ def apology_multiplier(email, desperation):
     apology = apologies[(desperation - 1) // 2]
 
     return apology + "\n\n" + email
-
