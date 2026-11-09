@@ -50,3 +50,46 @@ DISCOVERIES = {
         ],
     },
 }
+
+
+
+def generate_discovery(field, absurdity):
+    """
+    Generate a fictional scientific discovery.
+
+    Args:
+        field (str): Physics, biology, or astronomy.
+        absurdity (int): Absurdity level from 1 to 10.
+
+    Returns:
+        str: A randomly generated fictional discovery.
+
+    Raises:
+        TypeError: If arguments have incorrect types.
+        ValueError: If arguments have unsupported values.
+    """
+    if not isinstance(field, str):
+        raise TypeError("Field must be a string.")
+
+    field = field.strip().lower()
+
+    if field not in DISCOVERIES:
+        raise ValueError("Unsupported scientific field.")
+
+    if type(absurdity) is not int:
+        raise TypeError("Absurdity must be an integer.")
+
+    if not 1 <= absurdity <= 10:
+        raise ValueError("Absurdity must be between 1 and 10.")
+
+    if absurdity <= 3:
+        level = "low"
+    elif absurdity <= 7:
+        level = "medium"
+    else:
+        level = "high"
+
+    subject = random.choice(DISCOVERIES[field]["subjects"])
+    behavior = random.choice(DISCOVERIES[field][level])
+
+    return f"Fictional discovery: Scientists discovered that {subject} {behavior}."
