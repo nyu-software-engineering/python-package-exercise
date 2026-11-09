@@ -20,9 +20,16 @@ def add_commands(pet, count=1):
         >>> pet["stage"]
         'cracking'
     """
+    if not isinstance(pet, dict):
+        raise TypeError("pet must be a dictionary")
+
+    for key in ("name", "hatch_at", "commands_run", "stage"):
+        if key not in pet:
+            raise ValueError(f"pet is missing key: {key}")
+
     if isinstance(count, bool) or not isinstance(count, int):
         raise TypeError("count must be an integer")
-
+    
     if count <= 0:
         raise ValueError("count must be positive")
 
