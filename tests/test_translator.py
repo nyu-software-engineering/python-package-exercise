@@ -96,6 +96,17 @@ class Tests:
             "The study for the course is ready."
         )
 
+    def test_fills_slots_from_the_sentence(self):
+        assert translator.translate_sentence("She did better than everyone.") == (
+            "She mogged the whole lobby."
+        )
+        assert translator.translate_sentence("She did better than my brother.") == (
+            "She mogged my brother."
+        )
+        assert translator.translate_sentence("She did better than Expected.") == (
+            "She did better than Expected."
+        )
+
     def test_maxx_rule_skips_one_common_modifier(self):
         assert translator.translate_sentence("I'm trying to quietly leave the room.") == (
             "I'm trying to quietly leavemaxx the room."

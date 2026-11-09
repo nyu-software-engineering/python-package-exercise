@@ -1,5 +1,5 @@
 _PUNCTUATION = ".,!?;:()[]{}\"'“”‘’…—"
-_MAX_PHRASE_WORDS = 4
+_MAX_PHRASE_WORDS = 5
 
 _IDIOM_SWAPS = {
     "femoid": "foid",
@@ -31,13 +31,6 @@ _IDIOM_SWAPS = {
     "normal person": "normie",
     "very handsome guy": "chad",
     "it's so over": "its jover",
-    "did better than everyone": "mogged the whole lobby",
-    "did better than me": "mogged me",
-    "did better than you": "mogged you",
-    "did better than him": "mogged him",
-    "did better than her": "mogged her",
-    "did better than us": "mogged us",
-    "did better than them": "mogged them",
     "i messed up": "i fumbled",
     "we messed up": "we fumbled",
     "lying about my height": "heightfrauding",
@@ -74,6 +67,15 @@ _PERSON_NOUNS = (
     "brother", "sister", "friend", "friends", "mom", "dad", "parents", "teacher",
     "coach", "teammate", "teammates", "student", "students", "kids", "people", "guy",
 )
+_OBJECT_PRONOUNS = ("me", "you", "him", "her", "us", "them")
+_NONPERSON_WORDS = (
+    "it", "that", "this", "things", "everything", "something", "nothing", "plan", "plans",
+    "expected", "usual", "normal", "average", "before", "ever", "yesterday", "today", "brakes",
+)
+
+_BE_VERBS = ("am", "is", "are", "was", "were")
+_SLOT_FOLLOWERS = ("again", "and", "before", "but", "because", "since", "to", "today", "yesterday")
+_COMPARISON_FOLLOWERS = _SLOT_FOLLOWERS + ("at", "in", "on", "now", "too", "though")
 
 _ACTION_MODIFIERS = ("carefully", "just", "quickly", "quietly", "really", "slowly")
 _SKIP_ACTIONS = ("be", "have", "do", "not", "never")
@@ -105,6 +107,7 @@ def _build_verb_swaps(verb_bases):
 
 
 _VERB_SWAPS = _build_verb_swaps(_VERB_BASES)
+_MOG_PAST = _verb_forms("mog")[2]
 _ACTION_CUES = (
     "try", "tries", "tried", "trying",
     "want", "wants", "wanted",
@@ -136,6 +139,37 @@ def _next_word_in_phrase(word_parts, lookup_words, word_index):
     return ""
 
 
+def _looks_like_name(word):
+    lookup = word.lower()
+    return (
+        word.isalpha() and word.istitle()
+        and lookup not in _SUBJECT_PRONOUNS and lookup not in _NONPERSON_WORDS
+    )
+
+
+def _is_person_subject(word):
+    lookup = word.lower()
+    return (
+        (lookup in _SUBJECT_PRONOUNS and lookup != "it")
+        or lookup in _PERSON_NOUNS or _looks_like_name(word)
+    )
+
+
+def _comparison_target(words, original_words, next_word):
+    if next_word in _BE_VERBS:
+        return None
+    if words == ["everyone"]:
+        return "the whole lobby"
+    if len(words) == 1:
+        if words[0] == "her" and next_word and next_word not in _COMPARISON_FOLLOWERS:
+            return None
+        if words[0] in _OBJECT_PRONOUNS or _looks_like_name(original_words[0]):
+            return original_words[0]
+    if len(words) == 2 and words[0] in _POSSESSIVES and words[1] in _PERSON_NOUNS:
+        return " ".join(original_words)
+    return None
+
+
 def _can_maxx_action(word_parts, word_index, lookup_word):
     leading_punctuation, _, _ = word_parts[word_index]
     if word_index < 2 or leading_punctuation or not lookup_word.isalpha():
@@ -159,6 +193,14 @@ def _can_maxx_action(word_parts, word_index, lookup_word):
         and to_word.lower() == "to"
         and not (cue_end or to_start or to_end)
     )
+
+
+def _slot_swap(words, original_words, next_word):
+    if words[:3] == ["did", "better", "than"]:
+        target = _comparison_target(words[3:], original_words[3:], next_word)
+        if target is not None:
+            return f"{_MOG_PAST} {target}"
+    return None
 
 
 def _study_is_an_action(word_parts, lookup_words, word_index):
@@ -188,17 +230,24 @@ def _find_swap(word_parts, lookup_words, start_index):
     replacement = None
     matched_word_count = 1
     words = []
+    original_words = []
     phrase_limit = min(start_index + _MAX_PHRASE_WORDS, len(word_parts))
 
     for end_index in range(start_index, phrase_limit):
         if end_index > start_index and not _phrase_continues(word_parts, end_index - 1):
             break
         words.append(lookup_words[end_index])
+        original_words.append(word_parts[end_index][1])
         phrase = " ".join(words)
         candidate = _IDIOM_SWAPS.get(phrase)
 
         if candidate is None:
             candidate = _verb_phrase_swap(phrase, word_parts, lookup_words, start_index, end_index)
+
+        if candidate is None and len(words) >= 2:
+            next_word = _next_word_in_phrase(word_parts, lookup_words, end_index)
+            if len(words) >= 3:
+                candidate = _slot_swap(words, original_words, next_word)
 
         if candidate is not None:
             replacement = candidate
