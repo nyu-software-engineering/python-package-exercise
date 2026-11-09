@@ -295,26 +295,34 @@ def _comparative_swap(be_verb, words, original_words, next_word):
     return f"{emphasis}{dimension}{mog_verb} {target}"
 
 
-def _person_phrase_swap(words, original_words, next_word):
+def _person_phrase_swap(words, original_words, next_word, previous_comparison_verb):
+    if words[0] == "and" and previous_comparison_verb:
+        comparison = _comparative_swap(
+            previous_comparison_verb, words[1:], original_words[1:], next_word
+        )
+        if comparison is not None:
+            return f"{original_words[0]} {comparison}", previous_comparison_verb
+        return None, None
+
     subject = original_words[0]
     contraction = _BE_CONTRACTIONS.get(words[0].replace("'", ""))
     if contraction is not None and words[0] not in _BE_VERBS:
         subject_lookup, be_verb = contraction
         if subject_lookup == "it":
-            return None
+            return None, None
         subject = subject[:len(subject_lookup)]
         predicate_index = 1
     elif len(words) >= 3 and words[1] in _BE_VERBS and _is_person_subject(subject):
         be_verb = words[1]
         predicate_index = 2
     else:
-        return None
+        return None, None
 
     predicate = words[predicate_index:]
     comparison = _comparative_swap(be_verb, predicate, original_words[predicate_index:], next_word)
     if comparison is not None:
-        return f"{subject} {comparison}"
-    return None
+        return f"{subject} {comparison}", be_verb
+    return None, None
 
 
 def _study_is_an_action(word_parts, lookup_words, word_index):
@@ -372,9 +380,10 @@ def _verb_phrase_swap(phrase, word_parts, lookup_words, start_index, end_index):
     return replacement
 
 
-def _find_swap(word_parts, lookup_words, start_index):
+def _find_swap(word_parts, lookup_words, start_index, previous_comparison_verb):
     replacement = None
     matched_word_count = 1
+    matched_comparison_verb = None
     words = []
     original_words = []
     phrase_limit = min(start_index + _MAX_PHRASE_WORDS, len(word_parts))
@@ -386,6 +395,7 @@ def _find_swap(word_parts, lookup_words, start_index):
         original_words.append(word_parts[end_index][1])
         phrase = " ".join(words)
         candidate = _IDIOM_SWAPS.get(phrase)
+        comparison_verb = None
 
         if candidate is None:
             candidate = _verb_phrase_swap(phrase, word_parts, lookup_words, start_index, end_index)
@@ -395,13 +405,18 @@ def _find_swap(word_parts, lookup_words, start_index):
             if len(words) >= 3:
                 candidate = _slot_swap(words, original_words, next_word)
             if candidate is None:
-                candidate = _person_phrase_swap(words, original_words, next_word)
+                candidate, comparison_verb = _person_phrase_swap(
+                    words, original_words, next_word, previous_comparison_verb
+                )
 
         if candidate is not None:
             replacement = candidate
             matched_word_count = len(words)
+            matched_comparison_verb = comparison_verb
+            if word_parts[end_index][2] not in ("", ","):
+                matched_comparison_verb = None
 
-    return replacement, matched_word_count
+    return replacement, matched_word_count, matched_comparison_verb
 
 
 def _translate_line(text):
@@ -417,9 +432,12 @@ def _translate_line(text):
     translated_words = []
     made_swap = False
     word_index = 0
+    previous_comparison_verb = None
     while word_index < len(word_parts):
         leading_punctuation, word, trailing_punctuation = word_parts[word_index]
-        replacement, matched_word_count = _find_swap(word_parts, lookup_words, word_index)
+        replacement, matched_word_count, previous_comparison_verb = _find_swap(
+            word_parts, lookup_words, word_index, previous_comparison_verb
+        )
 
         if replacement is None and _can_maxx_action(word_parts, lookup_words, word_index):
             replacement = lookup_words[word_index] + "maxx"

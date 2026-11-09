@@ -196,6 +196,17 @@ class Tests:
             "I feel great after gymmaxxing."
         )
 
+    def test_translates_joined_comparisons_with_the_same_tense(self):
+        assert translator.translate_sentence("She was smarter than him and richer than us.") == (
+            "She IQmogged him and moneymogged us."
+        )
+        assert translator.translate_sentence("She was smarter than him, and richer than us.") == (
+            "She IQmogged him, and moneymogged us."
+        )
+        assert translator.translate_sentence("She was smarter than him. And richer than us.") == (
+            "She IQmogged him. And richer than us."
+        )
+
     def test_preserves_all_caps_and_line_breaks(self):
         assert translator.translate_sentence("IT’S OVER") == "ITS JOVER"
         assert translator.translate_sentence("I STUDIED.\r\n\r\nIt's over.\nThe train arrived.") == (
