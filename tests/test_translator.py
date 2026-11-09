@@ -163,6 +163,15 @@ class Tests:
         assert translator.translate_sentence("It’s really over.") == "Its jover."
         assert translator.translate_sentence("I really messed up.") == "I really fumbled."
 
+    def test_translates_focused_and_stressed_phrases(self):
+        assert translator.translate_sentence("I am stressed.") == "My cortisol spiked."
+        assert translator.translate_sentence("I'm really stressed out about class.") == (
+            "My cortisol really spiked over class."
+        )
+        assert translator.translate_sentence("She's stressed the importance of sleep.") == (
+            "She's stressed the importance of sleep."
+        )
+
     def test_translates_comparisons_between_people(self):
         assert translator.translate_sentence("He is taller than me.") == "He heightmogs me."
         assert translator.translate_sentence("I'm taller than Ted.") == "I heightmog Ted."

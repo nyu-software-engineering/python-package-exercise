@@ -319,10 +319,33 @@ def _person_phrase_swap(words, original_words, next_word, previous_comparison_ve
         return None, None
 
     predicate = words[predicate_index:]
+    stress_phrase = _stress_swap(subject, predicate, next_word)
+    if stress_phrase is not None:
+        return stress_phrase, None
+
     comparison = _comparative_swap(be_verb, predicate, original_words[predicate_index:], next_word)
     if comparison is not None:
         return f"{subject} {comparison}", be_verb
     return None, None
+
+
+def _stress_swap(subject, predicate, next_word):
+    has_intensifier = predicate[0] in _INTENSIFIERS
+    state = predicate[1:] if has_intensifier else predicate
+    if state not in (
+        ["stressed"], ["stressed", "out"], ["stressed", "about"], ["stressed", "out", "about"]
+    ):
+        return None
+    has_topic = state[-1] == "about"
+    if not has_topic and next_word and next_word not in _SLOT_FOLLOWERS:
+        return None
+
+    possessive = _POSSESSIVE_SUBJECTS.get(subject.lower())
+    if possessive is None:
+        possessive = subject + ("'" if subject.lower().endswith("s") else "'s")
+    emphasis = "really " if has_intensifier else ""
+    topic = " over" if has_topic else ""
+    return f"{possessive} cortisol {emphasis}spiked{topic}"
 
 
 def _study_is_an_action(word_parts, lookup_words, word_index):
