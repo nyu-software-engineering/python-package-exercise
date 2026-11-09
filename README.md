@@ -47,7 +47,7 @@ After changing `Pipfile`, run `pipenv lock` and commit both dependency files.
 ## Build and use the Python package
 
 The working distribution name is `chipotle-quests` (version `0.1.0`). It contains
-the existing `quest_descriptions` and `quest_manager` modules. The package has
+the `quest_descriptions`, `quest_manager`, and `progression` modules. The package has
 not been published to PyPI; confirm the distribution name before publishing.
 
 Pipenv now installs the project in editable mode, so source edits are available
@@ -95,11 +95,15 @@ Run `pipenv sync --dev` again to return to editable development.
 | `quest_manager` | `list_quests(quests, status=None)` | Return quest copies, optionally filtering by `pending` or `completed`. |
 | `quest_manager` | `get_quest(quests, quest_id)` | Return a quest copy by ID; raise `KeyError` if it is missing. |
 | `quest_manager` | `delete_quest(quests, quest_id)` | Return a new list with the specified pending quest removed. |
+| `progression` | `calculate_xp(duration_minutes)` | Return 1 XP per positive integer minute. |
+| `progression` | `calculate_level(total_xp)` | Calculate a level from nonnegative integer total XP: `1 + total_xp // 100`. |
 
 For example, `from quest_manager import list_quests` imports the listing function.
-The [usage example](examples/basic_usage.py) calls all five functions: generate a
-description, filter and look up a quest, rename it, and delete it. It keeps data
-in memory; persistence and XP completion are separate integration work.
+The [usage example](examples/basic_usage.py) calls all seven functions: generate a
+description, calculate XP and a level, filter and look up a quest, rename it, and
+delete it. It keeps data in memory; persistence and awarding XP on completion
+are separate integration work. More XP details are in the
+[progression notes](docs/progression.md).
 Expected output includes `Pending quests: 1` and ends with `Remaining quests: 0`.
 Extend the example and module list in `pyproject.toml` as public functions and
 modules are added. More title-editing details are in the
