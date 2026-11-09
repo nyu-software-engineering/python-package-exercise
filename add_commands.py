@@ -1,0 +1,27 @@
+from get_stage import get_stage
+
+
+def add_commands(pet, count=1):
+    """Add terminal commands to a pet and update its stage.
+
+    Args:
+        pet: a pet dictionary made by create_egg().
+        count: how many commands to add (a positive integer, default 1).
+
+    Returns:
+        The same pet dictionary, with commands_run and stage updated.
+
+    Example:
+        >>> from create_egg import create_egg
+        >>> pet = create_egg("Bob", hatch_at=10)
+        >>> pet = add_commands(pet, 5)
+        >>> pet["commands_run"]
+        5
+        >>> pet["stage"]
+        'cracking'
+    """
+    pet["commands_run"] += count
+    pet["stage"] = get_stage(pet["commands_run"], pet["hatch_at"])
+    return pet
+
+ 
