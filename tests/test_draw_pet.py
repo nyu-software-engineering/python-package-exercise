@@ -1,7 +1,8 @@
 import pytest
 
-from draw_pet import draw_pet
-from get_stage import STAGES, get_stage
+#from draw_pet import draw_pet
+#from get_stage import STAGES, get_stage
+from terminal_pet_respin import STAGES, draw_pet, get_stage
 
 
 def test_returns_string_for_every_stage():
