@@ -123,12 +123,15 @@ class Tests:
             "I was agefrauding to her."
         )
 
-    def test_maxx_rule_skips_one_common_modifier(self):
+    def test_maxx_rule_preserves_modifiers(self):
         assert translator.translate_sentence("I'm trying to quietly leave the room.") == (
             "I'm trying to quietly leavemaxx the room."
         )
         assert translator.translate_sentence("I want to quickly work out.") == (
             "I want to quickly gymmaxx."
+        )
+        assert translator.translate_sentence("I want to always quietly leave.") == (
+            "I want to always quietly leavemaxx."
         )
 
     def test_matches_idioms_and_slots_with_intensifiers(self):

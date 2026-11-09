@@ -78,8 +78,12 @@ _BE_VERBS = ("am", "is", "are", "was", "were")
 _SLOT_FOLLOWERS = ("again", "and", "before", "but", "because", "since", "to", "today", "yesterday")
 _COMPARISON_FOLLOWERS = _SLOT_FOLLOWERS + ("at", "in", "on", "now", "too", "though")
 
-_ACTION_MODIFIERS = ("carefully", "just", "quickly", "quietly", "really", "slowly")
-_SKIP_ACTIONS = ("be", "have", "do", "not", "never")
+_ACTION_MODIFIERS = (
+    "always", "probably", "also", "still", "often", "usually", "sometimes",
+    "definitely", "actually", "already", "even", "just", "then", "soon",
+    "carefully", "quickly", "quietly", "slowly",
+) + _INTENSIFIERS
+_SKIP_ACTIONS = ("be", "have", "do", "not", "never") + _NOUN_CUES + _ACTION_MODIFIERS
 
 
 def _verb_forms(base):
@@ -173,29 +177,27 @@ def _comparison_target(words, original_words, next_word):
     return None
 
 
-def _can_maxx_action(word_parts, word_index, lookup_word):
-    leading_punctuation, _, _ = word_parts[word_index]
+def _can_maxx_action(word_parts, lookup_words, word_index):
+    leading_punctuation, original_word, _ = word_parts[word_index]
+    lookup_word = lookup_words[word_index]
     if word_index < 2 or leading_punctuation or not lookup_word.isalpha():
         return False
-    if lookup_word in _SKIP_ACTIONS or lookup_word in _ACTION_MODIFIERS:
-        return False
-    if lookup_word.endswith(("maxx", "maxxed", "maxxing")):
+    if lookup_word in _SKIP_ACTIONS or lookup_word.endswith(("maxx", "maxxed", "maxxing")):
         return False
 
-    to_index = word_index - 1
-    modifier_start, modifier, modifier_end = word_parts[to_index]
-    if modifier.lower() in _ACTION_MODIFIERS and not (modifier_start or modifier_end):
-        to_index -= 1
-    if to_index < 1:
+    cue_index = word_index - 1
+    while cue_index > 0 and lookup_words[cue_index] in _ACTION_MODIFIERS:
+        if not _phrase_continues(word_parts, cue_index):
+            return False
+        cue_index -= 1
+    if cue_index < 1 or not _phrase_continues(word_parts, cue_index - 1):
         return False
 
-    _, cue, cue_end = word_parts[to_index - 1]
-    to_start, to_word, to_end = word_parts[to_index]
-    return (
-        cue.lower() in _ACTION_CUES
-        and to_word.lower() == "to"
-        and not (cue_end or to_start or to_end)
-    )
+    if not _phrase_continues(word_parts, cue_index):
+        return False
+    cue = lookup_words[cue_index]
+    previous_word = lookup_words[cue_index - 1]
+    return cue == "to" and previous_word in _ACTION_CUES
 
 
 def _slot_swap(words, original_words, next_word):
@@ -299,7 +301,7 @@ def translate_sentence(text):
         leading_punctuation, word, trailing_punctuation = word_parts[word_index]
         replacement, matched_word_count = _find_swap(word_parts, lookup_words, word_index)
 
-        if replacement is None and _can_maxx_action(word_parts, word_index, lookup_words[word_index]):
+        if replacement is None and _can_maxx_action(word_parts, lookup_words, word_index):
             replacement = lookup_words[word_index] + "maxx"
 
         if replacement is not None:
