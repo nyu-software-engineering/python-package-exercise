@@ -2,7 +2,6 @@ from ascend import translator
 
 
 class Tests:
-
     def test_swaps_multiple_words_and_phrases(self):
         assert translator.translate_sentence("I worked out, then studied.") == (
             "I gymmaxxed, then studymaxxed."
@@ -33,7 +32,8 @@ class Tests:
         assert translator.translate_sentence('“Worked out?!” (Studied.)') == (
             '“Gymmaxxed?!” (Studymaxxed.)'
         )
-        assert translator.translate_sentence("It’s over...") == "Its so over..."
+        assert translator.translate_sentence("It’s over...") == "Its jover..."
+        assert translator.translate_sentence("It's so over!") == "Its jover!"
         assert translator.translate_sentence("I worked, out and understudied.") == (
             "I worked, out and understudied."
         )
@@ -44,6 +44,61 @@ class Tests:
         )
         assert translator.translate_sentence("Everything is, ruined.") == (
             "Everything is, ruined."
+        )
+        assert translator.translate_sentence("We’re done for, but I studied.") == (
+            "Its jover for us, but I studymaxxed."
+        )
+
+    def test_swaps_meme_slang_in_context(self):
+        assert translator.translate_sentence("That's wishful thinking, basement dweller.") == (
+            "That's copium, chud."
+        )
+        assert translator.translate_sentence('She asked what "femoid" means.') == (
+            'She asked what "foid" means.'
+        )
+        assert translator.translate_sentence("She is an average person.") == (
+            "She is a normie."
+        )
+        assert translator.translate_sentence("Good news, I was just pretending.") == (
+            "Lifefuel, I was just larping."
+        )
+        assert translator.translate_sentence("The woman left early.") == "The woman left early."
+
+    def test_creates_slang_for_unfamiliar_actions(self):
+        assert translator.translate_sentence("I'm trying to cook dinner.") == (
+            "I'm trying to cookmaxx dinner."
+        )
+        assert translator.translate_sentence("Do you want to nap?") == "Do you want to napmaxx?"
+        assert translator.translate_sentence("Try to budget!") == "Try to budgetmaxx!"
+
+    def test_translates_everyday_phrasing(self):
+        assert translator.translate_sentence("I got better, but she did better than me.") == (
+            "I ascended, but she mogged me."
+        )
+        assert translator.translate_sentence("I need to study for the test. I'm screwed.") == (
+            "I need to studymaxx for the test. Its jover for me."
+        )
+        assert translator.translate_sentence("I messed up. He was making stuff up.") == (
+            "I fumbled. He was larping."
+        )
+        assert translator.translate_sentence("I did better than expected.") == (
+            "I did better than expected."
+        )
+
+    def test_maxx_rule_skips_one_common_modifier(self):
+        assert translator.translate_sentence("I'm trying to quietly leave the room.") == (
+            "I'm trying to quietly leavemaxx the room."
+        )
+        assert translator.translate_sentence("I want to quickly work out.") == (
+            "I want to quickly gymmaxx."
+        )
+
+    def test_leaves_context_and_already_maxxed_words_intact(self):
+        assert translator.translate_sentence("I want to gymmaxx before my chemistry lab.") == (
+            "I want to gymmaxx before my chemistry lab."
+        )
+        assert translator.translate_sentence("I studied and tried to be honest.") == (
+            "I studymaxxed and tried to be honest."
         )
 
     def test_unmatched_input_stays_exactly_as_written(self):
@@ -61,26 +116,3 @@ class Tests:
         assert translator.translate_sentence("   \t\n") is None
         assert translator.translate_sentence(None) is None
         assert translator.translate_sentence(["worked out"]) is None
-
-    def test_creates_slang_for_unfamiliar_actions(self):
-        assert translator.translate_sentence("I'm trying to cook dinner.") == (
-            "I'm trying to cookmaxx dinner."
-        )
-        assert translator.translate_sentence("Do you want to nap?") == "Do you want to napmaxx?"
-        assert translator.translate_sentence("Try to budget!") == "Try to budgetmaxx!"
-
-    def test_maxx_rule_skips_one_common_modifier(self):
-        assert translator.translate_sentence("I'm trying to quietly leave the room.") == (
-            "I'm trying to quietly leavemaxx the room."
-        )
-        assert translator.translate_sentence("I want to quickly work out.") == (
-            "I want to quickly gymmaxx."
-        )
-
-    def test_leaves_context_and_already_maxxed_words_intact(self):
-        assert translator.translate_sentence("I want to gymmaxx before my chemistry lab.") == (
-            "I want to gymmaxx before my chemistry lab."
-        )
-        assert translator.translate_sentence("I studied and tried to be honest.") == (
-            "I studymaxxed and tried to be honest."
-        )
