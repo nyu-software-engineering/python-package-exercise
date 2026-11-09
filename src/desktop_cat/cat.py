@@ -71,9 +71,6 @@ class Cat(QLabel):
     def mouseReleaseEvent(self, event):
         self.drag_position = None
 
-    def run(self):
-        self.app.exec()
-
     def set_mood(self, mood):
         raise NotImplementedError
 
@@ -95,4 +92,8 @@ class Cat(QLabel):
     def render(self):
         raise NotImplementedError
 
-    
+def run():
+    app = QApplication.instance()
+
+    if app is not None:
+        app.exec()
