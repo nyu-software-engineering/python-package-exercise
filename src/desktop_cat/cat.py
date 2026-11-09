@@ -3,6 +3,7 @@ from PySide6.QtWidgets import QApplication, QLabel
 from PySide6.QtGui import QPixmap
 from PySide6.QtCore import Qt, QTimer
 from pathlib import Path
+import signal #Python default signals
 
 ASSETS = Path(__file__).parent / "assets"
 
@@ -145,4 +146,5 @@ def run():
     app = QApplication.instance()
 
     if app is not None:
+        signal.signal(signal.SIGINT, signal.SIG_DFL)
         app.exec()
