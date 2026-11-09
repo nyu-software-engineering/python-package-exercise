@@ -2,14 +2,10 @@
 
 import importlib
 from datetime import date, datetime, timedelta
-
 import pytest
-
 from cosmicly.compare_planets import compare_planets, earth_age
 
-# The module itself, so its teammate functions can be swapped for fakes.
 COMPARE_MODULE = importlib.import_module("cosmicly.compare_planets")
-
 
 def days_ago(days: int) -> date:
     """Return the date that was the given number of days before today."""
