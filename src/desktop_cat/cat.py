@@ -1,8 +1,9 @@
 import random
 # Defines the states up front so everyone builds off of the same attributes/methods
 
-MOODS = ("happy", "sad", "angry", "tired", "hungry")
+MOODS = ("happy", "sad", "angry", "tired", "hungry", "annoyed")
 FOODS = ("fish", "milk", "kibble", "canned food", "mouse")
+PET_AREAS = ("head", "back", "belly", "tail", "paws")
 
 
 class Cat:
@@ -42,10 +43,43 @@ class Cat:
                 self.mood = "sad"
                 reaction = f"{self.name} did not like the {food}."
         self.hunger = max(self.hunger-hungerchange, 0)
+        self.last_action = "eating"
         return reaction
 
-    def pet(self, times=1):
-        raise NotImplementedError
+    def pet(self, area, times=1):
+        reaction = ""
+        area = area.strip().lower()
+        if area not in PET_AREAS:
+            raise ValueError(f"Invalid petting area: {area}")
+        if times <= 0:
+            raise ValueError("Times must be greater than 0")
+        self.times_petted += times
+        self.last_action = "petted"
+        if area in ("belly", "paws"):
+            if times >= 3:
+                if self.mood == "annoyed":
+                    self.mood = "angry"
+                    reaction = f"{self.name} is angry after being bothered so much!"
+                else:
+                    self.mood = "annoyed"
+                    reaction = f"{self.name} gets annoyed when you pet its {area}."
+            else:
+                self.mood = "happy"
+                reaction = f"{self.name} lets you pet its {area}."
+        else:
+            if times >= 6:
+                if self.mood == "annoyed":
+                    self.mood = "angry"
+                    reaction = f"{self.name} is angry after being bothered so much!"
+                else:
+                    self.mood = "annoyed"
+                    reaction = f"{self.name} gets tired of being pet on its {area}."
+            else:
+                self.mood = "happy"
+                reaction = f"{self.name} purrs and enjoys the {area} pets."
+        return reaction
+            
+
 
     def status(self, long=False):
         summary = f"{self.name} is feeling {self.mood}."
