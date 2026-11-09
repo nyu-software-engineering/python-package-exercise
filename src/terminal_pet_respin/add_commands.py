@@ -1,4 +1,4 @@
-from get_stage import get_stage
+from .get_stage import get_stage
 
 
 def add_commands(pet, count=1):
@@ -12,7 +12,7 @@ def add_commands(pet, count=1):
         The same pet dictionary, with commands_run and stage updated.
 
     Example:
-        >>> from create_egg import create_egg
+        >>> from terminal_pet_respin import add_commands, create_egg
         >>> pet = create_egg("Bob", hatch_at=10)
         >>> pet = add_commands(pet, 5)
         >>> pet["commands_run"]
