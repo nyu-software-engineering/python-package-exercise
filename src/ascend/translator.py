@@ -36,6 +36,9 @@ _IDIOM_SWAPS = {
     "proud of": "mirin",
     "got rejected": "got blackpilled",
     "mihir": "HTN",
+    "hit the books": "studymaxx",
+    "call it a day": "log off",
+    "on top of the world": "peak aura",
 }
 _END_PHRASE_SWAPS = {"the best": "peak", "the worst": "brutal"}
 

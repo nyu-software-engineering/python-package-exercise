@@ -294,3 +294,10 @@ class Tests:
         assert translator.translate_sentence("mihir is a good guy") == "HTN is a good guy"
         assert translator.translate_sentence("mihir is a bad guy") == "HTN is a bad guy"
         assert translator.translate_sentence("mihir is a good guy") == "HTN is a good guy"
+
+    def test_everyday_idioms(self):
+        assert translator.translate_sentence("I hit the books.") == "I studymaxx."
+        assert translator.translate_sentence("Call it a day.") == "Log off."
+        assert translator.translate_sentence("She is on top of the world.") == "She is peak aura."
+        assert translator.translate_sentence("I'm on top of the world.") == "I'm peak aura."
+        assert translator.translate_sentence("We're on top of the world.") == "We're peak aura."
