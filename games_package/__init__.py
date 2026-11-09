@@ -15,6 +15,14 @@ from games_package.hangman import (
     check_game_status
 )
 
+from games_package.wordle import (
+    _is_valid_word,
+    _choose_word,
+    _score_guess,
+    _format_feedback,
+    play_wordle
+)
+
 __all__ = [
     "create_board",
     "new_piece",
@@ -26,5 +34,10 @@ __all__ = [
     "choose_word",
     "check_guess",
     "display_word",
-    "check_game_status"
+    "check_game_status",
+    "_is_valid_word",
+    "_choose_word",
+    "_score_guess",
+    "_format_feedback",
+    "play_wordle"
 ]
