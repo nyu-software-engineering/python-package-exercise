@@ -168,9 +168,10 @@ def test_no_seed_preserves_the_original_study_description():
     )
 
 
-def test_seed_does_not_change_global_random_state():
+@pytest.mark.parametrize("title", ["Study math", "Go swimming"])
+def test_seed_does_not_change_global_random_state(title):
     state = random.getstate()
-    generate_fantasy_description("Study math", seed=7)
+    generate_fantasy_description(title, seed=7)
 
     assert random.getstate() == state
 
@@ -178,7 +179,6 @@ def test_seed_does_not_change_global_random_state():
 @pytest.mark.parametrize(
     ("title", "expected"),
     [
-        ("Go swimming", "Train for the Royal Tournament"),
         ("Do laundry", "Restore Order to the Kingdom"),
         ("Water the plants", "Embark on a New Quest"),
     ],
@@ -194,7 +194,46 @@ def test_seed_preserves_study_priority():
 
 
 @pytest.mark.parametrize("seed", [True, False, "7", 7.5, [], {}])
-@pytest.mark.parametrize("title", ["Study math", "Water the plants"])
+@pytest.mark.parametrize("title", ["Study math", "Go swimming", "Water the plants"])
 def test_invalid_seeds_are_rejected(title, seed):
     with pytest.raises(TypeError, match="seed must be an integer or None"):
         generate_fantasy_description(title, seed=seed)
+
+
+@pytest.mark.parametrize("seed", [0, 7, -10, 2**64])
+def test_seeded_exercise_descriptions_are_repeatable(seed):
+    first = generate_fantasy_description("Go swimming", seed=seed)
+    generate_fantasy_description("Study math", seed=seed + 1)
+    generate_fantasy_description("Go swimming", seed=seed + 1)
+
+    assert generate_fantasy_description("Go swimming", seed=seed) == first
+    assert generate_fantasy_description("  GO SWIMMING!  ", seed=seed) == first
+
+
+def test_seeds_offer_multiple_exercise_templates():
+    descriptions = {
+        generate_fantasy_description("Go swimming", seed=seed)
+        for seed in range(20)
+    }
+
+    assert len(descriptions) > 1
+    assert descriptions <= {
+        "Train for the Royal Tournament",
+        "Conquer the Knight's Endurance Trial",
+        "Prepare for the Dragon's Challenge",
+    }
+
+
+def test_no_seed_preserves_the_original_exercise_description():
+    assert generate_fantasy_description("Go swimming") == "Train for the Royal Tournament"
+    assert (
+        generate_fantasy_description("Go swimming", seed=None)
+        == "Train for the Royal Tournament"
+    )
+
+
+def test_seed_preserves_exercise_priority_over_chores():
+    expected = generate_fantasy_description("Workout", seed=7)
+
+    assert generate_fantasy_description("Workout then do laundry", seed=7) == expected
+    assert generate_fantasy_description("Do laundry then workout", seed=7) == expected
