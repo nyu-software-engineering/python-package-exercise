@@ -46,17 +46,23 @@ _VERB_BASES = {
     "make stuff up": "larp",
     "fake height": "heightfraud",
     "win the game": "mog the whole lobby",
+    "go to the gym": "gymmaxx",
+    "eat healthy": "dietmaxx",
+    "procrastinate": "rot",
 }
 _OUTCOME_BASES = {"win": "mog", "lose": "fumble", "fail": "fumble", "lie": "fraud"}
 _OUTCOME_OBJECTS = ("game", "match", "race", "round", "test", "exam", "class", "money")
 
 _VERB_FORM_EXCEPTIONS = {
+    "eat": ("eats", "ate", "eating"),
     "get": ("gets", "got", "getting"),
+    "go": ("goes", "went", "going"),
     "lie": ("lies", "lied", "lying"),
     "lose": ("loses", "lost", "losing"),
     "make": ("makes", "made", "making"),
     "mog": ("mogs", "mogged", "mogging"),
     "plan": ("plans", "planned", "planning"),
+    "rot": ("rots", "rotted", "rotting"),
     "study": ("studies", "studied", "studying"),
     "try": ("tries", "tried", "trying"),
     "win": ("wins", "won", "winning"),

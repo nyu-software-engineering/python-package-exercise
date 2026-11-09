@@ -224,6 +224,13 @@ class Tests:
         assert translator.translate_sentence("It rained, so I left.") == "It rained, so I left."
 
     def test_leaves_light_verbs_and_translates_the_activity(self):
+        assert translator.translate_sentence("I want to go to the gym.") == "I want to gymmaxx."
+        assert translator.translate_sentence("I will start eating healthy.") == (
+            "I will start dietmaxxing."
+        )
+        assert translator.translate_sentence("I need to stop procrastinating.") == (
+            "I need to stop rotting."
+        )
         assert translator.translate_sentence("I need to learn how to cook. I want to hang out.") == (
             "I need to learn how to cook. I want to hang out."
         )
