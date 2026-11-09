@@ -21,6 +21,7 @@ def test_update_hunger_zero_typical_and_clamped():
         (1.5, TypeError),
         (None, TypeError),
         (-1, ValueError),
+        ("3", TypeError),
     ],
 )
 def test_update_hunger_rejects_invalid_counts(count, error):
