@@ -23,8 +23,16 @@ class Cat:
     def pet(self, times=1):
         raise NotImplementedError
 
-    def status(self):
-        raise NotImplementedError
+    def status(self, long=False):
+        summary = f"{self.name} is feeling {self.mood}."
+        if long:
+            eaten = sum(self.foods_eaten.values())
+            summary += (
+                f" Hunger: {self.hunger}/10."
+                f" Petted {self.times_petted} times."
+                f" Meals eaten: {eaten}."
+            )
+        return summary
 
     def set_name(self, name):
         raise NotImplementedError
