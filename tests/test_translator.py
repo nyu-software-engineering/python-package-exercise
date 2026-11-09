@@ -97,9 +97,13 @@ class Tests:
         )
 
     def test_fills_slots_from_the_sentence(self):
+        assert translator.translate_sentence("She did better than Maya after they messed up.") == (
+            "She mogged Maya after they fumbled."
+        )
         assert translator.translate_sentence("She did better than everyone.") == (
             "She mogged the whole lobby."
         )
+        assert translator.translate_sentence("Maya messed up.") == "Maya fumbled."
         assert translator.translate_sentence("She did better than my brother.") == (
             "She mogged my brother."
         )

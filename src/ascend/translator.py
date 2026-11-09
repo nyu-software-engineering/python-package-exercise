@@ -31,8 +31,6 @@ _IDIOM_SWAPS = {
     "normal person": "normie",
     "very handsome guy": "chad",
     "it's so over": "its jover",
-    "i messed up": "i fumbled",
-    "we messed up": "we fumbled",
     "lying about my height": "heightfrauding",
 }
 
@@ -196,6 +194,11 @@ def _can_maxx_action(word_parts, word_index, lookup_word):
 
 
 def _slot_swap(words, original_words, next_word):
+    first_word = original_words[0]
+    if words[-2:] == ["messed", "up"] and _is_person_subject(first_word):
+        modifiers = words[1:-2]
+        if not modifiers:
+            return f"{first_word} fumbled"
     if words[:3] == ["did", "better", "than"]:
         target = _comparison_target(words[3:], original_words[3:], next_word)
         if target is not None:
