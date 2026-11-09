@@ -18,4 +18,4 @@ Repository = "https://github.com/software-students-fall2026/python-package-exerc
 
 [tool.setuptools]
 # Preserve existing imports and exclude instructor automation from the package.
-py-modules = ["quest_descriptions", "quest_manager"]
+py-modules = ["quest_descriptions", "quest_manager", "progression"]
