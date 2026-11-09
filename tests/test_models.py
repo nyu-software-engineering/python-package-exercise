@@ -1,25 +1,24 @@
-from ascend.models import pick_model
-
+from ascend import models
 
 def test_pick_model_valid_categories():
-    assert pick_model("runway") == "Bella Hadid"
-    assert pick_model("editorial") == "Vittoria Ceretti"
-    assert pick_model("classic") == "Kate Moss"
-    assert pick_model("angel") == "Adriana Lima"
-    assert pick_model("high-fashion") == "Anok Yai"
-
+    assert models.pick_model("runway") == "Bella Hadid"
+    assert models.pick_model("editorial") == "Vittoria Ceretti"
+    assert models.pick_model("classic") == "Kate Moss"
+    assert models.pick_model("angel") == "Adriana Lima"
+    assert models.pick_model("high-fashion") == "Anok Yai"
 
 def test_pick_model_invalid_category():
     try:
-        pick_model("unknown")
-        assert False, "Expected ValueError"
+        models.pick_model("unknown")
     except ValueError:
         pass
-
+    else:
+        assert False, "Expected ValueError"
 
 def test_pick_model_invalid_type():
     try:
-        pick_model(123)
-        assert False, "Expected ValueError"
+        models.pick_model(123)
     except ValueError:
         pass
+    else:
+        assert False, "Expected ValueError"
