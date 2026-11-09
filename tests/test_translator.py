@@ -181,7 +181,7 @@ class Tests:
             "They speedmogged my brother."
         )
         assert translator.translate_sentence("She is a lot smarter than my sister.") == (
-            "She really IQmogs my sister."
+            "She giga IQmogs my sister."
         )
         assert translator.translate_sentence("She is better than everyone.") == (
             "She mogs the whole lobby."
@@ -201,10 +201,10 @@ class Tests:
 
     def test_translates_adjectives_and_their_modifiers(self):
         assert translator.translate_sentence("I'm so tired. Really good. So annoying.") == (
-            "I'm so cooked. Really based. So brutal."
+            "I'm giga cooked. Legit based. Giga brutal."
         )
         assert translator.translate_sentence("She looks very confident. I'm so happy.") == (
-            "She looks very low cortisol. I'm so lifefueled."
+            "She looks unironically low cortisol. I'm giga lifefueled."
         )
         assert translator.translate_sentence("That's really good news.") == "That's really lifefuel."
         assert translator.translate_sentence("It rained, so I left.") == "It rained, so I left."

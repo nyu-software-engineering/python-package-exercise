@@ -79,7 +79,11 @@ _ADJECTIVE_SWAPS = {
 }
 _ADJECTIVE_CUES = ("feel", "feels", "felt", "look", "looks", "looked", "seem", "seems", "seemed")
 
-_INTENSIFIERS = ("really", "so", "very")
+_INTENSIFIER_SWAPS = {
+    "really": "legit", "very": "unironically", "so": "giga", "super": "giga",
+    "extremely": "giga", "incredibly": "giga",
+}
+_INTENSIFIERS = tuple(_INTENSIFIER_SWAPS)
 
 _SUBJECT_PRONOUNS = ("i", "you", "he", "she", "it", "we", "they")
 _POSSESSIVE_SUBJECTS = {
@@ -314,7 +318,7 @@ def _comparative_swap(be_verb, words, original_words, next_word):
         mog_verb = _MOG_PRESENT
     elif be_verb in ("was", "were"):
         mog_verb = _MOG_PAST
-    emphasis = "really " if adjective_index else ""
+    emphasis = "giga " if adjective_index else ""
     return f"{emphasis}{dimension}{mog_verb} {target}"
 
 
@@ -381,8 +385,8 @@ def _adjective_swap(words, original_words, next_word):
     if words[0].replace("'", "") in _BE_CUES or words[0] in _ADJECTIVE_CUES:
         prefix.append(original_words[0])
         adjective_index += 1
-    if words[adjective_index] in _INTENSIFIERS:
-        prefix.append(original_words[adjective_index])
+    if words[adjective_index] in _INTENSIFIER_SWAPS:
+        prefix.append(_INTENSIFIER_SWAPS[words[adjective_index]])
         adjective_index += 1
     if adjective_index == len(words) - 1 and prefix:
         return " ".join(prefix + [_ADJECTIVE_SWAPS[adjective]])
