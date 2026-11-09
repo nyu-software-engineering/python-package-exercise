@@ -249,6 +249,15 @@ class Tests:
             "She IQmogged him. And richer than us."
         )
 
+    def test_translates_common_short_phrases(self):
+        assert translator.translate_sentence("I'm proud of you. That was the best.") == (
+            "I'm mirin you. That was peak."
+        )
+        assert translator.translate_sentence("I got rejected. My plans are ruined.") == (
+            "I got blackpilled. My plans are kirked."
+        )
+        assert translator.translate_sentence("I got the best score.") == "I got the best score."
+
     def test_preserves_all_caps_and_line_breaks(self):
         assert translator.translate_sentence("IT’S OVER") == "ITS JOVER"
         assert translator.translate_sentence("I STUDIED.\r\n\r\nIt's over.\nThe train arrived.") == (

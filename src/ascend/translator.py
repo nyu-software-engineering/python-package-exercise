@@ -25,6 +25,7 @@ _IDIOM_SWAPS = {
     "basement dwellers": "chuds",
     "wishful thinking": "copium",
     "good news": "lifefuel",
+    "great news": "lifefuel",
     "encouraging news": "hopefuel",
     "just pretending": "just larping",
     "an average person": "a normie",
@@ -32,7 +33,10 @@ _IDIOM_SWAPS = {
     "average people": "normies",
     "normal person": "normie",
     "very handsome guy": "chad",
+    "proud of": "mirin",
+    "got rejected": "got blackpilled",
 }
+_END_PHRASE_SWAPS = {"the best": "peak", "the worst": "brutal"}
 
 _VERB_BASES = {
     "study": "studymaxx",
@@ -506,7 +510,9 @@ def _find_swap(word_parts, lookup_words, start_index, previous_comparison_verb):
 
         if candidate is None and len(words) >= 2:
             next_word = _next_word_in_phrase(word_parts, lookup_words, end_index)
-            if len(words) >= 3:
+            if not next_word:
+                candidate = _END_PHRASE_SWAPS.get(phrase)
+            if candidate is None and len(words) >= 3:
                 candidate = _slot_swap(words, original_words, next_word)
             if candidate is None:
                 candidate, comparison_verb = _person_phrase_swap(
