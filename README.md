@@ -22,11 +22,65 @@ This can entail suggesting a looksmaxxing song, top tier supermodel, or even jus
 
 ## Installation
 
+To install Ascend from PyPI once it is published, run:
+
+```bash
+python -m pip install ascend-runitback
+```
+
+Ascend requires Python 3.13 or newer.
+
+After installation, you can import the package into your Python program:
+
+```python
+from ascend import models
+```
+
 ## Usage
 
 ### Title generation
 
+The `make_title(activity, outcome)` function generates a random looksmaxxing-style edit title based on an activity and its outcome.
+
+- `activity`: A non-empty string describing the activity, such as `"gym"` or `"study"`.
+- `outcome`: Must be `"win"`, `"loss"`, or `"grind"`.
+
+The function returns a randomly generated title as a string. It returns `None` if the inputs are invalid.
+
+```python
+from ascend import titles
+
+print(titles.make_title("gym", "win"))
+# Example output: "pov gymmaxxing brutal mog"
+
+print(titles.make_title("study", "grind"))
+# Example output: "studymaxxing update ascension pending"
+
+print(titles.make_title("gym", "invalid"))
+# Output: None
+```
+Results may vary because the function randomly selects phrases.
+
 ### Song selection
+
+The `pick_song(category)` function recommends a song based on the category you choose.
+
+- `category`: Must be `"gym"`, `"study"`, `"edit"`, `"chill"`, or `"BPCORE"`. Categories are case-sensitive.
+
+The function returns a tuple containing the song title and artist. It returns `None` if the category is invalid.
+
+```python
+from ascend import songs
+
+print(songs.pick_song("gym"))
+# Output: ('METAMORPHOSIS', 'INTERWORLD')
+
+print(songs.pick_song("study"))
+# Output: ('Memory Reboot', 'VØJ, Narvent')
+
+print(songs.pick_song("invalid"))
+# Output: None
+```
 
 ### Sentence translation
 
