@@ -11,14 +11,26 @@ def make_title(activity, outcome):
         "win": [
             "ascension confirmed",
             "brutal mog",
+            "halo activated",
+            "psl went up",
+            "chadlite unlocked",
+            "mog streak started",
         ],
         "loss": [
             "its over",
             "pure cope",
+            "never began",
+            "got mogged",
+            "brutal failo",
+            "psl dropped",
         ],
         "grind": [
             "ascension pending",
             "mogging in progress",
+            "softmaxxing arc",
+            "halo under construction",
+            "psl gains pending",
+            "mewing streak",
         ],
     }
 
