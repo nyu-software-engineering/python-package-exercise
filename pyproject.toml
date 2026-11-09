@@ -12,7 +12,7 @@ license = { file = "LICENSE" }
 dependencies = ["rich"]
 
 [project.scripts]
-pyDeciders = "pyDeciders.cli:main"
+decisions = "pyDeciders.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
