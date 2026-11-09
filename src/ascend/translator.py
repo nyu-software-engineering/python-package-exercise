@@ -13,6 +13,8 @@ _IDIOM_SWAPS = {
     "outshined everyone": "mogged the whole lobby",
     "beat everyone": "mogged the whole lobby",
     "it's over": "its jover",
+    "its over": "its jover",
+    "it is over": "its jover",
     "it's hopeless": "its jover",
     "i'm screwed": "its jover for me",
     "we're screwed": "its jover for us",
@@ -30,7 +32,6 @@ _IDIOM_SWAPS = {
     "average people": "normies",
     "normal person": "normie",
     "very handsome guy": "chad",
-    "it's so over": "its jover",
 }
 
 _VERB_BASES = {
@@ -54,6 +55,8 @@ _VERB_FORM_EXCEPTIONS = {
     "study": ("studies", "studied", "studying"),
 }
 _VERB_ALIASES = {"outshone": "outshined"}
+
+_INTENSIFIERS = ("really", "so", "very")
 
 _SUBJECT_PRONOUNS = ("i", "you", "he", "she", "it", "we", "they")
 _POSSESSIVE_SUBJECTS = {
@@ -198,10 +201,14 @@ def _can_maxx_action(word_parts, word_index, lookup_word):
 def _slot_swap(words, original_words, next_word):
     first_word = original_words[0]
     last_word = original_words[-1]
+    if words[-1] == "over" and words[-2] in _INTENSIFIERS:
+        return _IDIOM_SWAPS.get(" ".join(words[:-2] + ["over"]))
     if words[-2:] == ["messed", "up"] and _is_person_subject(first_word):
         modifiers = words[1:-2]
         if not modifiers:
             return f"{first_word} fumbled"
+        if len(modifiers) == 1 and modifiers[0] in _INTENSIFIERS:
+            return f"{first_word} {original_words[1]} fumbled"
     if words[:3] == ["did", "better", "than"]:
         target = _comparison_target(words[3:], original_words[3:], next_word)
         if target is not None:

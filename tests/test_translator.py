@@ -89,6 +89,9 @@ class Tests:
         assert translator.translate_sentence("She works out and makes excuses.") == (
             "She gymmaxxes and copes."
         )
+        assert translator.translate_sentence("We're getting better. It is over!") == (
+            "We're ascending. Its jover!"
+        )
         assert translator.translate_sentence("I study every night.") == "I studymaxx every night."
         assert translator.translate_sentence("Students study hard.") == "Students studymaxx hard."
         assert translator.translate_sentence("They outshone us.") == "They mogged us."
@@ -127,6 +130,10 @@ class Tests:
         assert translator.translate_sentence("I want to quickly work out.") == (
             "I want to quickly gymmaxx."
         )
+
+    def test_matches_idioms_and_slots_with_intensifiers(self):
+        assert translator.translate_sentence("It’s really over.") == "Its jover."
+        assert translator.translate_sentence("I really messed up.") == "I really fumbled."
 
     def test_leaves_context_and_already_maxxed_words_intact(self):
         assert translator.translate_sentence("I want to gymmaxx before my chemistry lab.") == (
