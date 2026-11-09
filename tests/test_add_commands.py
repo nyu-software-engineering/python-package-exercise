@@ -1,7 +1,6 @@
 import pytest
 
-from add_commands import add_commands
-from create_egg import create_egg
+from terminal_pet_respin import add_commands, create_egg
 
 
 def test_default_count():
