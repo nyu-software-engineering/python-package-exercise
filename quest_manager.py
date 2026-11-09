@@ -31,3 +31,20 @@ def get_quest(quests, quest_id):
             return quest
 
     raise KeyError(f"quest not found: {quest_id}")
+
+
+def delete_quest(quests, quest_id):
+    """Return a new list without the pending quest, leaving the input unchanged."""
+    quest = get_quest(quests, quest_id)
+    if quest.get("status") != "pending":
+        raise ValueError("only pending quests can be deleted")
+
+    result = []
+    for item in list_quests(quests):
+        if item.get("id") != quest_id:
+            result.append(item)
+
+    if len(result) != len(quests) - 1:
+        raise ValueError("quest IDs must be unique")
+
+    return result
