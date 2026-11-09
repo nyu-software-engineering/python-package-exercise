@@ -40,8 +40,10 @@ def test_invalid_food_raises_error():
 
 
 # Test that eating a food adds it to foods_eaten
-def test_eating_adds_to_foods_eaten():
+def test_eating_adds_to_foods_eaten(monkeypatch):
     cat = Cat()
+
+    monkeypatch.setattr("desktop_cat.cat.random.choice", lambda x: True)
     cat.feed("fish")
 
     assert "fish" in cat.foods_eaten
