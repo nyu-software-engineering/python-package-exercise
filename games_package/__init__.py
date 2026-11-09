@@ -23,6 +23,8 @@ from games_package.wordle import (
     play_wordle
 )
 
+from games_package.game_2048 import play_2048
+
 __all__ = [
     "create_board",
     "new_piece",
@@ -39,5 +41,6 @@ __all__ = [
     "_choose_word",
     "_score_guess",
     "_format_feedback",
-    "play_wordle"
+    "play_wordle",
+    "play_2048"
 ]
