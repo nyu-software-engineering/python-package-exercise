@@ -1,4 +1,4 @@
-from desktop_cat import Cat, MOODS
+from desktop_cat import Cat, MOODS, run
 
 
 def test_new_cat_defaults():
@@ -6,4 +6,4 @@ def test_new_cat_defaults():
     assert cat.name == "Whiskers"
     assert cat.mood == "happy"
     assert cat.mood in MOODS
-    cat.run() #begin window loop
+    run() #begin window loop
