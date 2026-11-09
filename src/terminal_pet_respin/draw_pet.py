@@ -1,4 +1,4 @@
-from get_stage import STAGES
+from .get_stage import STAGES
 
 _ART = {
     "egg": [
