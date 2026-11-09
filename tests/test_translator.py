@@ -94,6 +94,7 @@ class Tests:
         )
         assert translator.translate_sentence("I study every night.") == "I studymaxx every night."
         assert translator.translate_sentence("Students study hard.") == "Students studymaxx hard."
+        assert translator.translate_sentence("We should study more.") == "We should studymaxx more."
         assert translator.translate_sentence("They outshone us.") == "They mogged us."
         assert translator.translate_sentence("The study for the course is ready.") == (
             "The study for the course is ready."
@@ -123,6 +124,18 @@ class Tests:
             "I was agefrauding to her."
         )
 
+    def test_guesses_actions_from_cues(self):
+        assert translator.translate_sentence("I will laminate my notes. I'm gonna calibrate the telescope.") == (
+            "I will laminatemaxx my notes. I'm gonna calibratemaxx the telescope."
+        )
+        assert translator.translate_sentence("Will Rogers left the plan on my desk.") == (
+            "Will Rogers left the plan on my desk."
+        )
+        assert translator.translate_sentence("I’m going to cook dinner.") == "I’m going to cookmaxx dinner."
+        assert translator.translate_sentence("I'm going to London.") == "I'm going to London."
+        assert translator.translate_sentence("I have to study tonight.") == "I have to studymaxx tonight."
+        assert translator.translate_sentence("Im gonna cook.") == "Im gonna cookmaxx."
+
     def test_maxx_rule_preserves_modifiers(self):
         assert translator.translate_sentence("I'm trying to quietly leave the room.") == (
             "I'm trying to quietly leavemaxx the room."
@@ -130,8 +143,12 @@ class Tests:
         assert translator.translate_sentence("I want to quickly work out.") == (
             "I want to quickly gymmaxx."
         )
-        assert translator.translate_sentence("I want to always quietly leave.") == (
-            "I want to always quietly leavemaxx."
+        assert translator.translate_sentence("I will always remember this.") == (
+            "I will always remembermaxx this."
+        )
+        assert translator.translate_sentence("She will probably win.") == "She will probably winmaxx."
+        assert translator.translate_sentence("I will also still remember this.") == (
+            "I will also still remembermaxx this."
         )
 
     def test_matches_idioms_and_slots_with_intensifiers(self):

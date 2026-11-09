@@ -52,7 +52,9 @@ _VERB_FORM_EXCEPTIONS = {
     "lie": ("lies", "lied", "lying"),
     "make": ("makes", "made", "making"),
     "mog": ("mogs", "mogged", "mogging"),
+    "plan": ("plans", "planned", "planning"),
     "study": ("studies", "studied", "studying"),
+    "try": ("tries", "tried", "trying"),
 }
 _VERB_ALIASES = {"outshone": "outshined"}
 
@@ -77,6 +79,14 @@ _NONPERSON_WORDS = (
 _BE_VERBS = ("am", "is", "are", "was", "were")
 _SLOT_FOLLOWERS = ("again", "and", "before", "but", "because", "since", "to", "today", "yesterday")
 _COMPARISON_FOLLOWERS = _SLOT_FOLLOWERS + ("at", "in", "on", "now", "too", "though")
+
+_BE_CONTRACTIONS = {
+    "im": ("i", "am"), "youre": ("you", "are"), "hes": ("he", "is"),
+    "shes": ("she", "is"), "its": ("it", "is"), "were": ("we", "are"),
+    "theyre": ("they", "are"),
+}
+_BE_CUES = _BE_VERBS + tuple(cue for cue in _BE_CONTRACTIONS if cue not in _BE_VERBS)
+_DESTINATIONS = ("home", "school", "work", "bed", "class", "college", "church", "town", "dinner")
 
 _ACTION_MODIFIERS = (
     "always", "probably", "also", "still", "often", "usually", "sometimes",
@@ -116,10 +126,8 @@ _LIE_FORMS = _verb_forms("lie")
 _FRAUD_FORMS = _verb_forms("fraud")
 _MOG_PAST = _verb_forms("mog")[2]
 _ACTION_CUES = (
-    "try", "tries", "tried", "trying",
-    "want", "wants", "wanted",
-    "need", "needs", "needed",
-    "plan", "plans", "planned", "planning",
+    _verb_forms("try") + _verb_forms("want") + _verb_forms("need") + _verb_forms("plan")
+    + _verb_forms("decide") + ("have", "has", "had")
 )
 
 
@@ -197,7 +205,19 @@ def _can_maxx_action(word_parts, lookup_words, word_index):
         return False
     cue = lookup_words[cue_index]
     previous_word = lookup_words[cue_index - 1]
-    return cue == "to" and previous_word in _ACTION_CUES
+    if cue == "to":
+        if previous_word == "going":
+            return (
+                cue_index >= 2 and _phrase_continues(word_parts, cue_index - 2)
+                and lookup_words[cue_index - 2].replace("'", "") in _BE_CUES
+                and original_word.islower() and lookup_word not in _DESTINATIONS
+            )
+        return previous_word in _ACTION_CUES
+    if cue in ("will", "should"):
+        return previous_word in _SUBJECT_PRONOUNS or previous_word in _PERSON_NOUNS
+    if cue == "gonna":
+        return previous_word.replace("'", "") in _BE_CUES
+    return False
 
 
 def _slot_swap(words, original_words, next_word):
