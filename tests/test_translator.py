@@ -85,6 +85,17 @@ class Tests:
             "I did better than expected."
         )
 
+    def test_preserves_verb_forms_and_nouns(self):
+        assert translator.translate_sentence("She works out and makes excuses.") == (
+            "She gymmaxxes and copes."
+        )
+        assert translator.translate_sentence("I study every night.") == "I studymaxx every night."
+        assert translator.translate_sentence("Students study hard.") == "Students studymaxx hard."
+        assert translator.translate_sentence("They outshone us.") == "They mogged us."
+        assert translator.translate_sentence("The study for the course is ready.") == (
+            "The study for the course is ready."
+        )
+
     def test_maxx_rule_skips_one_common_modifier(self):
         assert translator.translate_sentence("I'm trying to quietly leave the room.") == (
             "I'm trying to quietly leavemaxx the room."
