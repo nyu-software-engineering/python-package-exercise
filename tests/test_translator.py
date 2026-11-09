@@ -61,3 +61,26 @@ class Tests:
         assert translator.translate_sentence("   \t\n") is None
         assert translator.translate_sentence(None) is None
         assert translator.translate_sentence(["worked out"]) is None
+
+    def test_creates_slang_for_unfamiliar_actions(self):
+        assert translator.translate_sentence("I'm trying to cook dinner.") == (
+            "I'm trying to cookmaxx dinner."
+        )
+        assert translator.translate_sentence("Do you want to nap?") == "Do you want to napmaxx?"
+        assert translator.translate_sentence("Try to budget!") == "Try to budgetmaxx!"
+
+    def test_maxx_rule_skips_one_common_modifier(self):
+        assert translator.translate_sentence("I'm trying to quietly leave the room.") == (
+            "I'm trying to quietly leavemaxx the room."
+        )
+        assert translator.translate_sentence("I want to quickly work out.") == (
+            "I want to quickly gymmaxx."
+        )
+
+    def test_leaves_context_and_already_maxxed_words_intact(self):
+        assert translator.translate_sentence("I want to gymmaxx before my chemistry lab.") == (
+            "I want to gymmaxx before my chemistry lab."
+        )
+        assert translator.translate_sentence("I studied and tried to be honest.") == (
+            "I studymaxxed and tried to be honest."
+        )

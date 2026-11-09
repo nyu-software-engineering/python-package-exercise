@@ -36,12 +36,47 @@ _PHRASE_SWAPS = {
 }
 _MAX_PHRASE_WORDS = 3
 
+_ACTION_CUES = (
+    "try", "tries", "tried", "trying",
+    "want", "wants", "wanted",
+    "need", "needs", "needed",
+    "plan", "plans", "planned", "planning",
+)
+_ACTION_MODIFIERS = ("carefully", "just", "quickly", "quietly", "really", "slowly")
+_SKIP_ACTIONS = ("be", "have", "do", "not", "never")
+
+
 def _split_punctuation(token):
     without_leading = token.lstrip(_PUNCTUATION)
     word = without_leading.rstrip(_PUNCTUATION)
     leading_punctuation = token[:len(token) - len(without_leading)]
     trailing_punctuation = without_leading[len(word):]
     return leading_punctuation, word, trailing_punctuation
+
+
+def _can_maxx_action(word_parts, word_index, lookup_word):
+    leading_punctuation, _, _ = word_parts[word_index]
+    if word_index < 2 or leading_punctuation or not lookup_word.isalpha():
+        return False
+    if lookup_word in _SKIP_ACTIONS or lookup_word in _ACTION_MODIFIERS:
+        return False
+    if lookup_word.endswith(("maxx", "maxxed", "maxxing")):
+        return False
+
+    to_index = word_index - 1
+    modifier_start, modifier, modifier_end = word_parts[to_index]
+    if modifier.lower() in _ACTION_MODIFIERS and not (modifier_start or modifier_end):
+        to_index -= 1
+    if to_index < 1:
+        return False
+
+    _, cue, cue_end = word_parts[to_index - 1]
+    to_start, to_word, to_end = word_parts[to_index]
+    return (
+        cue.lower() in _ACTION_CUES
+        and to_word.lower() == "to"
+        and not (cue_end or to_start or to_end)
+    )
 
 
 def translate_sentence(text):
@@ -79,6 +114,9 @@ def translate_sentence(text):
 
         if replacement is None and lookup_word in _WORD_SWAPS:
             replacement = _WORD_SWAPS[lookup_word]
+
+        if replacement is None and _can_maxx_action(word_parts, word_index, lookup_word):
+            replacement = f"{lookup_word}maxx"
 
         if replacement is not None:
             if word[0].isupper():
