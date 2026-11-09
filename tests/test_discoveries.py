@@ -1,7 +1,6 @@
 import pytest
 from pyfakefacts.discoveries import generate_discovery
 
-
 def test_valid_discovery():
     result = generate_discovery("physics", 5)
 
