@@ -1,3 +1,5 @@
+[![Test and build](https://github.com/software-students-fall2026/python-package-exercise-Chipotle/actions/workflows/ci.yml/badge.svg?branch=main&event=push)](https://github.com/software-students-fall2026/python-package-exercise-Chipotle/actions/workflows/ci.yml)
+
 # Python Package Exercise
 
 An exercise to create a Python package, build it, test it, distribute it, and use it. See [instructions](./instructions.md) for details.
@@ -104,3 +106,15 @@ Expected output includes `Pending quests: 1` and ends with `Remaining quests: 0`
 Extend the example and module list in `pyproject.toml` as public functions and
 modules are added. More title-editing details are in the
 [integration notes](docs/quest-description-integration.md).
+
+## Automated checks
+
+The [Test and build workflow](.github/workflows/ci.yml) runs on every pull request,
+including PRs targeting feature branches, and on pushes to `main` or `master`.
+It can also be run manually from GitHub Actions once available on the default branch.
+Each job uses Python 3.13 or 3.14 to install locked dependencies, run pytest,
+and build the source distribution and wheel. It then reruns pytest and the usage
+example from a fresh wheel installation outside the source checkout, catching
+missing packaged modules as well as source failures. A failed step fails that job.
+The badge at the top shows the latest `main` push result. The instructor's
+separate event-logging workflow is unchanged.
