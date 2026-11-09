@@ -26,6 +26,11 @@ _EXERCISE_TEMPLATES = (
 _CHORE_KEYWORDS = frozenset(
     {"laundry", "dishes", "vacuum", "vacuuming", "sweep", "sweeping", "mop", "mopping"}
 )
+_CHORE_TEMPLATES = (
+    "Restore Order to the Kingdom",
+    "Polish the Royal Castle",
+    "Clear the Goblin Hideout",
+)
 _CLEANING_ACTIONS = frozenset({"clean", "cleaning", "tidy", "tidying"})
 _HOUSEHOLD_PLACES = frozenset(
     {"room", "rooms", "bedroom", "bathroom", "kitchen", "house", "home", "garage"}
@@ -42,10 +47,9 @@ def generate_fantasy_description(title: str, *, seed: int | None = None) -> str:
     a cleaning action alone does not match chores (e.g. "clean code").
     Other nonblank titles, including other languages, get a generic fallback.
     Without a seed, the original default descriptions are preserved.
-    An integer seed selects a repeatable study or exercise template using a
+    An integer seed selects a repeatable study, exercise, or chore template using a
     private random generator, without changing Python's global random state.
-    Chores and fallback keep one template. Different seeds may select the same
-    template.
+    The fallback keeps one template. Different seeds may select the same template.
     No AI service is used.
 
     Example: ``generate_fantasy_description("Study math", seed=7)``.
@@ -67,16 +71,48 @@ def generate_fantasy_description(title: str, *, seed: int | None = None) -> str:
 
     words = set(re.findall(r"\b[a-z]+\b", title.casefold()))
     if words & _STUDY_KEYWORDS:
-        if seed is None:
-            return _STUDY_TEMPLATES[0]
-        return random.Random(seed).choice(_STUDY_TEMPLATES)
-    if words & _EXERCISE_KEYWORDS:
-        if seed is None:
-            return _EXERCISE_TEMPLATES[0]
-        return random.Random(seed).choice(_EXERCISE_TEMPLATES)
-    if words & _CHORE_KEYWORDS or (
+        templates = _STUDY_TEMPLATES
+    elif words & _EXERCISE_KEYWORDS:
+        templates = _EXERCISE_TEMPLATES
+    elif words & _CHORE_KEYWORDS or (
         words & _CLEANING_ACTIONS and words & _HOUSEHOLD_PLACES
     ):
-        return "Restore Order to the Kingdom"
+        templates = _CHORE_TEMPLATES
+    else:
+        return "Embark on a New Quest"
 
-    return "Embark on a New Quest"
+    if seed is None:
+        return templates[0]
+    return random.Random(seed).choice(templates)
+
+
+def rename_pending_quest(quest: dict, new_title: str, *, seed: int | None = None) -> dict:
+    """Return a pending quest copy with its title and fantasy description updated.
+
+    The caller supplies a quest dictionary and stores the returned copy after
+    success. This function does not write to a database or mutate the input.
+    It preserves the supplied title exactly, including case and whitespace.
+    All other fields (ID, duration, XP, completion time, etc.) are preserved.
+    This is a shallow copy, consistent with list_quests; nested metadata is
+    shared and should not be mutated through the result.
+
+    Only status="pending" is editable. Missing, completed, and unknown statuses
+    are rejected. Title and seed validation follows generate_fantasy_description.
+    Pass the same seed again to reproduce template selection; seeds are not
+    stored in the quest and omitting one selects the default template.
+
+    Raises:
+        TypeError: If quest is not a dictionary, title is not a string, or seed
+            is neither an integer (excluding booleans) nor None.
+        ValueError: If the quest is not pending or new_title is blank.
+    """
+    if not isinstance(quest, dict):
+        raise TypeError("quest must be a dictionary")
+    if quest.get("status") != "pending":
+        raise ValueError("only pending quests can be renamed")
+
+    description = generate_fantasy_description(new_title, seed=seed)
+    updated = quest.copy()
+    updated["title"] = new_title
+    updated["fantasyDescription"] = description
+    return updated

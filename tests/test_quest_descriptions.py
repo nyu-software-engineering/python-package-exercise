@@ -168,7 +168,7 @@ def test_no_seed_preserves_the_original_study_description():
     )
 
 
-@pytest.mark.parametrize("title", ["Study math", "Go swimming"])
+@pytest.mark.parametrize("title", ["Study math", "Go swimming", "Do laundry"])
 def test_seed_does_not_change_global_random_state(title):
     state = random.getstate()
     generate_fantasy_description(title, seed=7)
@@ -176,15 +176,11 @@ def test_seed_does_not_change_global_random_state(title):
     assert random.getstate() == state
 
 
-@pytest.mark.parametrize(
-    ("title", "expected"),
-    [
-        ("Do laundry", "Restore Order to the Kingdom"),
-        ("Water the plants", "Embark on a New Quest"),
-    ],
-)
-def test_seed_preserves_other_categories(title, expected):
-    assert generate_fantasy_description(title, seed=7) == expected
+def test_seed_preserves_the_generic_fallback():
+    assert (
+        generate_fantasy_description("Water the plants", seed=7)
+        == "Embark on a New Quest"
+    )
 
 
 def test_seed_preserves_study_priority():
@@ -194,7 +190,7 @@ def test_seed_preserves_study_priority():
 
 
 @pytest.mark.parametrize("seed", [True, False, "7", 7.5, [], {}])
-@pytest.mark.parametrize("title", ["Study math", "Go swimming", "Water the plants"])
+@pytest.mark.parametrize("title", ["Study math", "Go swimming", "Do laundry", "Water the plants"])
 def test_invalid_seeds_are_rejected(title, seed):
     with pytest.raises(TypeError, match="seed must be an integer or None"):
         generate_fantasy_description(title, seed=seed)
@@ -237,3 +233,42 @@ def test_seed_preserves_exercise_priority_over_chores():
 
     assert generate_fantasy_description("Workout then do laundry", seed=7) == expected
     assert generate_fantasy_description("Do laundry then workout", seed=7) == expected
+
+
+@pytest.mark.parametrize("seed", [0, 7, -10, 2**64])
+@pytest.mark.parametrize("title", ["Do laundry", "Clean the kitchen"])
+def test_seeded_chore_descriptions_are_repeatable(title, seed):
+    first = generate_fantasy_description(title, seed=seed)
+    generate_fantasy_description("Study math", seed=seed + 1)
+    generate_fantasy_description(title, seed=seed + 1)
+
+    assert generate_fantasy_description(title, seed=seed) == first
+    assert generate_fantasy_description(f"  {title.upper()}!  ", seed=seed) == first
+
+
+def test_seeds_offer_multiple_chore_templates():
+    descriptions = {
+        generate_fantasy_description("Do laundry", seed=seed)
+        for seed in range(20)
+    }
+
+    assert len(descriptions) > 1
+    assert descriptions <= {
+        "Restore Order to the Kingdom",
+        "Polish the Royal Castle",
+        "Clear the Goblin Hideout",
+    }
+
+
+def test_no_seed_preserves_the_original_chore_description():
+    assert generate_fantasy_description("Do laundry") == "Restore Order to the Kingdom"
+    assert (
+        generate_fantasy_description("Do laundry", seed=None)
+        == "Restore Order to the Kingdom"
+    )
+
+
+@pytest.mark.parametrize("title", ["Clean code", "Visit the kitchen", "Buy a dishwasher"])
+def test_seed_does_not_broaden_chore_matching(title):
+    for seed in range(20):
+        assert generate_fantasy_description(title, seed=seed) == "Embark on a New Quest"
