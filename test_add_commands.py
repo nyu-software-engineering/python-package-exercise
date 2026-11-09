@@ -42,3 +42,26 @@ def test_other_keys_unchanged():
     add_commands(pet, 7)
     assert pet["name"] == "Bob"
     assert pet["hatch_at"] == 10
+
+
+
+@pytest.mark.parametrize("count", [True, False, 1.5, "5", None])
+def test_invalid_count_type(count):
+    pet = create_egg("Bob")
+    with pytest.raises(TypeError):
+        add_commands(pet, count)
+
+
+@pytest.mark.parametrize("count", [0, -1, -50])
+def test_nonpositive_count(count):
+    pet = create_egg("Bob")
+    with pytest.raises(ValueError):
+        add_commands(pet, count)
+
+
+def test_bad_count_leaves_pet_unchanged():
+    pet = create_egg("Bob")
+    with pytest.raises(ValueError):
+        add_commands(pet, -5)
+    assert pet["commands_run"] == 0
+    assert pet["stage"] == "egg"
