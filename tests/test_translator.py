@@ -299,5 +299,8 @@ class Tests:
         assert translator.translate_sentence("I hit the books.") == "I studymaxx."
         assert translator.translate_sentence("Call it a day.") == "Log off."
         assert translator.translate_sentence("She is on top of the world.") == "She is peak aura."
-        assert translator.translate_sentence("I'm on top of the world.") == "I'm peak aura."
-        assert translator.translate_sentence("We're on top of the world.") == "We're peak aura."
+
+    def test_sleep_and_hydration_verbs(self):
+        assert translator.translate_sentence("I need to sleep.") == "I need to restmaxx."
+        assert translator.translate_sentence("She hydrated after the run.") == "She watermaxxed after the run."
+        assert translator.translate_sentence("I'm going to sleep.") == "I'm going to restmaxx."

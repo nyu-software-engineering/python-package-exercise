@@ -39,6 +39,8 @@ _IDIOM_SWAPS = {
     "hit the books": "studymaxx",
     "call it a day": "log off",
     "on top of the world": "peak aura",
+    "sleep": "restmaxx",
+    "hydrate": "watermaxx",
 }
 _END_PHRASE_SWAPS = {"the best": "peak", "the worst": "brutal"}
 
@@ -73,6 +75,8 @@ _VERB_FORM_EXCEPTIONS = {
     "study": ("studies", "studied", "studying"),
     "try": ("tries", "tried", "trying"),
     "win": ("wins", "won", "winning"),
+    "sleep": ("sleeps", "slept", "sleeping"),
+    "hydrate": ("hydrates", "hydrated", "hydrating"),
 }
 _VERB_ALIASES = {"outshone": "outshined"}
 
