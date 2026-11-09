@@ -12,14 +12,23 @@ _EXERCISE_KEYWORDS = frozenset(
         "swim", "swimming", "cycling", "gym",
     }
 )
+_CHORE_KEYWORDS = frozenset(
+    {"laundry", "dishes", "vacuum", "vacuuming", "sweep", "sweeping", "mop", "mopping"}
+)
+_CLEANING_ACTIONS = frozenset({"clean", "cleaning", "tidy", "tidying"})
+_HOUSEHOLD_PLACES = frozenset(
+    {"room", "rooms", "bedroom", "bathroom", "kitchen", "house", "home", "garage"}
+)
 
 
 def generate_fantasy_description(title: str) -> str:
     """Return a fantasy description without replacing the original task title.
 
-    English study and exercise keywords match whole words, ignoring case.
-    Study takes priority when both categories match, regardless of word order.
+    English keywords match whole words, ignoring case.
+    Category priority is study, exercise, then chores, regardless of word order.
     Ambiguous exercise words such as "run" and "train" are not matched.
+    Cleaning/tidying requires a household place (e.g. "clean the kitchen");
+    a cleaning action alone does not match chores (e.g. "clean code").
     Other nonblank titles, including other languages, get a generic fallback.
     The same title always produces the same description; no AI service is used.
 
@@ -40,5 +49,9 @@ def generate_fantasy_description(title: str) -> str:
         return "Decipher an Ancient Scroll"
     if words & _EXERCISE_KEYWORDS:
         return "Train for the Royal Tournament"
+    if words & _CHORE_KEYWORDS or (
+        words & _CLEANING_ACTIONS and words & _HOUSEHOLD_PLACES
+    ):
+        return "Restore Order to the Kingdom"
 
     return "Embark on a New Quest"

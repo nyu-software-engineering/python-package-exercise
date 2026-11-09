@@ -1,4 +1,4 @@
-"""Tests for study/exercise templates, category priority, and the fallback."""
+"""Tests for fantasy templates, category priority, and the generic fallback."""
 
 import pytest
 
@@ -54,6 +54,42 @@ def test_study_takes_priority_over_exercise(title):
 @pytest.mark.parametrize(
     "title",
     [
+        "Do the laundry",
+        "Wash the dishes",
+        "Vacuum the carpet",
+        "Vacuuming the hallway",
+        "Sweep the floor",
+        "Sweeping the porch",
+        "Mop the floor",
+        "Mopping the kitchen",
+        "Clean the room",
+        "Cleaning the bathroom",
+        "Tidy the house",
+        "Tidying the bedroom",
+        "  CLEAN the KITCHEN!  ",
+    ],
+)
+def test_chores_use_the_kingdom_template(title):
+    assert generate_fantasy_description(title) == "Restore Order to the Kingdom"
+
+
+@pytest.mark.parametrize(
+    ("title", "expected"),
+    [
+        ("Read then do laundry", "Decipher an Ancient Scroll"),
+        ("Do laundry then read", "Decipher an Ancient Scroll"),
+        ("Workout then wash dishes", "Train for the Royal Tournament"),
+        ("Wash dishes then workout", "Train for the Royal Tournament"),
+        ("Study, workout, and do laundry", "Decipher an Ancient Scroll"),
+    ],
+)
+def test_chores_do_not_override_existing_categories(title, expected):
+    assert generate_fantasy_description(title) == expected
+
+
+@pytest.mark.parametrize(
+    "title",
+    [
         "Water the plants",
         "Buy bread",
         "Preview a movie",
@@ -62,6 +98,12 @@ def test_study_takes_priority_over_exercise(title):
         "Buy a swimsuit",
         "Run unit tests",
         "Train a model",
+        "Clean code",
+        "Cleaning a dataset",
+        "Clean",
+        "Visit the kitchen",
+        "Buy a dishwasher",
+        "Tidy the imports",
     ],
 )
 def test_unmatched_titles_use_the_generic_fallback(title):
@@ -72,11 +114,13 @@ def test_results_are_consistent_across_calls():
     study_description = generate_fantasy_description("Study math")
     other_description = generate_fantasy_description("Water the plants")
     exercise_description = generate_fantasy_description("Go swimming")
+    chore_description = generate_fantasy_description("Do laundry")
 
     assert generate_fantasy_description("Study math") == study_description
     assert generate_fantasy_description("Water the plants") == other_description
     assert generate_fantasy_description("STUDY MATH") == study_description
     assert generate_fantasy_description("Go swimming") == exercise_description
+    assert generate_fantasy_description("Do laundry") == chore_description
 
 
 @pytest.mark.parametrize("title", ["", " ", "\t\n"])
