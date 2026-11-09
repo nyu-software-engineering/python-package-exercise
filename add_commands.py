@@ -20,6 +20,13 @@ def add_commands(pet, count=1):
         >>> pet["stage"]
         'cracking'
     """
+    if isinstance(count, bool) or not isinstance(count, int):
+        raise TypeError("count must be an integer")
+
+    if count <= 0:
+        raise ValueError("count must be positive")
+
+
     pet["commands_run"] += count
     pet["stage"] = get_stage(pet["commands_run"], pet["hatch_at"])
     return pet
