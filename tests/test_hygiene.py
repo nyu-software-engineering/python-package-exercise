@@ -1,3 +1,5 @@
+"""Tests for the pet's hygiene stat."""
+
 import pytest
 
 from package.hygiene import (

@@ -1,3 +1,5 @@
+"""Tests for the pet's hunger stat."""
+
 import pytest
 
 from package.hunger import HUNGER_PER_INPUT, update_hunger
