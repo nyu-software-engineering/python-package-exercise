@@ -78,6 +78,13 @@ class Tests:
         ), f"Expected an age of 22.48. Instead, it returned {actual}"
         assert actual != 22, f"Expected a fractional age. Instead, it returned {actual}"
 
+    def test_earth_age_born_today(self):
+        """
+        Verify a birthdate of today gives an age of 0.
+        """
+        actual = earth_age(date.today())
+        assert actual == 0.0, f"Expected an age of 0.0. Instead, it returned {actual}"
+
     def test_earth_age_future_birthdate(self):
         """
         Verify a birthdate after today raises ValueError.
@@ -174,7 +181,7 @@ class Tests:
 
     def test_compare_planets_same_planet(self):
         """
-        Verify the same planet twice raises ValueError, whatever the case.
+        Verify the same planet twice raises ValueError, regardless of case.
         """
         with pytest.raises(ValueError, match="different"):
             compare_planets("mars", "mars", "2004-05-17", 70)
@@ -194,19 +201,19 @@ class Tests:
         """
         Verify a planet that is not a string raises TypeError.
         """
-        for bad_planet in [3, None, True, ["mars"]]:
+        for bad_planet_datatype in [3, None, True, ["mars"]]:
             with pytest.raises(TypeError):
-                compare_planets(bad_planet, "venus", "2004-05-17", 70)
+                compare_planets(bad_planet_datatype, "venus", "2004-05-17", 70)
             with pytest.raises(TypeError):
-                compare_planets("venus", bad_planet, "2004-05-17", 70)
+                compare_planets("venus", bad_planet_datatype, "2004-05-17", 70)
 
     def test_compare_planets_wrong_weight_type(self):
         """
         Verify a weight that is not a number, including a bool, raises TypeError.
         """
-        for bad_weight in ["70", None, True, False, [70]]:
+        for bad_weight_datatype in ["70", None, True, False, [70]]:
             with pytest.raises(TypeError):
-                compare_planets("mars", "venus", "2004-05-17", bad_weight)
+                compare_planets("mars", "venus", "2004-05-17", bad_weight_datatype)
 
     def test_compare_planets_bad_birthdate(self):
         """
