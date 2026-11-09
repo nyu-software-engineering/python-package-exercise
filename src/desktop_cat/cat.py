@@ -10,7 +10,8 @@ class Cat:
     def __init__(self, name="Whiskers", mood="happy"):
         self.name = name
         self.mood = mood
-        self.hunger = 5            # 0 = full, 10 = starving. Up to you if you want to use this system
+        self.hunger = 5            # 0 = full, 10 = starving
+        self.sleepiness = 5
         self.times_petted = 0
         self.foods_eaten = {}      # e.g. {"fish": 2}
         self.message = ""
@@ -79,7 +80,20 @@ class Cat:
                 reaction = f"{self.name} purrs and enjoys the {area} pets."
         return reaction
             
+    def sleep(self, hours):
+            if not isinstance(hours, int) or hours <= 0:
+                raise ValueError("Hours must be a positive integer.")
+    
+            if self.sleepiness == 0:
+                return f"{self.name} is already fully rested."
 
+            self.sleepiness = max(self.sleepiness - (hours*2), 0)
+
+            if self.sleepiness == 0:
+                self.mood = "happy"
+                return f"{self.name} slept for {hours} hours and is fully rested!"
+            
+            return f"{self.name} slept for {hours} hours and feels less tired."
 
     def status(self, long=False):
         summary = f"{self.name} is feeling {self.mood}."
