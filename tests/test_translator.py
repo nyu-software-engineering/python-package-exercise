@@ -173,6 +173,9 @@ class Tests:
 
     def test_preserves_all_caps_and_line_breaks(self):
         assert translator.translate_sentence("IT’S OVER") == "ITS JOVER"
+        assert translator.translate_sentence("I STUDIED.\r\n\r\nIt's over.\nThe train arrived.") == (
+            "I STUDYMAXXED.\r\n\r\nIts jover.\nThe train arrived."
+        )
 
     def test_leaves_context_and_already_maxxed_words_intact(self):
         assert translator.translate_sentence("I want to gymmaxx before my chemistry lab.") == (

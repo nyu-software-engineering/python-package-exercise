@@ -339,11 +339,7 @@ def _find_swap(word_parts, lookup_words, start_index):
     return replacement, matched_word_count
 
 
-def translate_sentence(text):
-    """Rewrite matching text in BP slang and return None for invalid input."""
-    if not isinstance(text, str) or not text.strip():
-        return None
-
+def _translate_line(text):
     word_parts = []
     lookup_words = []
     for token in text.split():
@@ -381,3 +377,16 @@ def translate_sentence(text):
         return text
 
     return " ".join(translated_words)
+
+
+def translate_sentence(text):
+    """Rewrite matching text in BP slang and return None for invalid input."""
+    if not isinstance(text, str) or not text.strip():
+        return None
+
+    translated_lines = []
+    for line in text.splitlines(keepends=True):
+        line_text = line.splitlines()[0]
+        line_ending = line[len(line_text):]
+        translated_lines.append(_translate_line(line_text) + line_ending)
+    return "".join(translated_lines)
