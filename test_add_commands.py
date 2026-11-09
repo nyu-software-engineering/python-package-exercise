@@ -65,3 +65,19 @@ def test_bad_count_leaves_pet_unchanged():
         add_commands(pet, -5)
     assert pet["commands_run"] == 0
     assert pet["stage"] == "egg"
+
+
+
+
+@pytest.mark.parametrize("pet", [None, "Bob", 42, ["Bob", 50, 0, "egg"]])
+def test_invalid_pet_type(pet):
+    with pytest.raises(TypeError):
+        add_commands(pet, 1)
+
+@pytest.mark.parametrize("missing", ["name", "hatch_at", "commands_run", "stage"])
+def test_pet_missing_key(missing):
+    pet = create_egg("Bob")
+    del pet[missing]
+    with pytest.raises(ValueError):
+        add_commands(pet, 1)
+
