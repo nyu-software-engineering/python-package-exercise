@@ -91,17 +91,17 @@ class Tests:
         """
         Verify strings that are not real dates raise ValueError.
         """
-        for bad_date in ["2023-02-30", "2004-13-01", "2001-02-29", "hello", ""]:
+        for impossible_date in ["2023-02-30", "2004-13-01", "2001-02-29", "hello", ""]:
             with pytest.raises(ValueError, match="not a real"):
-                earth_age(bad_date)
+                earth_age(impossible_date)
 
     def test_earth_age_wrong_type(self):
         """
         Verify a birthdate that is not a string or date raises TypeError.
         """
-        for bad_birthdate in [20040517, 2004.5, None, True, ["2004-05-17"]]:
+        for bad_birthdate_datatype in [20040517, 2004.5, None, True, ["2004-05-17"]]:
             with pytest.raises(TypeError):
-                earth_age(bad_birthdate)
+                earth_age(bad_birthdate_datatype)
 
     def test_compare_planets_keys(self, monkeypatch):
         """
