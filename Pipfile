@@ -1,0 +1,16 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+desktop-cat = {path = ".", editable = true}
+pyside6-essentials = "*"
+
+[dev-packages]
+pytest = "*"
+build = "*"
+twine = "*"
+
+[requires]
+python_version = "3.12"
