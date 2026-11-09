@@ -132,6 +132,7 @@ _ACTION_CUES = (
     _verb_forms("try") + _verb_forms("want") + _verb_forms("need") + _verb_forms("plan")
     + _verb_forms("decide") + ("have", "has", "had")
 )
+_SUBJECT_LINKS = ("will", "should", "to", "gonna", "going") + _ACTION_CUES + _ACTION_MODIFIERS
 
 
 def _split_punctuation(token):
@@ -195,6 +196,9 @@ def _can_maxx_action(word_parts, lookup_words, word_index):
         return False
     if lookup_word in _SKIP_ACTIONS or lookup_word.endswith(("maxx", "maxxed", "maxxing")):
         return False
+    if lookup_word == "work":
+        if _next_word_in_phrase(word_parts, lookup_words, word_index) == "out":
+            return False
 
     cue_index = word_index - 1
     while cue_index > 0 and lookup_words[cue_index] in _ACTION_MODIFIERS:
@@ -263,12 +267,44 @@ def _study_is_an_action(word_parts, lookup_words, word_index):
     )
 
 
+def _has_person_subject(word_parts, lookup_words, start_index):
+    subject_index = start_index - 1
+    while subject_index >= 0 and _phrase_continues(word_parts, subject_index):
+        subject = lookup_words[subject_index]
+        if subject in _BE_VERBS or subject in _SUBJECT_LINKS:
+            subject_index -= 1
+            continue
+        contraction = subject.replace("'", "")
+        if contraction in _BE_CONTRACTIONS:
+            return contraction != "its"
+        return _is_person_subject(word_parts[subject_index][1])
+    return False
+
+
+def _work_out_is_exercise(word_parts, lookup_words, start_index, end_index):
+    next_word = _next_word_in_phrase(word_parts, lookup_words, end_index)
+    if next_word in ("what", "how", "why", "where", "whether"):
+        return False
+    if next_word in _NOUN_CUES and lookup_words[end_index + 1:end_index + 3] != ["a", "lot"]:
+        return False
+
+    if start_index == 0:
+        return True
+    if lookup_words[start_index] == "working" and _phrase_continues(word_parts, start_index - 1):
+        if lookup_words[start_index - 1] in ("after", "before"):
+            return True
+    return _has_person_subject(word_parts, lookup_words, start_index)
+
+
 def _verb_phrase_swap(phrase, word_parts, lookup_words, start_index, end_index):
     replacement = _VERB_SWAPS.get(phrase)
     if replacement is None:
         return None
     if phrase in ("study", "studies"):
         if not _study_is_an_action(word_parts, lookup_words, start_index):
+            return None
+    if replacement.startswith("gymmaxx") and lookup_words[end_index] == "out":
+        if not _work_out_is_exercise(word_parts, lookup_words, start_index, end_index):
             return None
     return replacement
 

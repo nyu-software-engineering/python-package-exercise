@@ -151,6 +151,14 @@ class Tests:
             "I will also still remembermaxx this."
         )
 
+    def test_work_out_means_exercise_only_in_exercise_context(self):
+        assert translator.translate_sentence("Things worked out fine.") == "Things worked out fine."
+        assert translator.translate_sentence("It will work out.") == "It will work out."
+        assert translator.translate_sentence("She will work out the details.") == (
+            "She will work out the details."
+        )
+        assert translator.translate_sentence("Maya worked out a lot.") == "Maya gymmaxxed a lot."
+
     def test_matches_idioms_and_slots_with_intensifiers(self):
         assert translator.translate_sentence("It’s really over.") == "Its jover."
         assert translator.translate_sentence("I really messed up.") == "I really fumbled."
@@ -158,6 +166,9 @@ class Tests:
     def test_leaves_light_verbs_and_translates_the_activity(self):
         assert translator.translate_sentence("I need to learn how to cook. I want to hang out.") == (
             "I need to learn how to cook. I want to hang out."
+        )
+        assert translator.translate_sentence("I feel great after working out.") == (
+            "I feel great after gymmaxxing."
         )
 
     def test_leaves_context_and_already_maxxed_words_intact(self):
