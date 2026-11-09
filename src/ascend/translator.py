@@ -58,6 +58,27 @@ _VERB_FORM_EXCEPTIONS = {
 }
 _VERB_ALIASES = {"outshone": "outshined"}
 
+_ADJECTIVE_SWAPS = {
+    "tired": "cooked",
+    "exhausted": "cooked",
+    "calm": "low cortisol",
+    "relaxed": "low cortisol",
+    "confident": "low cortisol",
+    "focused": "locked in",
+    "good": "based",
+    "great": "lifefueled",
+    "happy": "lifefueled",
+    "excited": "lifefueled",
+    "bad": "brutal",
+    "terrible": "brutal",
+    "annoying": "brutal",
+    "awkward": "an aura loss",
+    "ruined": "kirked",
+    "angry": "seething",
+    "mad": "seething",
+}
+_ADJECTIVE_CUES = ("feel", "feels", "felt", "look", "looks", "looked", "seem", "seems", "seemed")
+
 _INTENSIFIERS = ("really", "so", "very")
 
 _SUBJECT_PRONOUNS = ("i", "you", "he", "she", "it", "we", "they")
@@ -100,6 +121,8 @@ _COMPARISON_DIMENSIONS = {
     "prettier": "looks",
     "better": "",
 }
+
+_ADJECTIVE_FOLLOWERS = _COMPARISON_FOLLOWERS + ("about", "after", "enough", "for", "with")
 
 _ACTION_MODIFIERS = (
     "always", "probably", "also", "still", "often", "usually", "sometimes",
@@ -348,6 +371,24 @@ def _stress_swap(subject, predicate, next_word):
     return f"{possessive} cortisol {emphasis}spiked{topic}"
 
 
+def _adjective_swap(words, original_words, next_word):
+    adjective = words[-1]
+    if adjective not in _ADJECTIVE_SWAPS or (next_word and next_word not in _ADJECTIVE_FOLLOWERS):
+        return None
+
+    prefix = []
+    adjective_index = 0
+    if words[0].replace("'", "") in _BE_CUES or words[0] in _ADJECTIVE_CUES:
+        prefix.append(original_words[0])
+        adjective_index += 1
+    if words[adjective_index] in _INTENSIFIERS:
+        prefix.append(original_words[adjective_index])
+        adjective_index += 1
+    if adjective_index == len(words) - 1 and prefix:
+        return " ".join(prefix + [_ADJECTIVE_SWAPS[adjective]])
+    return None
+
+
 def _study_is_an_action(word_parts, lookup_words, word_index):
     previous_word = ""
     if word_index > 0 and _phrase_continues(word_parts, word_index - 1):
@@ -431,6 +472,8 @@ def _find_swap(word_parts, lookup_words, start_index, previous_comparison_verb):
                 candidate, comparison_verb = _person_phrase_swap(
                     words, original_words, next_word, previous_comparison_verb
                 )
+            if candidate is None:
+                candidate = _adjective_swap(words, original_words, next_word)
 
         if candidate is not None:
             replacement = candidate

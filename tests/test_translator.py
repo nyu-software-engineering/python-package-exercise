@@ -164,10 +164,12 @@ class Tests:
         assert translator.translate_sentence("I really messed up.") == "I really fumbled."
 
     def test_translates_focused_and_stressed_phrases(self):
+        assert translator.translate_sentence("She is focused.") == "She is locked in."
         assert translator.translate_sentence("I am stressed.") == "My cortisol spiked."
         assert translator.translate_sentence("I'm really stressed out about class.") == (
             "My cortisol really spiked over class."
         )
+        assert translator.translate_sentence("She's focused the camera.") == "She's focused the camera."
         assert translator.translate_sentence("She's stressed the importance of sleep.") == (
             "She's stressed the importance of sleep."
         )
@@ -197,12 +199,22 @@ class Tests:
         )
         assert translator.translate_sentence("Beat the eggs.") == "Beat the eggs."
 
+    def test_translates_adjectives_and_their_modifiers(self):
+        assert translator.translate_sentence("I'm so tired. Really good. So annoying.") == (
+            "I'm so cooked. Really based. So brutal."
+        )
+        assert translator.translate_sentence("She looks very confident. I'm so happy.") == (
+            "She looks very low cortisol. I'm so lifefueled."
+        )
+        assert translator.translate_sentence("That's really good news.") == "That's really lifefuel."
+        assert translator.translate_sentence("It rained, so I left.") == "It rained, so I left."
+
     def test_leaves_light_verbs_and_translates_the_activity(self):
         assert translator.translate_sentence("I need to learn how to cook. I want to hang out.") == (
             "I need to learn how to cook. I want to hang out."
         )
         assert translator.translate_sentence("I feel great after working out.") == (
-            "I feel great after gymmaxxing."
+            "I feel lifefueled after gymmaxxing."
         )
 
     def test_translates_joined_comparisons_with_the_same_tense(self):
