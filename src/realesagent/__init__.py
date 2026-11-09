@@ -1,0 +1,1 @@
+"""Funny student excuses and even funnier responses ;)"""
