@@ -1,5 +1,7 @@
 """Tests for fantasy templates, category priority, and the generic fallback."""
 
+import random
+
 import pytest
 
 from quest_descriptions import generate_fantasy_description
@@ -133,3 +135,66 @@ def test_blank_titles_are_rejected(title):
 def test_non_string_titles_are_rejected(title):
     with pytest.raises(TypeError, match="title must be a string"):
         generate_fantasy_description(title)
+
+
+@pytest.mark.parametrize("seed", [0, 7, -10, 2**64])
+def test_seeded_study_descriptions_are_repeatable(seed):
+    first = generate_fantasy_description("Study math", seed=seed)
+    generate_fantasy_description("Read a book", seed=seed + 1)
+
+    assert generate_fantasy_description("Study math", seed=seed) == first
+    assert generate_fantasy_description("  STUDY math!  ", seed=seed) == first
+
+
+def test_seeds_offer_multiple_study_templates():
+    descriptions = {
+        generate_fantasy_description("Study math", seed=seed)
+        for seed in range(20)
+    }
+
+    assert len(descriptions) > 1
+    assert descriptions <= {
+        "Decipher an Ancient Scroll",
+        "Explore the Ancient Library",
+        "Unlock the Sage's Hidden Knowledge",
+    }
+
+
+def test_no_seed_preserves_the_original_study_description():
+    assert generate_fantasy_description("Study math") == "Decipher an Ancient Scroll"
+    assert (
+        generate_fantasy_description("Study math", seed=None)
+        == "Decipher an Ancient Scroll"
+    )
+
+
+def test_seed_does_not_change_global_random_state():
+    state = random.getstate()
+    generate_fantasy_description("Study math", seed=7)
+
+    assert random.getstate() == state
+
+
+@pytest.mark.parametrize(
+    ("title", "expected"),
+    [
+        ("Go swimming", "Train for the Royal Tournament"),
+        ("Do laundry", "Restore Order to the Kingdom"),
+        ("Water the plants", "Embark on a New Quest"),
+    ],
+)
+def test_seed_preserves_other_categories(title, expected):
+    assert generate_fantasy_description(title, seed=7) == expected
+
+
+def test_seed_preserves_study_priority():
+    expected = generate_fantasy_description("Read a book", seed=7)
+    assert generate_fantasy_description("Read about swimming", seed=7) == expected
+    assert generate_fantasy_description("Do laundry then study", seed=7) == expected
+
+
+@pytest.mark.parametrize("seed", [True, False, "7", 7.5, [], {}])
+@pytest.mark.parametrize("title", ["Study math", "Water the plants"])
+def test_invalid_seeds_are_rejected(title, seed):
+    with pytest.raises(TypeError, match="seed must be an integer or None"):
+        generate_fantasy_description(title, seed=seed)
