@@ -49,9 +49,10 @@ def test_eating_adds_to_foods_eaten():
 
 
 # Test that feeding a food twice increments the count in foods_eaten
-def test_feeding_increments_count():
+def test_feeding_increments_count(monkeypatch):
     cat = Cat()
 
+    monkeypatch.setattr("desktop_cat.cat.random.choice", lambda x: True)
     cat.feed("fish")
     cat.feed("fish")
 

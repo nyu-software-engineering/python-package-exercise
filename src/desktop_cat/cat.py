@@ -60,7 +60,7 @@ class Cat:
         self.times_petted += times
         self.last_action = "petted"
         if area in ("belly", "paws"):
-            if times >= 3:
+            if times >= 5:
                 if self.mood == "annoyed":
                     self.mood = "angry"
                     reaction = f"{self.name} is angry after being bothered so much!"
@@ -71,7 +71,7 @@ class Cat:
                 self.mood = "happy"
                 reaction = f"{self.name} lets you pet its {area}."
         else:
-            if times >= 6:
+            if times >= 10:
                 if self.mood == "annoyed":
                     self.mood = "angry"
                     reaction = f"{self.name} is angry after being bothered so much!"
