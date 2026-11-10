@@ -33,9 +33,18 @@ def test_save_and_load_round_trip(tmp_path):
 
 def test_save_rejects_a_bad_pet(tmp_path):
     path = tmp_path / "pet.json"
+    pet = {
+        "name": "   ",
+        "alive": True,
+        "energy": 100,
+        "hunger": 0,
+        "hygiene": 100,
+        "happiness": 100,
+        "health": 100,
+    }
 
     with pytest.raises(ValueError):
-        save_pet({"name": "   "}, path)
+        save_pet(pet, path)
 
     assert not path.exists()
 
