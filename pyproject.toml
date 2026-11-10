@@ -17,4 +17,4 @@ dependencies = []
 Repository = "https://github.com/software-students-fall2026/python-package-exercise-Chipotle"
 
 [tool.setuptools]
-py-modules = ["quest_descriptions", "quest_manager", "progression"]
+py-modules = ["quest_descriptions", "quest_manager", "progression", "quest_validation"]

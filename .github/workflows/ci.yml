@@ -34,6 +34,10 @@ jobs:
           pipenv verify
           pipenv sync --dev
           pipenv run python -m pip check
+      - name: Install Chromium
+        run: pipenv run python -m playwright install --with-deps chromium
+      - name: Run tests
+        run: pipenv run test
       - name: Run tests
         run: pipenv run test
       - name: Build source distribution and wheel
@@ -46,5 +50,5 @@ jobs:
           "$RUNNER_TEMP/wheel-check/bin/python" -m pip install --no-deps --no-index dist/*.whl
           cp -R tests "$RUNNER_TEMP/tests"
           cd "$RUNNER_TEMP"
-          "$RUNNER_TEMP/wheel-check/bin/python" -I -m pytest --import-mode=importlib tests
+          "$RUNNER_TEMP/wheel-check/bin/python" -I -m pytest --import-mode=importlib tests --ignore=tests/test_quest_form.py
           "$RUNNER_TEMP/wheel-check/bin/python" -I "$GITHUB_WORKSPACE/examples/basic_usage.py"
