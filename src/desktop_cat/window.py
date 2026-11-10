@@ -2,9 +2,12 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from PySide6.QtCore import Qt, QTimer
-from PySide6.QtGui import QPixmap
-from PySide6.QtWidgets import QApplication, QLabel
+try:
+    from PySide6.QtCore import Qt, QTimer
+    from PySide6.QtGui import QPixmap
+    from PySide6.QtWidgets import QApplication, QLabel
+except ImportError as exc:
+    raise ImportError("The desktop-cat GUI requires PySide6. Install it with: pip install desktop-cat[gui]") from exc
 
 ASSETS = Path(__file__).parent / "assets"
 

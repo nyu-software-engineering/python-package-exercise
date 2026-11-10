@@ -17,9 +17,10 @@ license = "GPL-3.0-or-later"
 license-files = ["LICENSE"]
 readme = "README.md"
 requires-python = ">=3.11"
-dependencies = [
-    "PySide6-Essentials"
-]
+dependencies = []
+
+[project.optional-dependencies]
+gui = ["PySide6-Essentials"]
 
 [project.urls]
 "Homepage" = "https://github.com/software-students-fall2026/python-package-exercise-busy-bees"
