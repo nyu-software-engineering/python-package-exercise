@@ -43,6 +43,21 @@ _ART = {
     ],
 }
 
+_MESSAGES = {
+    "egg": "...",
+    "cracking": "Is someone out there?",
+    "hatchling": "I'm out!",
+    "young python": "More commands, please!",
+    "full python": "Hsss. I am complete.",
+}
+
+
+def pet_says(stage):
+    """Return what the pet says at the given growth stage."""
+    _check_stage(stage)
+    return _MESSAGES[stage]
+
+
 def _check_stage(stage):
     if not isinstance(stage, str):
         raise TypeError("stage must be a string")
