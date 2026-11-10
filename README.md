@@ -3,7 +3,7 @@
 An exercise to create a Python package, build it, test it, distribute it, and use it. See [instructions](./instructions.md) for details.
 
 
-Team Roles: 
+Team Roles:
 
 
 **Ali — Frontend Integration & Documentation**
@@ -97,12 +97,13 @@ Run `pipenv sync --dev` again to return to editable development.
 | `quest_manager` | `delete_quest(quests, quest_id)` | Return a new list with the specified pending quest removed. |
 | `progression` | `calculate_xp(duration_minutes)` | Return 1 XP per positive integer minute. |
 | `progression` | `calculate_level(total_xp)` | Calculate a level from nonnegative integer total XP: `1 + total_xp // 100`. |
+| `progression` | `award_xp(total_xp, duration_minutes)` | Calculate total XP and level after one reward. |
 
 For example, `from quest_manager import list_quests` imports the listing function.
-The [usage example](examples/basic_usage.py) calls all seven functions: generate a
-description, calculate XP and a level, filter and look up a quest, rename it, and
-delete it. It keeps data in memory; persistence and awarding XP on completion
-are separate integration work. More XP details are in the
+The [usage example](examples/basic_usage.py) calls all eight functions: generate a
+description, calculate XP, a level and updated progress, filter and look up a quest,
+rename it, and delete it. It keeps data in memory; persistence and awarding XP on
+completion are separate integration work. More XP details are in the
 [progression notes](docs/progression.md).
 Expected output includes `Pending quests: 1` and ends with `Remaining quests: 0`.
 Extend the example and module list in `pyproject.toml` as public functions and
