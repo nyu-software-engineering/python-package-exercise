@@ -17,33 +17,47 @@ def create_deck():
                 deck[f"{rank} of {suit[0]}"]["value"] = int(rank)
     return deck
 
-def display_card(card_rank, card_suit):
-    print(" _______")
-    print(f"|{card_rank}      |")
-    print(f"|       |")
-    print(f"|       |")
-    print(f"|   {card_suit}   |")
-    print(f"|       |")
-    print(f"|       |")
-    print(f"|______{card_rank}|")
+def shuffle_deck(deck):
+    shuffled = list(deck.items())
+    random.shuffle(shuffled)
+    return shuffled
 
-def display_hand(hand):
-    for card in hand:
-        print(" _______", end = " ")
-    for card, details in hand.items():
-        print(f"|{details['rank']}      |")
-    for card in hand:
-        print(f"|       |")
-    for card in hand:
-        print(f"|       |")
-    for card, details in hand.items():
-        print(f"|   {details['suit'][1]}   |")
-    for card in hand:
-        print(f"|       |")
-    for card in hand:
-        print(f"|       |")
-    for card, details in hand.items():
-        print(f"|______{details['rank']}|")
+def display_hole_card():
+    print(" _______")
+    print(f"|/ / / /|")
+    print(f"| / / / |")
+    print(f"|/ / / /|")
+    print(f"| / / / |")
+    print(f"| / / / |")
+    print(f"| / / / |")
+    print(f"|/_/_/_/|")
+
+def display_hand(hand, hole = False):
+    row1, row2, row3, row4, row5, row6, row7, row8 = [], [], [], [], [], [], [], []
+    rows = [row1, row2, row3, row4, row5, row6, row7, row8]
+
+    for i, card in enumerate(hand):
+        row1.append(" _______ ")
+        if hole and i == 0:
+            row2.append("|/ / / /|")
+            row3.append("| / / / |")
+            row4.append("|/ / / /|")
+            row5.append("| / / / |")
+            row6.append("|/ / / /|")
+            row7.append("| / / / |")
+            row8.append("|/_/_/_/|")
+        else:
+            row2.append(f"|{card[1]['rank']:>2}     |")
+            row3.append("|       |")
+            row4.append("|       |")
+            row5.append(f"|   {card[1]['suit'][1]}   |")
+            row6.append("|       |")
+            row7.append("|       |")
+            row8.append(f"|_____{card[1]['rank']:<2}|")
+
+    for i in range(8):
+        print(" ".join(rows[i]))
+    print()
 
 def play_blackjack(init_balance = 100):
     try:
@@ -57,9 +71,9 @@ def play_blackjack(init_balance = 100):
     play_again = "y"
 
     def new_game():
-        deck = create_deck()
+        deck = shuffle_deck(create_deck())
         nonlocal balance
-        print(f"Deck has {len(deck)} cards")
+        hit = "h"
         print(f"Balance: ${balance:.2f}")
         while True:
             try:
@@ -71,7 +85,36 @@ def play_blackjack(init_balance = 100):
             except ValueError:
                 print("Invalid bet! Please enter a whole number.")
         
-        balance += bet
+        player_hand = []
+        dealer_hand = []
+
+        def init_round():
+            player_hand.append(deck.pop())
+            dealer_hand.append(deck.pop())
+            player_hand.append(deck.pop())
+            dealer_hand.append(deck.pop())
+            print("Player:")
+            display_hand(player_hand)
+            print("Dealer:")
+            display_hand(dealer_hand, True)
+
+        def draw_card(hand, hole = False):
+            hand.append(deck.pop())
+            print("Player:")
+            display_hand(player_hand)
+            print("Dealer:")
+            display_hand(dealer_hand, hole)
+
+        while hit == "h":
+            print(f"Deck has {len(deck)} cards")
+            if len(player_hand) == 0:
+                init_round()
+            else:
+                draw_card(player_hand, True)
+            while True:
+                hit = input("Would you like to hit or stay (h/s)? ").lower()
+                if hit == "h" or hit == "s":
+                    break
 
     while play_again == "y":
         new_game()
