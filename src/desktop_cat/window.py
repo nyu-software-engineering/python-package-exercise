@@ -2,9 +2,12 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from PySide6.QtCore import Qt, QTimer
-from PySide6.QtGui import QPixmap
-from PySide6.QtWidgets import QApplication, QLabel
+try:
+    from PySide6.QtCore import Qt, QTimer
+    from PySide6.QtGui import QPixmap
+    from PySide6.QtWidgets import QApplication, QLabel
+except ImportError as exc:
+    raise ImportError("The desktop-cat GUI requires PySide6. Install it with: pip install desktop-cat[gui]") from exc
 
 ASSETS = Path(__file__).parent / "assets"
 
@@ -62,7 +65,18 @@ class Window(QLabel):
             y = self.y() - bubble.height() - 10
             bubble.move(x, y)
 
+    def closeEvent(self, event):
+        if self.speech_bubble is not None:
+            self._speech_hide_timer.stop()
+            self.speech_bubble.close()
+        super().closeEvent(event)
+
     def say(self, message, duration=3000):
+        if isinstance(duration, bool) or not isinstance(duration, int):
+            raise TypeError("Duration must be an integer.")
+        if duration <= 0:
+            raise ValueError("Duration must be greater than 0.")
+        
         if self.speech_bubble is None:
             self.speech_bubble = QLabel()
             self.speech_bubble.setWindowFlags(
@@ -89,12 +103,9 @@ class Window(QLabel):
 
         self.speech_bubble.setText(str(message)[:200])
         self.speech_bubble.adjustSize()
-        x = self.x() + (self.width() - self.speech_bubble.width()) // 2
-        y = self.y() - self.speech_bubble.height() - 10
-        self.speech_bubble.move(x, y)
+        self.update_speech_position()
         self.speech_bubble.show()
         self._speech_hide_timer.start(max(0, duration))
-        self.speech_bubble.move(x, y)
 
 
 def run() -> None:

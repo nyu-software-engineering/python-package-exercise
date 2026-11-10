@@ -30,7 +30,31 @@ def test_window_say_displays_message_in_bubble(app):
     assert window._speech_hide_timer.isActive()
 
     window.close()
-    window.speech_bubble.close()
+
+
+def test_window_say_truncates_long_message(app):
+    window = Window(Cat())
+
+    window.say("a" * 250)
+
+    assert len(window.speech_bubble.text()) == 200
+
+    window.close()
+
+
+def test_window_say_invalid_duration(app):
+    window = Window(Cat())
+
+    with pytest.raises(TypeError):
+        window.say("Hello", duration="1000")
+
+    with pytest.raises(TypeError):
+        window.say("Hello", duration=True)
+
+    with pytest.raises(ValueError):
+        window.say("Hello", duration=-1)
+
+    window.close()
 
 
 def test_update_speech_position(app):
