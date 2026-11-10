@@ -93,6 +93,29 @@ print(draw_pet("hatchling"))
 Raises `TypeError` if `stage` isn't a string, and `ValueError` if it isn't one
 of the five stage names.
 
+Pass a message to make the pet talk, or use `pet_says(stage)` for its default line:
+
+```python
+from terminal_pet_respin import draw_pet, pet_says
+
+print(draw_pet("hatchling", pet_says("hatchling")))
+```
+
+```
+ __________
+< I'm out! >
+ ----------
+     \
+     .---.
+    ( O O )
+     \   /~
+  \/\/   \/\/
+   \        /
+    '------'
+```
+
+
+
 ### `add_commands(pet, count=1)`
 
 Records that `count` more terminal commands were run, then updates the pet's
