@@ -7,7 +7,30 @@ A tiny pet python that lives in your terminal. It starts as an egg, and every
 terminal command you run helps it grow: from egg, to cracking egg, to hatchling,
 to young python, and finally to a full coiled python.
 
+
+
+**PyPI:** [terminal-pet-respin](https://pypi.org/project/terminal-pet-respin/)
+
+## Installation
+
+Install the package from PyPI with pip:
+
+```bash
+pip install terminal-pet-respin
+```
+
+Then import the functions in your own code:
+
+```python
+from terminal_pet_respin import create_egg, add_commands, get_stage, draw_pet
+
+pet = create_egg("Monty", hatch_at=10)
+add_commands(pet, 12)
+print(draw_pet(pet["stage"]))
+```
+
 ## Functions
+
 
 ### `create_egg(name, hatch_at=50)`
 
@@ -91,10 +114,57 @@ Raises `TypeError` if `pet` isn't a dictionary or `count` isn't an integer
 or `count` is zero or negative.
 
 
-## Running the tests
+## Contributing
+
+### 1. Get the code and set up the virtual environment
+
+You need Python 3.11 or newer and git.
 
 ```bash
+git clone https://github.com/software-students-fall2026/python-package-exercise-respin.git
+cd python-package-exercise-respin
 pip install pipenv
 pipenv install --dev
+```
+
+The `Pipfile` targets Python 3.12. If you have a different version installed
+(3.11 or newer), tell pipenv which one to use:
+
+```bash
+pipenv install --dev --python 3.11
+```
+
+### 2. Run the tests
+
+```bash
 pipenv run pytest
 ```
+
+### 3. Build the package
+
+```bash
+pipenv run python -m build
+```
+
+This creates a `dist/` folder containing a `.whl` file and a `.tar.gz` file,
+which are the files uploaded to PyPI.
+
+### 4. Make a change
+
+1. Create a feature branch: `git checkout -b my-feature`
+2. Commit your changes and push the branch.
+3. Open a pull request into `main`. GitHub Actions runs the tests on
+   Python 3.11 and 3.12, and a teammate reviews and merges it.
+
+## Configuration
+
+No configuration is needed. The package does not use environment variables,
+a `.env` file, secret keys, or a database, so there is nothing to set up
+before running it.
+
+## Team
+
+- [YusefMoustafa](https://github.com/YusefMoustafa)
+- [sing1179](https://github.com/sing1179)
+- [TonyyZhou](https://github.com/TonyyZhou)
+- [denisekos](https://github.com/denisekos)
