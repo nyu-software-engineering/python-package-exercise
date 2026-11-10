@@ -9,20 +9,30 @@ from quest_manager import (
     rename_quest,
 )
 from progression import award_xp, calculate_level, calculate_xp
-from storage import initialize_database
+from storage import initialize_database, insert_quest, load_progress, load_quests
 
 
 def main() -> None:
-    # Use a temporary file so this demonstration leaves no local database behind.
-    with TemporaryDirectory() as directory:
-        initialize_database(Path(directory) / "quests.db")
-        print("Database initialized.")
-
     title = "Study math"
     duration_minutes = 60
     quests = create_quest([], title, duration_minutes)
     quest_id = quests[0]["id"]
 
+    # Each helper closes its connection; loading reads the committed task back.
+    # Use a temporary file so this example leaves no local database behind.
+    with TemporaryDirectory() as directory:
+        database_path = Path(directory) / "quests.db"
+        initialize_database(database_path)
+        print("Database initialized.")
+        insert_quest(database_path, quests[0])
+        quests = load_quests(database_path, status="pending")
+        print("Reloaded quests:", len(quests))
+        saved_progress = load_progress(database_path)
+        print("Saved total XP:", saved_progress["totalXP"])
+        print("Saved level:", calculate_level(saved_progress["totalXP"]))
+
+    # The remaining examples edit in-memory copies; persistence of edits/deletes
+    # and completion with XP awards will be added in later integration work.
     print(f"Original: {title} -> {quests[0]['fantasyDescription']}")
     print("Seeded description:", generate_fantasy_description(title, seed=7))
     print("Quest XP reward:", calculate_xp(duration_minutes))
