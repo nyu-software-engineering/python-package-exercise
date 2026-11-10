@@ -44,3 +44,8 @@ def test_new_cat_defaults():
     assert cat.name == "Whiskers"
     assert cat.mood == "happy"
     assert cat.mood in MOODS
+    assert cat.hunger == 5
+    assert cat.sleepiness == 5
+    assert cat.times_petted == 0
+    assert cat.foods_eaten == {}
+    assert cat.last_action == "idle"
