@@ -31,7 +31,6 @@ class Cat:
         self.sleepiness = 5        # 0 = rested, 10 = exhausted
         self.times_petted = 0
         self.foods_eaten = {}      # e.g. {"fish": 2}
-        self.message = ""
         self.last_action = "idle"  # render() will read this to pick a frame to draw
 
     def set_mood(self, mood):
@@ -123,6 +122,7 @@ class Cat:
         if self.sleepiness == 0:
             return f"{self.name} is already fully rested."
 
+        self.last_action = "sleeping"
         self.sleepiness = max(self.sleepiness - (hours*2), 0)
 
         if self.sleepiness == 0:
@@ -137,6 +137,7 @@ class Cat:
             eaten = sum(self.foods_eaten.values())
             summary += (
                 f" Hunger: {self.hunger}/10."
+                f" Sleepiness: {self.sleepiness}/10."
                 f" Petted {self.times_petted} times."
                 f" Meals eaten: {eaten}."
             )
@@ -153,9 +154,6 @@ class Cat:
         old_name = self.name
         self.name = name
         return f"{old_name} is now called {self.name}!"
-
-    def say(self, text):
-        raise NotImplementedError
 
     def render(self):
         raise NotImplementedError

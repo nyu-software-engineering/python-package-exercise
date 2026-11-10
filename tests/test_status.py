@@ -17,12 +17,14 @@ def test_status_long():
     assert cat.times_petted == 3
     assert cat.foods_eaten == {"fish": 2}
     assert cat.hunger == 5
+    assert cat.sleepiness == 5
 
     text = cat.status(long=True)
     
     assert "Petted 3 times" in text
     assert "Meals eaten: 2" in text
     assert "Hunger: 5/10" in text
+    assert "Sleepiness: 5/10" in text
 
 # Makes sure meal count is 0 if no foods have been eaten
 def test_status_long_no_food():
