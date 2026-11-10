@@ -1,3 +1,4 @@
+from .history import record_event
 from .pet import check_count, check_pet, clamp
 
 FREE_LINES = 50  # commits this size or smaller cost no energy
@@ -15,7 +16,10 @@ def drain_energy(pet, lines_changed):
 
     extra_lines = max(lines_changed - FREE_LINES, 0)
     drain = min(extra_lines // LINES_PER_POINT, MAX_DRAIN)
+    before = pet["energy"]
     pet["energy"] = clamp(pet["energy"] - drain)
+    if pet["energy"] != before:
+        record_event(pet, "stat", stat="energy", before=before, after=pet["energy"])
     return pet["energy"]
 
 
@@ -26,5 +30,8 @@ def restore_energy(pet, tests_passed, tests_failed=0):
     check_count(tests_failed, "tests_failed")
 
     gain = tests_passed * POINTS_PER_PASS - tests_failed * POINTS_PER_FAIL
+    before = pet["energy"]
     pet["energy"] = clamp(pet["energy"] + max(gain, 0))
+    if pet["energy"] != before:
+        record_event(pet, "stat", stat="energy", before=before, after=pet["energy"])
     return pet["energy"]
