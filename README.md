@@ -27,6 +27,7 @@ python3 -m venv .tools
 export PIPENV_VENV_IN_PROJECT=1
 .tools/bin/pipenv --python "$(command -v python3)"
 .tools/bin/pipenv sync --dev
+.tools/bin/pipenv run python -m playwright install chromium
 .tools/bin/pipenv run test
 ```
 
@@ -38,6 +39,7 @@ py -3 -m venv .tools
 $env:PIPENV_VENV_IN_PROJECT = "1"
 .\.tools\Scripts\pipenv.exe --python (py -3 -c "import sys; print(sys.executable)")
 .\.tools\Scripts\pipenv.exe sync --dev
+.\.tools\Scripts\pipenv.exe run python -m playwright install chromium
 .\.tools\Scripts\pipenv.exe run test
 ```
 
@@ -49,7 +51,8 @@ After changing `Pipfile`, run `pipenv lock` and commit both dependency files.
 ## Build and use the Python package
 
 The working distribution name is `chipotle-quests` (version `0.1.0`). It contains
-the `quest_descriptions`, `quest_manager`, `progression`, and `storage` modules. The package has
+the `quest_descriptions`, `quest_manager`, `progression`, `storage`, and
+`quest_validation` modules. The package has
 not been published to PyPI; confirm the distribution name before publishing.
 
 Pipenv now installs the project in editable mode, so source edits are available
@@ -90,9 +93,9 @@ Run `pipenv sync --dev` again to return to editable development.
 
 ### Public functions
 
-| `quest_validation` | `validate_quest_input(title, duration_minutes)` | Return the trimmed title and validated whole-minute duration. Raise `ValueError` for a blank title or an invalid duration. |
 | Import from | Function | Purpose |
 | --- | --- | --- |
+| `quest_validation` | `validate_quest_input(title, duration_minutes)` | Return the trimmed title and validated whole-minute duration. Raise `ValueError` for a blank title or an invalid duration. |
 | `quest_descriptions` | `generate_fantasy_description(title, *, seed=None, custom_templates=None)` | Describe a nonblank title; an integer seed selects a repeatable template, with optional category overrides. |
 | `quest_descriptions` | `rename_pending_quest(quest, new_title, *, seed=None, custom_templates=None)` | Return a pending quest copy with its title and description updated. |
 | `quest_manager` | `create_quest(quests, title, duration_minutes, *, seed=None, custom_templates=None)` | Return a new list containing a new pending quest with a UUID string ID. |
@@ -106,16 +109,17 @@ Run `pipenv sync --dev` again to return to editable development.
 | `progression` | `award_xp(total_xp, duration_minutes)` | Calculate total XP and level after one reward. |
 | `storage` | `initialize_database(database_path)` | Create SQLite tables and initialize progress without overwriting existing data. |
 | `storage` | `insert_quest(database_path, quest)` | Commit one new pending quest without changing earned XP; duplicate IDs raise `sqlite3.IntegrityError`. |
+| `storage` | `update_pending_quest(database_path, quest)` | Save an existing pending quest's title, description, duration, and reward together. |
+| `storage` | `delete_pending_quest(database_path, quest_id)` | Delete one saved pending quest without changing earned XP. |
 | `storage` | `load_quests(database_path, status=None)` | Read quest dictionaries in insertion order, optionally filtering by `pending` or `completed`. |
 | `storage` | `load_progress(database_path)` | Read `{"totalXP": saved_integer}`; derive the level with `calculate_level`. |
 
 For example, `from quest_manager import list_quests` imports the listing function.
-The [usage example](examples/basic_usage.py) calls all fifteen public functions:
+The [usage example](examples/basic_usage.py) calls all eighteen public functions:
 initialize a temporary database, create/save/reload a quest, read saved progress,
-filter/look up/edit/delete quests, generate descriptions, and calculate XP, a
-level, and updated progress. After the storage demonstration, edits/deletes and
-reward calculations use in-memory helpers. The temporary database is removed
-when the storage demonstration finishes. More XP details are in the
+persist edits and deletion, filter/look up/edit/delete in-memory copies, generate
+descriptions, and calculate XP, a level, and updated progress. The temporary
+database is removed when the storage demonstration finishes. More XP details are in the
 [progression notes](docs/progression.md).
 Expected output includes `Pending quests: 1` and ends with `Remaining quests: 0`.
 Extend the example and module list in `pyproject.toml` as public functions and
@@ -194,8 +198,49 @@ a failed insert leaves existing tasks and progress unchanged. `load_quests`
 returns independent dictionaries, or `[]` if there are no matches. Its filter
 must be `None`, `pending`, or `completed`; other values raise `ValueError`.
 
-Editing/deleting stored quests and completion are later integration work. A
-completion operation must check the saved status and commit both the status
+### Save edits and delete a pending quest
+
+After the save/reload example above, use the business helpers to prepare edits
+and the storage helpers to commit them:
+
+```python
+from quest_manager import change_quest_duration, get_quest, rename_quest
+from storage import delete_pending_quest, update_pending_quest
+
+quests = load_quests(database_path)
+edited = rename_quest(quests, quest["id"], "Do laundry", seed=7)
+edited = change_quest_duration(edited, quest["id"], 45)
+before_xp = load_progress(database_path)
+updated_quest = get_quest(edited, quest["id"])
+update_pending_quest(database_path, updated_quest)
+
+reloaded = load_quests(database_path)
+assert any(saved == updated_quest for saved in reloaded)
+delete_pending_quest(database_path, quest["id"])
+assert all(saved["id"] != quest["id"] for saved in load_quests(database_path))
+assert load_progress(database_path) == before_xp
+```
+
+`update_pending_quest` accepts the same seven-field pending record as
+`insert_quest`, using the same field/type/range validation. It updates only the
+title, description, duration, and planned reward for the matching ID. It does
+not generate descriptions; prepare the record with `rename_quest` and
+`change_quest_duration` so related fields are updated together. Load the latest
+record before editing; each update writes all four editable fields.
+
+Both mutation helpers return `None` after committing and closing the connection.
+They check the stored status within a write transaction, so a stale pending
+copy cannot overwrite or delete a quest that has already been completed.
+Missing IDs raise `KeyError`; completed quests raise `ValueError`. Updates never
+insert missing IDs. Delete IDs must be nonblank strings, matching stored IDs;
+other types raise `TypeError` and blank IDs raise `ValueError`.
+
+Successful edits/deletions preserve other quests and total XP. Failed writes
+roll back. These helpers require an existing initialized database and use the
+same path/error rules as the earlier storage helpers. Deleting the same ID
+again raises `KeyError`. No completion or reward is performed by either helper.
+
+A future completion operation must check the saved status and commit both the status
 change and XP award in one transaction, including retry/concurrency protection.
 Do not implement completion using separately committed task and XP writes.
 
