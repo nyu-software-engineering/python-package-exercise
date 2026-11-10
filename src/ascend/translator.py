@@ -122,6 +122,13 @@ _COMPARISON_DIMENSIONS = {
     "hotter": "looks",
     "prettier": "looks",
     "better": "",
+    "older": "age",
+    "younger": "age",
+    "healthier": "health",
+    "fitter": "fitness",
+    "heavier": "weight",
+    "leaner": "frame",
+    "fatter": "weight",
 }
 
 _SUBJECT_PRONOUNS = ("i", "you", "he", "she", "it", "we", "they")

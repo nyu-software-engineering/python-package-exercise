@@ -312,3 +312,7 @@ class Tests:
     def test_subject_be_adjective_phrases(self):
         assert translator.translate_sentence("She is so bored.") == "She is giga rotting."
         assert translator.translate_sentence("I'm nervous.") == "I'm high cortisol."
+
+    def test_age_and_health_comparisons(self):
+        assert translator.translate_sentence("She is older than me.") == "She agemogged me."
+        assert translator.translate_sentence("He is fitter than Ted.") == "He fitnessmogs Ted."
