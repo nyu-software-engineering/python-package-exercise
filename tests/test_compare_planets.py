@@ -7,6 +7,7 @@ from cosmicly.compare_planets import compare_planets, earth_age
 
 COMPARE_MODULE = importlib.import_module("cosmicly.compare_planets")
 
+
 def days_ago(days: int) -> date:
     """Return the date that was the given number of days before today."""
     return date.today() - timedelta(days=days)
