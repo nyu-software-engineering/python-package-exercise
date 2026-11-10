@@ -333,3 +333,9 @@ class Tests:
         ]
         assert translator.translate_many("I studied.") is None
         assert translator.translate_many(None) is None
+    
+    def test_run_and_walk_nouns_stay_unchanged(self):
+        assert translator.translate_sentence("She hydrated after the run.") == (
+            "She watermaxxed after the run."
+        )
+        assert translator.translate_sentence("We went for a walk.") == "We went for a walk."

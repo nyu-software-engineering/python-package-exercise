@@ -381,6 +381,11 @@ def _verb_phrase_swap(phrase, word_parts, lookup_words, start_index, end_index):
     replacement = _VERB_SWAPS.get(phrase)
     if replacement is None:
         return None
+    if phrase in {
+        "run", "runs", "ran", "running",
+        "walk", "walks", "walked", "walking",
+    } and not _has_person_subject(word_parts, lookup_words, start_index):
+        return None
     if phrase in ("study", "studies"):
         if not _study_is_an_action(word_parts, lookup_words, start_index):
             return None
