@@ -25,9 +25,9 @@ The student functions return a "desperation level" from 1 to 10 based on the stu
 >>> import realesagent
 >>> from realesagent import student
 >>> print(student.desperation_level(grade=90, hours_until_deadline=36, missing_assignments=7))
->>> 6
+6
 >>> print(student.professionalize(truth="My internet connectivity failed and I was too lazy to do anything about it."))
->>> I experienced an unexpected interruption to my digital connectivity.
+I experienced an unexpected interruption to my digital connectivity.
 ```
 You can use the excuses functions to obtain excuse messages, grade request messages, and apology messages as appropriate for your situation. For example,
 ```pycon
