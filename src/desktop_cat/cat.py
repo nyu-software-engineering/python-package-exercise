@@ -24,12 +24,9 @@ class Cat:
         food = food.strip().lower()
         reaction = ""
         hungerchange = 0
+        eaten = True
         if food not in FOODS:
             raise ValueError(f"Invalid food: {food}")
-        if food in self.foods_eaten:
-            self.foods_eaten[food] += 1
-        else:
-            self.foods_eaten[food] = 1
         liked = random.choice([True, True, False])
         if liked:
             hungerchange = random.randint(2, 5)
@@ -40,9 +37,15 @@ class Cat:
             if hungerchange == 0:
                 self.mood = "angry"
                 reaction = f"{self.name} refused to eat the {food}."
+                eaten = False
             else:
                 self.mood = "sad"
                 reaction = f"{self.name} did not like the {food}."
+        if eaten:
+            if food in self.foods_eaten:
+                self.foods_eaten[food] += 1
+            else:
+                self.foods_eaten[food] = 1
         self.hunger = max(self.hunger-hungerchange, 0)
         self.last_action = "eating"
         return reaction
@@ -57,7 +60,7 @@ class Cat:
         self.times_petted += times
         self.last_action = "petted"
         if area in ("belly", "paws"):
-            if times >= 3:
+            if times >= 5:
                 if self.mood == "annoyed":
                     self.mood = "angry"
                     reaction = f"{self.name} is angry after being bothered so much!"
@@ -68,7 +71,7 @@ class Cat:
                 self.mood = "happy"
                 reaction = f"{self.name} lets you pet its {area}."
         else:
-            if times >= 6:
+            if times >= 10:
                 if self.mood == "annoyed":
                     self.mood = "angry"
                     reaction = f"{self.name} is angry after being bothered so much!"
