@@ -157,9 +157,9 @@ def _render(board: Board, score: int, message: str = "") -> None:
         print(message)
 
 
-def play_2048() -> None:
+def play_2048(size: int = GRID_SIZE) -> None:
     """Run the terminal game with immediate W/A/S/D keypresses."""
-    board = new_game()
+    board = new_game(size)
     score = 0
     message = ""
     announced_win = False
