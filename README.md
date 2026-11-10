@@ -90,6 +90,7 @@ Run `pipenv sync --dev` again to return to editable development.
 
 ### Public functions
 
+| `quest_validation` | `validate_quest_input(title, duration_minutes)` | Return the trimmed title and validated whole-minute duration. Raise `ValueError` for a blank title or an invalid duration. |
 | Import from | Function | Purpose |
 | --- | --- | --- |
 | `quest_descriptions` | `generate_fantasy_description(title, *, seed=None, custom_templates=None)` | Describe a nonblank title; an integer seed selects a repeatable template, with optional category overrides. |

@@ -2,6 +2,7 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 
 from quest_descriptions import generate_fantasy_description, rename_pending_quest
+from quest_validation import validate_quest_input
 from quest_manager import (
     change_quest_duration, create_quest, delete_quest, get_quest, list_quests,
     rename_quest,
@@ -11,8 +12,7 @@ from storage import initialize_database, insert_quest, load_progress, load_quest
 
 
 def main() -> None:
-    title = "Study math"
-    duration_minutes = 60
+    title, duration_minutes = validate_quest_input("  Study math  ", 60)
     quests = create_quest([], title, duration_minutes)
     quest_id = quests[0]["id"]
 

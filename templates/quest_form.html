@@ -1,0 +1,33 @@
+<form id="quest-form" action="/quests" method="post" novalidate>
+  <h2>Create a quest</h2>
+
+  <div>
+    <label for="quest-title">Title</label>
+    <input
+      id="quest-title"
+      name="title"
+      type="text"
+      required
+      aria-describedby="quest-title-error"
+    >
+    <p id="quest-title-error"></p>
+  </div>
+
+  <div>
+    <label for="quest-minutes">Minutes</label>
+    <input
+      id="quest-minutes"
+      name="durationMinutes"
+      type="text"
+      inputmode="numeric"
+      required
+      aria-describedby="quest-minutes-error"
+    >
+    <p id="quest-minutes-error"></p>
+  </div>
+
+  <button type="submit">Create Quest</button>
+  <p id="quest-status" role="status"></p>
+</form>
+
+<script type="module" src="/static/quest_form.js"></script>
