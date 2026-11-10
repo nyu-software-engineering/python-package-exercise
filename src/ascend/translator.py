@@ -350,7 +350,7 @@ _ACTION_CUES = (
     _verb_forms("try") + _verb_forms("want") + _verb_forms("need") + _verb_forms("plan")
     + _verb_forms("decide") + ("have", "has", "had")
 )
-_SUBJECT_LINKS = ("will", "should", "to", "gonna", "going") + _ACTION_CUES + _ACTION_MODIFIERS
+_SUBJECT_LINKS = ("will", "should", "can", "could", "might", "must", "to", "gonna", "going") + _ACTION_CUES + _ACTION_MODIFIERS
 
 
 def _verb_phrase_swap(phrase, word_parts, lookup_words, start_index, end_index):
@@ -449,7 +449,7 @@ def _can_maxx_action(word_parts, lookup_words, word_index):
                 and original_word.islower() and lookup_word not in _DESTINATIONS
             )
         return previous_word in _ACTION_CUES
-    if cue in ("will", "should"):
+    if cue in ("will", "should", "can", "could", "might", "must"):
         return previous_word in _SUBJECT_PRONOUNS or previous_word in _PERSON_NOUNS
     if cue == "gonna":
         return previous_word.replace("'", "") in _BE_CUES

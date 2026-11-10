@@ -304,3 +304,7 @@ class Tests:
         assert translator.translate_sentence("I need to sleep.") == "I need to restmaxx."
         assert translator.translate_sentence("She hydrated after the run.") == "She watermaxxed after the run."
         assert translator.translate_sentence("I'm going to sleep.") == "I'm going to restmaxx."
+
+    def test_infers_actions_after_more_modals(self):
+        assert translator.translate_sentence("I could budget.") == "I could budgetmaxx."
+        assert translator.translate_sentence("They might nap.") == "They might napmaxx."
