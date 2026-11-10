@@ -39,8 +39,6 @@ _IDIOM_SWAPS = {
     "hit the books": "studymaxx",
     "call it a day": "log off",
     "on top of the world": "peak aura",
-    "sleep": "restmaxx",
-    "hydrate": "watermaxx",
 }
 _END_PHRASE_SWAPS = {"the best": "peak", "the worst": "brutal"}
 
@@ -59,6 +57,10 @@ _VERB_BASES = {
     "go to the gym": "gymmaxx",
     "eat healthy": "dietmaxx",
     "procrastinate": "rot",
+    "run": "cardiomaxx",
+    "walk": "cardiomaxx",
+    "sleep": "restmaxx",
+    "hydrate": "watermaxx",
 }
 _OUTCOME_BASES = {"win": "mog", "lose": "fumble", "fail": "fumble", "lie": "fraud"}
 _OUTCOME_OBJECTS = ("game", "match", "race", "round", "test", "exam", "class", "money")
@@ -77,6 +79,8 @@ _VERB_FORM_EXCEPTIONS = {
     "win": ("wins", "won", "winning"),
     "sleep": ("sleeps", "slept", "sleeping"),
     "hydrate": ("hydrates", "hydrated", "hydrating"),
+    "run": ("runs", "ran", "running"),
+    "walk": ("walks", "walked", "walking"),
 }
 _VERB_ALIASES = {"outshone": "outshined"}
 

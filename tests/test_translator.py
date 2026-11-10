@@ -301,7 +301,7 @@ class Tests:
         assert translator.translate_sentence("She is on top of the world.") == "She is peak aura."
 
     def test_sleep_and_hydration_verbs(self):
-        assert translator.translate_sentence("I need to sleep.") == "I need to restmaxx."
+        assert translator.translate_sentence("I'm sleeping right now.") == "I'm restmaxxing right now."
         assert translator.translate_sentence("She hydrated after the run.") == "She watermaxxed after the run."
         assert translator.translate_sentence("I'm going to sleep.") == "I'm going to restmaxx."
 
@@ -322,4 +322,6 @@ class Tests:
             "She giga IQmogs me."
         )
     
-    
+    def test_run_verb_forms(self):
+        assert translator.translate_sentence("I ran yesterday.") == "I cardiomaxxed yesterday."
+        assert translator.translate_sentence("She is walking.") == "She is cardiomaxxing."
