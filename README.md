@@ -19,7 +19,7 @@ As expected, you can also work directly in the interpreter:
 ```pycon
 >>> import realesagent
 ```
-To see how the functions work, you can access an example program [here](example/example.py) or read more below.
+To see how the functions work, you can access an example program [here](example/example.py) and use ' or read more below.
 The student functions return a "desperation level" from 1 to 10 based on the student's class information, and also returns a "professional" version of a situation given by the student. For example,
 ```pycon
 >>> import realesagent
