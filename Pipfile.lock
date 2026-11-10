@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "603a3aea6851c624c73daa98f7c39f1fded0d68ad8b41495b14170a10151cebe"
+            "sha256": "4b417820231ffdb580f7d1ab698c5a9598316ac210228b4dec70dab4702a8789"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -15,7 +15,25 @@
             }
         ]
     },
-    "default": {},
+    "default": {
+        "python-dateutil": {
+            "hashes": [
+                "sha256:a5e246f79eb80475e691bf93862cead98decd8a498cf53ba0516fcdc0f50dc1c",
+                "sha256:d7295ff14fdc0f92f662100bfb6c551d160ca090f2939f1ec5b9794265c03f06"
+            ],
+            "index": "pypi",
+            "markers": "python_version >= '3.11'",
+            "version": "==4.0.0"
+        },
+        "tzdata": {
+            "hashes": [
+                "sha256:0a10eec6e13ef16b627fabed9a5f2ba61a62b1c67f327305f4e7e412a70b4aec",
+                "sha256:85d2cd9c09f81f0bb29db27759fc83af4f1e620efb814f8c5bf8b4cc4feece6d"
+            ],
+            "markers": "python_version >= '2'",
+            "version": "==2026.6"
+        }
+    },
     "develop": {
         "build": {
             "hashes": [
@@ -278,11 +296,11 @@
         },
         "markdown-it-py": {
             "hashes": [
-                "sha256:04a21681d6fbb623de53f6f364d352309d4094dd4194040a10fd51833e418d49",
-                "sha256:9f7ebbcd14fe59494226453aed97c1070d83f8d24b6fc3a3bcf9a38092641c4a"
+                "sha256:7aa1511a46c39138de78d9eba92ce47e63124d8003fc98b3a351909e04239efa",
+                "sha256:91a58fa5b72c71a40cf7177250fd767480d7a2bb3ac426ccfb76fb90305fdaaa"
             ],
             "markers": "python_version >= '3.10'",
-            "version": "==4.2.0"
+            "version": "==4.3.0"
         },
         "mdurl": {
             "hashes": [

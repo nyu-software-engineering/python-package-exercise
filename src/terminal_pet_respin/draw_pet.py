@@ -1,4 +1,6 @@
 from .get_stage import STAGES
+import dateutil
+import datetime
 
 _ART = {
     "egg": [
@@ -41,6 +43,14 @@ _ART = {
         "    (  '---------'  )",
         "     '-------------'",
     ],
+    "easter_egg": [
+        "    .----.",
+        "   /      \\",
+        "  |/\\/\\/\\/\\|",
+        "  |/\\/\\/\\/\\|",
+        "   \\      /",
+        "    '----'",
+    ],
 }
 
 _MESSAGES = {
@@ -75,7 +85,7 @@ def _speech_bubble(message):
     ]
 
 
-def draw_pet(stage, message=None):
+def draw_pet(stage, message=None, easter_override=None):
     """Return ASCII art of the pet at the given growth stage.
 
     If message is given, the pet says it in a speech bubble above the art.
@@ -83,6 +93,12 @@ def draw_pet(stage, message=None):
     _check_stage(stage)
     if message is not None and not isinstance(message, str):
         raise TypeError("message must be a string")
+    
+    is_easter = (dateutil.easter.easter(datetime.datetime.now().year) == datetime.datetime.now().date()) or easter_override
+    if easter_override is not None and easter_override is False:
+        is_easter = False
+    if is_easter and stage == "egg":
+        stage = "easter_egg"
 
     lines = list(_ART[stage])
     if message:
