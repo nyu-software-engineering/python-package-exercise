@@ -1,6 +1,6 @@
 import pytest
 
-from project.get_question import get_question
+from project.magic8ball import get_question
 
 
 def test_valid_question():
