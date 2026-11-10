@@ -84,7 +84,7 @@ class Cat:
         if isinstance(times, bool) or not isinstance(times, int):
             raise TypeError("Times must be an integer.")
         if times <= 0:
-            raise ValueError("Times must be greater than 0.")
+            raise ValueError("Times must be greater than 0")
         
         reaction = ""
         self.times_petted += times
@@ -114,8 +114,11 @@ class Cat:
         return reaction
             
     def sleep(self, hours):
-        if not isinstance(hours, int) or isinstance(hours, bool) or hours <= 0:
-            raise ValueError("Hours must be a positive integer.")
+        if not isinstance(hours, int) or isinstance(hours, bool):
+            raise TypeError("Hours must be an integer.")
+
+        if hours <= 0:
+            raise ValueError("Hours must be a positive integer")
 
         if self.sleepiness == 0:
             return f"{self.name} is already fully rested."
