@@ -95,6 +95,8 @@ def draw_pet(stage, message=None, easter_override=None):
         raise TypeError("message must be a string")
     
     is_easter = (dateutil.easter.easter(datetime.datetime.now().year) == datetime.datetime.now().date()) or easter_override
+    if easter_override is not None and easter_override is False:
+        is_easter = False
     if is_easter and stage == "egg":
         stage = "easter_egg"
 
