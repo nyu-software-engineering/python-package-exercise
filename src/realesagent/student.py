@@ -67,3 +67,5 @@ def professionalize(truth):
         f'I wish to formally report the following circumstance: "{truth}". '
         "I respectfully request your consideration while I address this matter."
     )
+
+

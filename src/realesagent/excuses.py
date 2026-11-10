@@ -86,3 +86,7 @@ ABSENCE_EXCUSES = [
 def absence_excuse(class_name):
     excuse = random.choice(ABSENCE_EXCUSES)
     return f"I am sorry I missed {class_name}. {excuse}"
+
+if __name__=="__main__":
+    email = grade_beg(current_grade=70, desired_grade=100, professor_name="John Smith")
+    print(apology_multiplier(email, 7))
