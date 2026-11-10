@@ -27,6 +27,7 @@ python3 -m venv .tools
 export PIPENV_VENV_IN_PROJECT=1
 .tools/bin/pipenv --python "$(command -v python3)"
 .tools/bin/pipenv sync --dev
+.tools/bin/pipenv run python -m playwright install chromium
 .tools/bin/pipenv run test
 ```
 
@@ -38,6 +39,7 @@ py -3 -m venv .tools
 $env:PIPENV_VENV_IN_PROJECT = "1"
 .\.tools\Scripts\pipenv.exe --python (py -3 -c "import sys; print(sys.executable)")
 .\.tools\Scripts\pipenv.exe sync --dev
+.\.tools\Scripts\pipenv.exe run python -m playwright install chromium
 .\.tools\Scripts\pipenv.exe run test
 ```
 
@@ -49,7 +51,8 @@ After changing `Pipfile`, run `pipenv lock` and commit both dependency files.
 ## Build and use the Python package
 
 The working distribution name is `chipotle-quests` (version `0.1.0`). It contains
-the `quest_descriptions`, `quest_manager`, `progression`, and `storage` modules. The package has
+the `quest_descriptions`, `quest_manager`, `progression`, `storage`, and
+`quest_validation` modules. The package has
 not been published to PyPI; confirm the distribution name before publishing.
 
 Pipenv now installs the project in editable mode, so source edits are available
@@ -90,9 +93,9 @@ Run `pipenv sync --dev` again to return to editable development.
 
 ### Public functions
 
-| `quest_validation` | `validate_quest_input(title, duration_minutes)` | Return the trimmed title and validated whole-minute duration. Raise `ValueError` for a blank title or an invalid duration. |
 | Import from | Function | Purpose |
 | --- | --- | --- |
+| `quest_validation` | `validate_quest_input(title, duration_minutes)` | Return the trimmed title and validated whole-minute duration. Raise `ValueError` for a blank title or an invalid duration. |
 | `quest_descriptions` | `generate_fantasy_description(title, *, seed=None, custom_templates=None)` | Describe a nonblank title; an integer seed selects a repeatable template, with optional category overrides. |
 | `quest_descriptions` | `rename_pending_quest(quest, new_title, *, seed=None, custom_templates=None)` | Return a pending quest copy with its title and description updated. |
 | `quest_manager` | `create_quest(quests, title, duration_minutes, *, seed=None, custom_templates=None)` | Return a new list containing a new pending quest with a UUID string ID. |
@@ -112,7 +115,7 @@ Run `pipenv sync --dev` again to return to editable development.
 | `storage` | `load_progress(database_path)` | Read `{"totalXP": saved_integer}`; derive the level with `calculate_level`. |
 
 For example, `from quest_manager import list_quests` imports the listing function.
-The [usage example](examples/basic_usage.py) calls all seventeen public functions:
+The [usage example](examples/basic_usage.py) calls all eighteen public functions:
 initialize a temporary database, create/save/reload a quest, read saved progress,
 persist edits and deletion, filter/look up/edit/delete in-memory copies, generate
 descriptions, and calculate XP, a level, and updated progress. The temporary
