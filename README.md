@@ -3,18 +3,32 @@
 # Python Package Exercise
 
 ## Package Description
-As seen on the PyPI website [here](https://www.google.com), our package is intended to mimic student and professor email responses in a university class. Specifically, our functions give representative samples of student excuses and apologies based on various personal factors (how "desperate" the student is, how professional they seek to be, etc.), and professor decisions based on their own personal factors (how "sympathetic" they seek to be, etc.).
+As seen on the PyPI website [here](https://www.google.com), our package is intended to mimic student and professor email responses in a university class. Specifically, our functions give representative samples of student excuses and apologies based on various personal factors (the student's grade, how professional the student seeks seek to be, etc.), and professor decisions based on their own personal factors (how "sympathetic" they seek to be, etc.).
 
 ## Installation and Usage
 We require Python 3 or greater. Install the package using pip: 
 ```console
 pip install realesagent 
-```
-To use the package in your program, add the following to your import statements:
-
+``` 
+Alternative, if the above fails due to multiple python installations, use `python -m pip install realesagent'.
+To use the package in your program, add the following to your import statements at the top of the program:
 ```python
 import realesagent 
 ```
+As expected, you can also work directly in the interpreter:
+```pycon
+>>> import realesagent
+```
+The student functions return a "desperation level" from 1 to 10 based on the student's class information, and also returns a "professional" version of a situation given by the student. For example,
+```pycon
+>>> import realesagent
+>>> from realesagent import student
+>>> print(student.get_desperation_level(grade=90, hours_until_deadline=36, missing_deadline=7))
+>>> 6
+>>> print(student.professionalize("My internet connectivity failed and I was too lazy to do anything about it."))
+>>> I experienced an unexpected interruption to my digital connectivity.
+'''
+
 
 
 
