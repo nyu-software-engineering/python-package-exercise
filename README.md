@@ -1,7 +1,7 @@
-# Python Package Exercise
-![build-test](https://github.com/software-students-fall2026/python-package-exercise-respin/actions/workflows/build-test.yml/badge.svg)
-
 # terminal-pet-respin
+
+[![build-test](https://github.com/software-students-fall2026/python-package-exercise-respin/actions/workflows/build-test.yml/badge.svg)](https://github.com/software-students-fall2026/python-package-exercise-respin/actions/workflows/build-test.yml)
+
 
 A tiny pet python that lives in your terminal. It starts as an egg, and every
 terminal command you run helps it grow: from egg, to cracking egg, to hatchling,
