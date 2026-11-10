@@ -8,14 +8,30 @@ PET_AREAS = ("head", "back", "belly", "tail", "paws")
 
 class Cat:
     def __init__(self, name="Whiskers", mood="happy"):
+        if not isinstance(name, str):
+            raise TypeError("Name must be a string.")
+        
+        name = name.strip()
+        if not name:
+            raise ValueError("Name cannot be empty.")
+        if len(name) > 20:
+            raise ValueError("Name must be 20 characters or fewer.")
+
+        if not isinstance(mood, str):
+            raise TypeError("Mood must be a string.")
+
+        mood = mood.strip().lower()
+        if mood not in MOODS:
+            raise ValueError(f"Invalid mood: {mood}")
+        
         self.name = name
         self.mood = mood
         self.hunger = 5            # 0 = full, 10 = starving
-        self.sleepiness = 5
+        self.sleepiness = 5        # 0 = rested, 10 = exhausted
         self.times_petted = 0
         self.foods_eaten = {}      # e.g. {"fish": 2}
         self.message = ""
-        self.last_action = "idle"  # render() will read this to pick a frame to animate (not sure if necessary)
+        self.last_action = "idle"  # render() will read this to pick a frame to draw
 
     def set_mood(self, mood):
         raise NotImplementedError
