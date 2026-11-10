@@ -187,6 +187,14 @@ def translate_sentence(text):
         translated_lines.append(_translate_line(line_text) + line_ending)
     return "".join(translated_lines)
 
+def translate_many(texts):
+    """Translate an iterable of strings and return a list of results."""
+    if isinstance(texts, str):
+        return None
+    try:
+        return [translate_sentence(text) for text in texts]
+    except TypeError:
+        return None
 
 def _translate_line(text):
     word_parts = []

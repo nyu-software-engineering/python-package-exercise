@@ -325,3 +325,11 @@ class Tests:
     def test_run_verb_forms(self):
         assert translator.translate_sentence("I ran yesterday.") == "I cardiomaxxed yesterday."
         assert translator.translate_sentence("She is walking.") == "She is cardiomaxxing."
+    
+    def test_translate_many(self):
+        assert translator.translate_many(["I studied.", "Plain text."]) == [
+            "I studymaxxed.",
+            "Plain text.",
+        ]
+        assert translator.translate_many("I studied.") is None
+        assert translator.translate_many(None) is None
