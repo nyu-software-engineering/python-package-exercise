@@ -7,10 +7,10 @@ As seen on the PyPI website [here](https://www.google.com), our package is inten
 
 ## Installation and Usage
 We require Python 3 or greater. Install the package using pip: 
-``` console
+```console
 pip install realesagent ```.
 To use the package in your program, add the following to your import statements:
-``` python
+```python
 import realesagent ```.
 
 
