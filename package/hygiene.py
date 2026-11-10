@@ -24,6 +24,4 @@ def update_hygiene(pet, commits_behind):
     pet["hygiene"] = clamp(
         MAX_STAT - commits_behind * HYGIENE_LOSS_PER_COMMIT_BEHIND
     )
-    if pet["hygiene"] != before:
-        record_event(pet, "stat", stat="hygiene", before=before, after=pet["hygiene"])
     return pet["hygiene"]

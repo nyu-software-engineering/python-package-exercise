@@ -22,6 +22,4 @@ def update_hunger(pet, inputs_since_fed):
 
     before = pet["hunger"]
     pet["hunger"] = clamp(inputs_since_fed * HUNGER_PER_INPUT)
-    if pet["hunger"] != before:
-        record_event(pet, "stat", stat="hunger", before=before, after=pet["hunger"])
     return pet["hunger"]
