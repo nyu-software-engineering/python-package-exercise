@@ -43,3 +43,28 @@ assert seeded == rename_pending_quest(original, "Do laundry", seed=7)
 
 Run the tests from the repository root with `python -m pytest -q` in an
 environment with pytest installed.
+
+## Custom description templates
+
+Both functions accept `custom_templates`, a dictionary with optional `study`,
+`exercise`, `chores`, and `fallback` keys. Each value must be a nonempty list or
+tuple of nonblank strings. Unknown keys and invalid values raise an error even
+when the current task would not use that category. Omitted categories keep their
+defaults; `{}` and `None` preserve all defaults.
+
+```python
+from quest_descriptions import generate_fantasy_description, rename_pending_quest
+
+templates = {"exercise": ["Race a dragon", "Train with a wizard"]}
+assert generate_fantasy_description("Workout", custom_templates=templates) == "Race a dragon"
+quest = {"id": "q1", "title": "Study math", "status": "pending"}
+updated = rename_pending_quest(quest, "Workout", seed=7, custom_templates=templates)
+assert updated["fantasyDescription"] in templates["exercise"]
+```
+
+No seed selects the first entry; a seed selects a repeatable entry from that
+category's ordered choices. Changing the choices/order can change the result.
+Templates are literal strings, including braces and whitespace. Neither input
+configuration nor the original quest is modified. Pass the configuration on each
+call; it is not saved in the quest. English matching and category priority remain
+unchanged, although the output text can be in any language.

@@ -1,3 +1,9 @@
+from uuid import uuid4
+
+from progression import calculate_xp
+from quest_descriptions import generate_fantasy_description, rename_pending_quest
+
+
 def list_quests(quests, status=None):
     """Return quest copies, optionally filtered by pending or completed status."""
     if not isinstance(quests, list):
@@ -47,4 +53,57 @@ def delete_quest(quests, quest_id):
     if len(result) != len(quests) - 1:
         raise ValueError("quest IDs must be unique")
 
+    return result
+
+
+def create_quest(quests, title, duration_minutes, *, seed=None):
+    """Return a new list with a pending quest; no XP is awarded yet."""
+    result = list_quests(quests)
+    description = generate_fantasy_description(title, seed=seed)
+    reward = calculate_xp(duration_minutes)
+
+    quest_id = uuid4().hex
+    while any(quest.get("id") == quest_id for quest in result):
+        quest_id = uuid4().hex
+
+    result.append({
+        "id": quest_id,
+        "title": title,
+        "durationMinutes": duration_minutes,
+        "fantasyDescription": description,
+        "status": "pending",
+        "xpReward": reward,
+        "completedAt": None,
+    })
+    return result
+
+
+def rename_quest(quests, quest_id, new_title, *, seed=None):
+    """Rename one pending quest and update its fantasy description."""
+    quest = get_quest(quests, quest_id)
+    updated = rename_pending_quest(quest, new_title, seed=seed)
+    return _replace_quest(quests, quest_id, updated)
+
+
+def change_quest_duration(quests, quest_id, duration_minutes):
+    """Update one pending quest's duration and planned XP reward together."""
+    quest = get_quest(quests, quest_id)
+    if quest.get("status") != "pending":
+        raise ValueError("only pending quests can be edited")
+
+    reward = calculate_xp(duration_minutes)
+    quest["durationMinutes"] = duration_minutes
+    quest["xpReward"] = reward
+    return _replace_quest(quests, quest_id, quest)
+
+
+def _replace_quest(quests, quest_id, updated):
+    result = list_quests(quests)
+    matches = [
+        index for index, quest in enumerate(result) if quest.get("id") == quest_id
+    ]
+    if len(matches) != 1:
+        raise ValueError("quest IDs must be unique")
+
+    result[matches[0]] = updated
     return result
