@@ -384,6 +384,7 @@ def _verb_phrase_swap(phrase, word_parts, lookup_words, start_index, end_index):
     if phrase in {
         "run", "runs", "ran", "running",
         "walk", "walks", "walked", "walking",
+        "sleep", "sleeps", "slept", "sleeping",
     } and not _has_person_subject(word_parts, lookup_words, start_index):
         return None
     if phrase in ("study", "studies"):

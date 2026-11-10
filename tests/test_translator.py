@@ -314,7 +314,7 @@ class Tests:
         assert translator.translate_sentence("I'm nervous.") == "I'm high cortisol."
 
     def test_age_and_health_comparisons(self):
-        assert translator.translate_sentence("She is older than me.") == "She agemogged me."
+        assert translator.translate_sentence("She is older than me.") == "She agemogs me."
         assert translator.translate_sentence("He is fitter than Ted.") == "He fitnessmogs Ted."
     
     def test_even_emphasizes_comparisons(self):
@@ -339,3 +339,14 @@ class Tests:
             "She watermaxxed after the run."
         )
         assert translator.translate_sentence("We went for a walk.") == "We went for a walk."
+    
+    def test_sleep_noun_stays_unchanged(self):
+        assert translator.translate_sentence(
+            "She's stressed the importance of sleep."
+        ) == "She's stressed the importance of sleep."
+        assert translator.translate_sentence("I'm sleeping right now.") == (
+            "I'm restmaxxing right now."
+        )
+        assert translator.translate_sentence("I'm going to sleep.") == (
+            "I'm going to restmaxx."
+        )
