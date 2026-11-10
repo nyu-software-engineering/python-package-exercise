@@ -1,5 +1,3 @@
-"""Run every current public function after installing chipotle-quests."""
-
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
@@ -18,8 +16,6 @@ def main() -> None:
     quests = create_quest([], title, duration_minutes)
     quest_id = quests[0]["id"]
 
-    # Each helper closes its connection; loading reads the committed task back.
-    # Use a temporary file so this example leaves no local database behind.
     with TemporaryDirectory() as directory:
         database_path = Path(directory) / "quests.db"
         initialize_database(database_path)
@@ -31,8 +27,6 @@ def main() -> None:
         print("Saved total XP:", saved_progress["totalXP"])
         print("Saved level:", calculate_level(saved_progress["totalXP"]))
 
-    # The remaining examples edit in-memory copies; persistence of edits/deletes
-    # and completion with XP awards will be added in later integration work.
     print(f"Original: {title} -> {quests[0]['fantasyDescription']}")
     print("Seeded description:", generate_fantasy_description(title, seed=7))
     print("Quest XP reward:", calculate_xp(duration_minutes))
@@ -46,7 +40,6 @@ def main() -> None:
     quest = get_quest(quests, quest_id)
     print("Looked up:", quest["id"], quest["title"])
 
-    # Save the returned copy to keep an edit.
     updated = rename_pending_quest(quest, "Clean the kitchen")
     quests = [updated]
     print(f"Renamed: {updated['title']} -> {updated['fantasyDescription']}")

@@ -1,5 +1,3 @@
-"""Initialize and access file-backed storage for one local quest-planner user."""
-
 from contextlib import closing
 from os import PathLike, fspath
 from pathlib import Path
@@ -42,21 +40,9 @@ CREATE TABLE IF NOT EXISTS progress (
 
 
 def initialize_database(database_path: str | PathLike[str]) -> None:
-    """Create missing quest/progress tables and seed 0 XP for a new user.
-
-    Accept a text filesystem path (including pathlib.Path). Its parent directory
-    must already exist. Blank paths, SQLite URIs, and ':memory:' are rejected
-    because this helper closes its connection and promises file-backed storage.
-
-    Repeated calls preserve existing quests, progress, and unrelated tables.
-    Initialization is committed atomically and the connection is always closed.
-    Existing table definitions are not migrated. SQLite errors propagate to the
-    caller; invalid path types raise TypeError and invalid names raise ValueError.
-    """
     path = _validate_database_path(database_path)
     with closing(sqlite3.connect(path, isolation_level=None)) as connection:
         with connection:
-            # Explicitly include DDL and the initial row in the same transaction.
             connection.execute("BEGIN IMMEDIATE")
             connection.execute(_CREATE_QUESTS)
             connection.execute(_CREATE_PROGRESS)
@@ -67,18 +53,6 @@ def initialize_database(database_path: str | PathLike[str]) -> None:
 
 
 def insert_quest(database_path: str | PathLike[str], quest: dict) -> None:
-    """Commit one new pending quest without changing progress or the input dict.
-
-    Call initialize_database first. The dictionary must have exactly the seven
-    standard fields, with nonblank text ID/title/description, positive integer
-    minutes, an equal integer XP reward, pending status, and no completion time.
-    Minutes/reward must fit SQLite's signed 64-bit integer range. Extra metadata
-    is rejected rather than silently discarded. Text formatting is preserved.
-
-    Invalid field types raise TypeError; invalid fields/values raise ValueError.
-    Duplicate IDs raise sqlite3.IntegrityError without overwriting any record.
-    Other SQLite errors propagate. Failed inserts leave quests and XP unchanged.
-    """
     if not isinstance(quest, dict):
         raise TypeError("quest must be a dictionary")
     if set(quest) != set(_QUEST_COLUMNS):
@@ -108,13 +82,6 @@ def insert_quest(database_path: str | PathLike[str], quest: dict) -> None:
 
 
 def load_quests(database_path: str | PathLike[str], status: str | None = None) -> list[dict]:
-    """Read independent quest dictionaries in insertion order, optionally filtered.
-
-    status must be None, 'pending', or 'completed'; otherwise raise ValueError.
-    An initialized empty database returns []. Reads never create a missing file
-    or regenerate descriptions. Path rules match initialize_database; SQLite
-    errors propagate for missing files/tables or other database problems.
-    """
     if status not in (None, "pending", "completed"):
         raise ValueError("status must be pending, completed, or None")
     query = _SELECT_QUESTS
@@ -128,13 +95,6 @@ def load_quests(database_path: str | PathLike[str], status: str | None = None) -
 
 
 def load_progress(database_path: str | PathLike[str]) -> dict:
-    """Read {'totalXP': saved_integer}; calculate the level with progression.
-
-    Use an initialized database. A missing progress row raises ValueError;
-    missing files/tables and other database errors propagate as SQLite errors.
-    Path rules match initialize_database. No row is created or XP awarded, and
-    the returned dictionary can be changed without changing stored progress.
-    """
     with closing(_connect_existing(database_path, readonly=True)) as connection:
         row = connection.execute("SELECT totalXP FROM progress WHERE id = 1").fetchone()
     if row is None:
@@ -154,6 +114,5 @@ def _validate_database_path(database_path):
 
 
 def _connect_existing(database_path, *, readonly=False):
-    # Encode URI-special characters in filenames, and never create a typo'd path.
     path = Path(_validate_database_path(database_path)).resolve().as_uri()
     return sqlite3.connect(path + ("?mode=ro" if readonly else "?mode=rw"), uri=True)

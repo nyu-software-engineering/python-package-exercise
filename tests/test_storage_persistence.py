@@ -1,5 +1,3 @@
-"""Verify quest/progress reads and durable inserts against real SQLite files."""
-
 from contextlib import closing
 from copy import deepcopy
 import json
@@ -34,7 +32,6 @@ def test_insert_survives_reopen_and_a_separate_process(database):
     assert load_quests(database) == [original]
     assert load_progress(database) == {"totalXP": 0}
 
-    # A new Python process verifies committed data independently of our helpers.
     result = subprocess.run([
         sys.executable, "-I", "-c",
         "import json, sqlite3, sys; "
@@ -57,7 +54,6 @@ def test_reads_order_status_and_independent_copies(database):
     second = new_quest("Clean kitchen", 20)
     insert_quest(database, first)
     insert_quest(database, second)
-    # Model a record produced by the future completion transaction.
     with closing(sqlite3.connect(database)) as connection:
         connection.execute(
             "UPDATE quests SET status = 'completed', completedAt = ? WHERE id = ?",
@@ -82,7 +78,6 @@ def test_duplicate_id_does_not_overwrite_or_award_xp(database):
         insert_quest(database, quest | {"title": "Replacement"})
     assert load_quests(database) == [quest]
     assert load_progress(database) == {"totalXP": 0}
-    # The failed write releases its connection/transaction for the next writer.
     another = new_quest("Do laundry", 30)
     insert_quest(database, another)
     assert load_quests(database) == [quest, another]
@@ -193,7 +188,7 @@ def test_operations_share_initializers_path_rules(operation, path, error):
 
 def test_paths_with_unicode_spaces_and_uri_characters(tmp_path, monkeypatch):
     monkeypatch.chdir(tmp_path)
-    path = "任务 ?#%.db"
+    path = "quests \u00e9 ?#%.db"
     initialize_database(path)
     quest = new_quest("Read math", 2**63 - 1)
     insert_quest(path, quest)
