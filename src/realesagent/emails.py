@@ -36,3 +36,5 @@ def extension_request(days_late, professor_name):
         message = "I am aware this assignment was due a concerning amount of time ago. I was hoping enough time had passed for this to feel like a fresh start."
 
     return f"Dear Professor {professor_name},\n\n{message}\n\nBest,\nA Student With Excellent Intentions"
+
+

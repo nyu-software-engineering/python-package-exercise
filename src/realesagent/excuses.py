@@ -73,3 +73,8 @@ def apology_multiplier(email, desperation):
     apology = apologies[(desperation - 1) // 2]
 
     return apology + "\n\n" + email
+
+
+if __name__=="__main__":
+    email = grade_beg(current_grade=70, desired_grade=100, professor_name="John Smith")
+    print(apology_multiplier(email, 7))
