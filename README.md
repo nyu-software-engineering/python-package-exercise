@@ -49,7 +49,7 @@ After changing `Pipfile`, run `pipenv lock` and commit both dependency files.
 ## Build and use the Python package
 
 The working distribution name is `chipotle-quests` (version `0.1.0`). It contains
-the `quest_descriptions`, `quest_manager`, and `progression` modules. The package has
+the `quest_descriptions`, `quest_manager`, `progression`, and `storage` modules. The package has
 not been published to PyPI; confirm the distribution name before publishing.
 
 Pipenv now installs the project in editable mode, so source edits are available
@@ -92,25 +92,62 @@ Run `pipenv sync --dev` again to return to editable development.
 
 | Import from | Function | Purpose |
 | --- | --- | --- |
-| `quest_descriptions` | `generate_fantasy_description(title, *, seed=None)` | Describe a nonblank title; an integer seed selects a repeatable template. |
-| `quest_descriptions` | `rename_pending_quest(quest, new_title, *, seed=None)` | Return a pending quest copy with its title and description updated. |
+| `quest_descriptions` | `generate_fantasy_description(title, *, seed=None, custom_templates=None)` | Describe a nonblank title; an integer seed selects a repeatable template, with optional category overrides. |
+| `quest_descriptions` | `rename_pending_quest(quest, new_title, *, seed=None, custom_templates=None)` | Return a pending quest copy with its title and description updated. |
+| `quest_manager` | `create_quest(quests, title, duration_minutes, *, seed=None)` | Return a new list containing a new pending quest with a UUID string ID. |
 | `quest_manager` | `list_quests(quests, status=None)` | Return quest copies, optionally filtering by `pending` or `completed`. |
 | `quest_manager` | `get_quest(quests, quest_id)` | Return a quest copy by ID; raise `KeyError` if it is missing. |
 | `quest_manager` | `delete_quest(quests, quest_id)` | Return a new list with the specified pending quest removed. |
+| `quest_manager` | `rename_quest(quests, quest_id, new_title, *, seed=None)` | Rename a pending quest by ID and regenerate its description. |
+| `quest_manager` | `change_quest_duration(quests, quest_id, duration_minutes)` | Update a pending quest's duration and planned XP reward together. |
 | `progression` | `calculate_xp(duration_minutes)` | Return 1 XP per positive integer minute. |
 | `progression` | `calculate_level(total_xp)` | Calculate a level from nonnegative integer total XP: `1 + total_xp // 100`. |
 | `progression` | `award_xp(total_xp, duration_minutes)` | Calculate total XP and level after one reward. |
+| `storage` | `initialize_database(database_path)` | Create SQLite tables and initialize progress without overwriting existing data. |
 
 For example, `from quest_manager import list_quests` imports the listing function.
-The [usage example](examples/basic_usage.py) demonstrates the eight functions listed
-above: generate a description, calculate XP, a level and updated progress, filter
-and look up a quest, rename it, and delete it. It keeps data in memory; persistence
-and awarding XP on completion are separate integration work. More XP details are
-in the [progression notes](docs/progression.md).
+The [usage example](examples/basic_usage.py) calls all twelve public functions:
+initialize a temporary database, create/filter/look up/edit/delete quests, generate
+descriptions, and calculate XP, a level, and updated progress. Task operations in
+the example use the in-memory helpers; the temporary database is removed when the
+initialization demonstration finishes. More XP details are in the
+[progression notes](docs/progression.md).
 Expected output includes `Pending quests: 1` and ends with `Remaining quests: 0`.
 Extend the example and module list in `pyproject.toml` as public functions and
 modules are added. More title-editing details are in the
 [integration notes](docs/quest-description-integration.md).
+
+## Database initialization
+
+After syncing the editable installation with `pipenv sync --dev`, initialize a
+local database using Python's standard-library SQLite support:
+
+```python
+from storage import initialize_database
+
+initialize_database("quests.db")
+```
+
+This creates the file if needed, plus two tables:
+
+- `quests`: `id` (text), `title`, `durationMinutes`, `fantasyDescription`,
+  `status`, `xpReward`, and nullable `completedAt`, matching existing quest helpers.
+- `progress`: one local-user row (`id = 1`) with `totalXP = 0` initially.
+  Use `calculate_level(total_xp)` to derive the level rather than storing it twice.
+
+Repeated initialization preserves existing tasks and XP. Schema creation and
+initial progress are committed together, and the connection is closed before
+the function returns. Basic schema constraints enforce positive integer minutes,
+matching XP rewards, supported statuses, and nonnegative integer total XP.
+
+Pass a string or `pathlib.Path` pointing to a file in an existing directory.
+Invalid path types raise `TypeError`; blank names, `:memory:`, and SQLite URIs
+raise `ValueError`. File-access and database errors propagate as SQLite errors.
+Existing table definitions are not migrated by this initializer.
+
+Local database files and SQLite transaction files are ignored by Git. Task/XP
+save/load helpers and atomic completion with one-time XP rewards are the next
+persistence integration step.
 
 ## Automated checks
 
