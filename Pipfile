@@ -5,6 +5,7 @@ name = "pypi"
 
 [packages]
 chipotle-quests = {path = ".", editable = true}
+flask = "*"
 
 [dev-packages]
 pytest = ">=8,<10"
@@ -12,6 +13,7 @@ build = ">=1.2,<2"
 # Include pytest's Windows color support when generating the lock on macOS.
 colorama = ">=0.4,<1"
 pytest-playwright = "*"
+
 [scripts]
 test = "python -m pytest"
 build = "python -m build"
