@@ -24,7 +24,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: Install dependencies
-        run: pip install -e . pytest build
+        run: pip install -e ".[gui]" pytest build
 
       - name: Build package
         run: python -m build
