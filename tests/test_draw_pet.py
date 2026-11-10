@@ -13,12 +13,12 @@ def test_returns_string_for_every_stage():
 
 
 def test_each_stage_has_different_art():
-    drawings = [draw_pet(stage) for stage in STAGES]
+    drawings = [draw_pet(stage, easter_override=False) for stage in STAGES]
     assert len(set(drawings)) == len(STAGES)
 
 
 def test_whole_egg_has_no_eyes():
-    art = draw_pet("egg")
+    art = draw_pet("egg", easter_override=False)
     assert "O O" not in art
     assert "( " not in art
     assert "/\\/\\" not in art
@@ -30,7 +30,7 @@ def test_eyes_show_once_the_shell_cracks():
 
 
 def test_tongue_shows_only_when_grown():
-    assert "~<" not in draw_pet("egg")
+    assert "~<" not in draw_pet("egg", easter_override=False)
     assert "~<" not in draw_pet("hatchling")
     assert "~<" in draw_pet("young python")
     assert "~<" in draw_pet("full python")
@@ -44,16 +44,16 @@ def test_full_python_is_the_biggest():
 def test_works_with_get_stage_output():
     for commands_run in (0, 30, 50, 120, 500):
         stage = get_stage(commands_run, 50)
-        assert isinstance(draw_pet(stage), str)
+        assert isinstance(draw_pet(stage, easter_override=False), str)
 
 
 def test_unknown_stage_raises_value_error():
     with pytest.raises(ValueError):
         draw_pet("dragon")
     with pytest.raises(ValueError):
-        draw_pet("")
+        draw_pet("", easter_override=False)
     with pytest.raises(ValueError):
-        draw_pet("Egg")
+        draw_pet("Egg", easter_override=False)
 
 
 def test_non_string_stage_raises_type_error():
@@ -62,23 +62,23 @@ def test_non_string_stage_raises_type_error():
     with pytest.raises(TypeError):
         draw_pet(None)
     with pytest.raises(TypeError):
-        draw_pet(["egg"])
+        draw_pet(["egg"], easter_override=False)
 
 
 def test_no_message_means_no_bubble():
-    assert draw_pet("egg") == draw_pet("egg", None)
-    assert draw_pet("egg", "") == draw_pet("egg")
-    assert "<" not in draw_pet("egg")
+    assert draw_pet("egg") == draw_pet("egg", None, easter_override=False)
+    assert draw_pet("egg", "") == draw_pet("egg", easter_override=False)
+    assert "<" not in draw_pet("egg", easter_override=False)
 
 
 def test_message_appears_in_bubble_above_art():
     art = draw_pet("hatchling", "I'm out!")
     assert "< I'm out! >" in art
-    assert art.endswith(draw_pet("hatchling"))
+    assert art.endswith(draw_pet("hatchling", easter_override=False))
 
 
 def test_bubble_width_matches_message():
-    lines = draw_pet("egg", "hi").splitlines()
+    lines = draw_pet("egg", "hi", easter_override=False).splitlines()
     assert lines[0] == " " + "_" * 4
     assert lines[1] == "< hi >"
     assert lines[2] == " " + "-" * 4
@@ -88,7 +88,7 @@ def test_message_must_be_a_string():
     with pytest.raises(TypeError):
         draw_pet("egg", 42)
     with pytest.raises(TypeError):
-        draw_pet("egg", ["hi"])
+        draw_pet("egg", ["hi"], easter_override=False)
 
 
 def test_every_stage_has_its_own_message():
@@ -102,3 +102,9 @@ def test_pet_says_rejects_bad_stage():
         pet_says("dragon")
     with pytest.raises(TypeError):
         pet_says(5)
+        
+def test_easter_egg():
+    # Test that the easter egg art is returned on Easter
+    easter_art = draw_pet("egg", easter_override=True)
+    assert "O O" not in easter_art
+    assert "/\\/\\/\\/" in easter_art
