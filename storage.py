@@ -53,31 +53,41 @@ def initialize_database(database_path: str | PathLike[str]) -> None:
 
 
 def insert_quest(database_path: str | PathLike[str], quest: dict) -> None:
-    if not isinstance(quest, dict):
-        raise TypeError("quest must be a dictionary")
-    if set(quest) != set(_QUEST_COLUMNS):
-        raise ValueError("quest must contain exactly the seven standard fields")
-    for field in ("id", "title", "fantasyDescription"):
-        if not isinstance(quest[field], str):
-            raise TypeError(f"{field} must be a string")
-        if not quest[field].strip():
-            raise ValueError(f"{field} must not be blank")
-    for field in ("durationMinutes", "xpReward"):
-        if type(quest[field]) is not int:
-            raise TypeError(f"{field} must be an integer")
-    if not 1 <= quest["durationMinutes"] <= 2**63 - 1:
-        raise ValueError("durationMinutes must be a positive SQLite integer")
-    if quest["xpReward"] != quest["durationMinutes"]:
-        raise ValueError("xpReward must equal durationMinutes")
-    if quest["status"] != "pending" or quest["completedAt"] is not None:
-        raise ValueError("only new pending quests without a completion time can be inserted")
-
+    _validate_pending_quest(quest)
     values = tuple(quest[field] for field in _QUEST_COLUMNS)
     with closing(_connect_existing(database_path)) as connection:
         with connection:
             connection.execute(
                 "INSERT INTO quests (" + ", ".join(_QUEST_COLUMNS)
                 + ") VALUES (?, ?, ?, ?, ?, ?, ?)", values,
+            )
+
+
+def update_pending_quest(database_path: str | PathLike[str], quest: dict) -> None:
+    _validate_pending_quest(quest)
+    with closing(_connect_existing(database_path)) as connection:
+        with connection:
+            connection.execute("BEGIN IMMEDIATE")
+            _require_pending_quest(connection, quest["id"])
+            connection.execute(
+                "UPDATE quests SET title = ?, fantasyDescription = ?, "
+                "durationMinutes = ?, xpReward = ? WHERE id = ? AND status = 'pending'",
+                (quest["title"], quest["fantasyDescription"], quest["durationMinutes"],
+                 quest["xpReward"], quest["id"]),
+            )
+
+
+def delete_pending_quest(database_path: str | PathLike[str], quest_id: str) -> None:
+    if not isinstance(quest_id, str):
+        raise TypeError("quest_id must be a string")
+    if not quest_id.strip():
+        raise ValueError("quest_id must not be blank")
+    with closing(_connect_existing(database_path)) as connection:
+        with connection:
+            connection.execute("BEGIN IMMEDIATE")
+            _require_pending_quest(connection, quest_id)
+            connection.execute(
+                "DELETE FROM quests WHERE id = ? AND status = 'pending'", (quest_id,),
             )
 
 
@@ -100,6 +110,35 @@ def load_progress(database_path: str | PathLike[str]) -> dict:
     if row is None:
         raise ValueError("progress is not initialized; call initialize_database first")
     return {"totalXP": row[0]}
+
+
+def _validate_pending_quest(quest):
+    if not isinstance(quest, dict):
+        raise TypeError("quest must be a dictionary")
+    if set(quest) != set(_QUEST_COLUMNS):
+        raise ValueError("quest must contain exactly the seven standard fields")
+    for field in ("id", "title", "fantasyDescription"):
+        if not isinstance(quest[field], str):
+            raise TypeError(f"{field} must be a string")
+        if not quest[field].strip():
+            raise ValueError(f"{field} must not be blank")
+    for field in ("durationMinutes", "xpReward"):
+        if type(quest[field]) is not int:
+            raise TypeError(f"{field} must be an integer")
+    if not 1 <= quest["durationMinutes"] <= 2**63 - 1:
+        raise ValueError("durationMinutes must be a positive SQLite integer")
+    if quest["xpReward"] != quest["durationMinutes"]:
+        raise ValueError("xpReward must equal durationMinutes")
+    if quest["status"] != "pending" or quest["completedAt"] is not None:
+        raise ValueError("quest must be pending without a completion time")
+
+
+def _require_pending_quest(connection, quest_id):
+    row = connection.execute("SELECT status FROM quests WHERE id = ?", (quest_id,)).fetchone()
+    if row is None:
+        raise KeyError(f"quest not found: {quest_id}")
+    if row[0] != "pending":
+        raise ValueError("only pending quests can be changed")
 
 
 def _validate_database_path(database_path):

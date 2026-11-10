@@ -8,7 +8,10 @@ from quest_manager import (
     rename_quest,
 )
 from progression import award_xp, calculate_level, calculate_xp
-from storage import initialize_database, insert_quest, load_progress, load_quests
+from storage import (
+    delete_pending_quest, initialize_database, insert_quest, load_progress,
+    load_quests, update_pending_quest,
+)
 
 
 def main() -> None:
@@ -26,6 +29,14 @@ def main() -> None:
         saved_progress = load_progress(database_path)
         print("Saved total XP:", saved_progress["totalXP"])
         print("Saved level:", calculate_level(saved_progress["totalXP"]))
+        stored = rename_quest(quests, quest_id, "Clean the kitchen", seed=7)
+        stored = change_quest_duration(stored, quest_id, 45)
+        update_pending_quest(database_path, stored[0])
+        reloaded = load_quests(database_path)
+        print("Saved title:", reloaded[0]["title"])
+        print("Saved planned XP:", reloaded[0]["xpReward"])
+        delete_pending_quest(database_path, quest_id)
+        print("Stored quests after deletion:", len(load_quests(database_path)))
 
     print(f"Original: {title} -> {quests[0]['fantasyDescription']}")
     print("Seeded description:", generate_fantasy_description(title, seed=7))
