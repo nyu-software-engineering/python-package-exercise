@@ -308,3 +308,7 @@ class Tests:
     def test_infers_actions_after_more_modals(self):
         assert translator.translate_sentence("I could budget.") == "I could budgetmaxx."
         assert translator.translate_sentence("They might nap.") == "They might napmaxx."
+    
+    def test_subject_be_adjective_phrases(self):
+        assert translator.translate_sentence("She is so bored.") == "She is giga rotting."
+        assert translator.translate_sentence("I'm nervous.") == "I'm high cortisol."

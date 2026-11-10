@@ -98,6 +98,11 @@ _ADJECTIVE_SWAPS = {
     "ruined": "kirked",
     "angry": "seething",
     "mad": "seething",
+    "bored": "rotting",
+    "nervous": "high cortisol",
+    "tweaking": "high cortisol",
+    "stressed": "high cortisol",
+    "anxious": "high cortisol",
 }
 _ADJECTIVE_CUES = ("feel", "feels", "felt", "look", "looks", "looked", "seem", "seems", "seemed")
 _INTENSIFIER_SWAPS = {
@@ -585,10 +590,19 @@ def _adjective_swap(words, original_words, next_word):
         return None
 
     prefix = []
-    adjective_index = 0
-    if words[0].replace("'", "") in _BE_CUES or words[0] in _ADJECTIVE_CUES:
-        prefix.append(original_words[0])
-        adjective_index += 1
+    if (
+        len(words) >= 3
+        and words[1] in _BE_VERBS
+        and _is_person_subject(original_words[0])
+    ):
+        prefix.extend(original_words[:2])
+        adjective_index = 2
+    else:
+        adjective_index = 0
+        if words[0].replace("'", "") in _BE_CUES or words[0] in _ADJECTIVE_CUES:
+            prefix.append(original_words[0])
+            adjective_index = 1
+
     if words[adjective_index] in _INTENSIFIER_SWAPS:
         prefix.append(_INTENSIFIER_SWAPS[words[adjective_index]])
         adjective_index += 1
