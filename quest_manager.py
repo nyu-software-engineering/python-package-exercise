@@ -56,10 +56,16 @@ def delete_quest(quests, quest_id):
     return result
 
 
-def create_quest(quests, title, duration_minutes, *, seed=None):
-    """Return a new list with a pending quest; no XP is awarded yet."""
+def create_quest(quests, title, duration_minutes, *, seed=None, custom_templates=None):
+    """Return a new pending quest list; optional templates customize its description.
+
+    No XP is awarded. Templates and seed are forwarded to the description
+    generator, validated there, and not stored in the quest.
+    """
     result = list_quests(quests)
-    description = generate_fantasy_description(title, seed=seed)
+    description = generate_fantasy_description(
+        title, seed=seed, custom_templates=custom_templates
+    )
     reward = calculate_xp(duration_minutes)
 
     quest_id = uuid4().hex
@@ -78,10 +84,16 @@ def create_quest(quests, title, duration_minutes, *, seed=None):
     return result
 
 
-def rename_quest(quests, quest_id, new_title, *, seed=None):
-    """Rename one pending quest and update its fantasy description."""
+def rename_quest(quests, quest_id, new_title, *, seed=None, custom_templates=None):
+    """Rename one pending quest and regenerate its description.
+
+    Pass custom_templates again to retain a custom theme; omitted categories
+    use defaults. Validation failures leave the input collection unchanged.
+    """
     quest = get_quest(quests, quest_id)
-    updated = rename_pending_quest(quest, new_title, seed=seed)
+    updated = rename_pending_quest(
+        quest, new_title, seed=seed, custom_templates=custom_templates
+    )
     return _replace_quest(quests, quest_id, updated)
 
 
