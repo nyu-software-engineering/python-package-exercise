@@ -9,6 +9,7 @@ from games_package.game_2048 import (
     is_game_over,
     move,
     new_game,
+    play_2048,
 )
 
 
@@ -91,6 +92,26 @@ def test_new_game_starts_with_two_tiles():
     assert all(len(row) == 4 for row in board)
     assert sum(tile != 0 for row in board for tile in row) == 2
     assert all(tile in {0, 2, 4} for row in board for tile in row)
+
+
+@pytest.mark.parametrize("size", [4, 3])
+def test_play_2048_passes_grid_size_to_new_game(monkeypatch, size):
+    requested_sizes = []
+
+    def fake_new_game(requested_size):
+        requested_sizes.append(requested_size)
+        return create_board(requested_size)
+
+    monkeypatch.setattr("games_package.game_2048.new_game", fake_new_game)
+    monkeypatch.setattr("games_package.game_2048._render", lambda *args: None)
+    monkeypatch.setattr("games_package.game_2048._read_key", lambda: "q")
+
+    if size == 4:
+        play_2048()
+    else:
+        play_2048(size=size)
+
+    assert requested_sizes == [size]
 
 
 def test_win_and_game_over_detection():
