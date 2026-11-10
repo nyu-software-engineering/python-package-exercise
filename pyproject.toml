@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "chipotle-quests"
+version = "0.1.0"
+description = "Turn everyday tasks into fantasy quests and manage quest lists."
+readme = "README.md"
+requires-python = ">=3.11"
+license = "GPL-3.0-only"
+license-files = ["LICENSE"]
+authors = [{name = "Team Chipotle"}]
+dependencies = []
+
+[project.urls]
+Repository = "https://github.com/software-students-fall2026/python-package-exercise-Chipotle"
+
+[tool.setuptools]
+py-modules = ["quest_descriptions", "quest_manager", "progression"]
