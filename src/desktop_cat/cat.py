@@ -8,25 +8,47 @@ PET_AREAS = ("head", "back", "belly", "tail", "paws")
 
 class Cat:
     def __init__(self, name="Whiskers", mood="happy"):
+        if not isinstance(name, str):
+            raise TypeError("Name must be a string.")
+        
+        name = name.strip()
+
+        if not name:
+            raise ValueError("Name cannot be empty.")
+        if len(name) > 20:
+            raise ValueError("Name must be 20 characters or fewer.")
+
+        if not isinstance(mood, str):
+            raise TypeError("Mood must be a string.")
+
+        mood = mood.strip().lower()
+        if mood not in MOODS:
+            raise ValueError(f"Invalid mood: {mood}")
+        
         self.name = name
         self.mood = mood
         self.hunger = 5            # 0 = full, 10 = starving
-        self.sleepiness = 5
+        self.sleepiness = 5        # 0 = rested, 10 = exhausted
         self.times_petted = 0
         self.foods_eaten = {}      # e.g. {"fish": 2}
         self.message = ""
-        self.last_action = "idle"  # render() will read this to pick a frame to animate (not sure if necessary)
+        self.last_action = "idle"  # render() will read this to pick a frame to draw
 
     def set_mood(self, mood):
         raise NotImplementedError
 
     def feed(self, food):
+        if not isinstance(food, str):
+            raise TypeError("Food must be a string.")
+        
         food = food.strip().lower()
+
+        if food not in FOODS:
+            raise ValueError(f"Invalid food: {food}")
+
         reaction = ""
         hungerchange = 0
         eaten = True
-        if food not in FOODS:
-            raise ValueError(f"Invalid food: {food}")
         liked = random.choice([True, True, False])
         if liked:
             hungerchange = random.randint(2, 5)
@@ -51,12 +73,20 @@ class Cat:
         return reaction
 
     def pet(self, area, times=1):
-        reaction = ""
+        if not isinstance(area, str):
+            raise TypeError("Petting area must be a string.")
+        
         area = area.strip().lower()
+
         if area not in PET_AREAS:
             raise ValueError(f"Invalid petting area: {area}")
+
+        if isinstance(times, bool) or not isinstance(times, int):
+            raise TypeError("Times must be an integer.")
         if times <= 0:
             raise ValueError("Times must be greater than 0")
+        
+        reaction = ""
         self.times_petted += times
         self.last_action = "petted"
         if area in ("belly", "paws"):
@@ -84,19 +114,22 @@ class Cat:
         return reaction
             
     def sleep(self, hours):
-            if not isinstance(hours, int) or hours <= 0:
-                raise ValueError("Hours must be a positive integer.")
-    
-            if self.sleepiness == 0:
-                return f"{self.name} is already fully rested."
+        if not isinstance(hours, int) or isinstance(hours, bool):
+            raise TypeError("Hours must be an integer.")
 
-            self.sleepiness = max(self.sleepiness - (hours*2), 0)
+        if hours <= 0:
+            raise ValueError("Hours must be a positive integer")
 
-            if self.sleepiness == 0:
-                self.mood = "happy"
-                return f"{self.name} slept for {hours} hours and is fully rested!"
-            
-            return f"{self.name} slept for {hours} hours and feels less tired."
+        if self.sleepiness == 0:
+            return f"{self.name} is already fully rested."
+
+        self.sleepiness = max(self.sleepiness - (hours*2), 0)
+
+        if self.sleepiness == 0:
+            self.mood = "happy"
+            return f"{self.name} slept for {hours} hours and is fully rested!"
+        
+        return f"{self.name} slept for {hours} hours and feels less tired."
 
     def status(self, long=False):
         summary = f"{self.name} is feeling {self.mood}."

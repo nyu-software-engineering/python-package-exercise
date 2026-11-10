@@ -32,21 +32,20 @@ def test_sleep_when_already_rested():
     assert cat.sleepiness == 0
     assert "is already fully rested." in text
 
-# Test that invalid inputs don't work
-def test_sleep_invalid_inputs():
+# Test that invalid types don't work
+def test_sleep_invalid_types():
     cat = Cat()
 
-    with pytest.raises(ValueError):
-        cat.sleep(0)
+    for hours in (True, False, 1.5, "2", None):
+        with pytest.raises(TypeError):
+            cat.sleep(hours)
 
-    with pytest.raises(ValueError):
-        cat.sleep(-1)
+# Test that invalid values don't work
+def test_sleep_invalid_values():
+    cat = Cat()
 
-    with pytest.raises(ValueError):
-        cat.sleep(1.5)
+    for hours in (0, -1):
+        with pytest.raises(ValueError):
+            cat.sleep(hours)
 
-    with pytest.raises(ValueError):
-        cat.sleep("2")
-
-    with pytest.raises(ValueError):
-        cat.sleep(None)
+    assert cat.sleepiness == 5

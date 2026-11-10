@@ -105,3 +105,19 @@ def test_negative_zero_times_error():
         cat.pet("head", -2)
     assert str(error.value) == "Times must be greater than 0"
     assert cat.times_petted == 0
+
+# Test that invalid area types result in a TypeError
+def test_pet_invalid_area_types():
+    cat = Cat()
+
+    for area in (123, None, ["head"], True):
+        with pytest.raises(TypeError):
+            cat.pet(area)
+
+# Test that invalid 'times' types result in a TypeError
+def test_pet_invalid_times_types():
+    cat = Cat()
+
+    for times in (True, False, 1.5, "2", None):
+        with pytest.raises(TypeError):
+            cat.pet("head", times)

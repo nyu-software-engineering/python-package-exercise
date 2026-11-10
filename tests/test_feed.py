@@ -110,3 +110,18 @@ def test_text_input_normalized(monkeypatch):
     assert "milk" in cat.foods_eaten
     assert "MILK" not in cat.foods_eaten
     assert reaction == f"{cat.name} loved the milk!"
+
+# Tests invalid input types result in a TypeError
+def test_feed_invalid_input_types():
+    cat = Cat()
+
+    for food in (123, None, ["fish"], True):
+        with pytest.raises(TypeError):
+            cat.feed(food)
+
+# Tests that an empty string passed results in a ValueError
+def test_feed_empty_string():
+    cat = Cat()
+
+    with pytest.raises(ValueError):
+        cat.feed("   ")
