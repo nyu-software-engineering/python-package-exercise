@@ -64,7 +64,7 @@ Thank you for your time, patience, and continued tolerance of my academic journe
 
 Best regards,
 A Student Who Is This Close
-
+```
 The emails functions return messages that the student can send to the professor based on the urgency and days late of the situation. For example,
 ```pycon
 >>> import realesagent
@@ -104,8 +104,8 @@ Best,
 Your Fictional Professor
 ```
 
+## Contribute as a Developer
 
-## Contribute 
 
 ## Authors
 This project was completed by Amitav Narayan ([github](https://github.com/AmitavNarayan)), Nihal Sundari ([github](https://github.com/NISUN05)), Nishika Gorla ([github](https://github.com/nishikagorla)), and Asritha Pannem([github](https://github.com/scanfasri)). 
