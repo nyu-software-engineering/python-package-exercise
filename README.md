@@ -3,9 +3,10 @@
 [![build-test](https://github.com/software-students-fall2026/python-package-exercise-respin/actions/workflows/build-test.yml/badge.svg)](https://github.com/software-students-fall2026/python-package-exercise-respin/actions/workflows/build-test.yml)
 
 
-A tiny pet python that lives in your terminal. It starts as an egg, and every
-terminal command you run helps it grow: from egg, to cracking egg, to hatchling,
-to young python, and finally to a full coiled python.
+A tiny pet python that lives in your terminal. It starts as an egg and grows
+as your program records activity with `add_commands`: from egg, to cracking
+egg, to hatchling, to young python, and finally to a full coiled python.
+The package does not automatically monitor your terminal commands.
 
 
 
@@ -71,7 +72,7 @@ get_stage(60, 50)    # "hatchling"
 Raises `TypeError` for non-integer arguments, and `ValueError` if
 `commands_run` is negative or `hatch_at` is zero or negative.
 
-### `draw_pet(stage)`
+### `draw_pet(stage, message=None)`
 
 Returns ASCII art of the pet at the given stage, as a string.
 
@@ -136,6 +137,56 @@ Raises `TypeError` if `pet` isn't a dictionary or `count` isn't an integer
 (`True` and `False` are rejected), and `ValueError` if `pet` is missing a key
 or `count` is zero or negative.
 
+`message` is optional and must be a string or `None`. An empty string
+shows no speech bubble. Other message types raise `TypeError`.
+
+### `pet_says(stage)`
+
+Returns the pet's default message for a growth stage.
+
+```python
+from terminal_pet_respin import pet_says
+
+print(pet_says("hatchling"))  # I'm out!
+```
+
+Raises `TypeError` if `stage` isn't a string, and `ValueError` if it isn't
+one of the five stage names.
+
+
+First follow the environment setup instructions under Contributing below.
+
+## Example program
+
+See [examples/demo.py](examples/demo.py) for a complete example using
+`create_egg`, `add_commands`, `get_stage`, `draw_pet`, and `pet_says`.
+
+From the repository root, install the development dependencies and the
+local package, then run the example:
+
+```bash
+python3 -m pipenv sync --dev
+python3 -m pipenv run python -m pip install -e .
+python3 -m pipenv run python examples/demo.py
+```
+
+On Windows, use `python` instead of `python3` if needed.
+
+The demo creates Monty with a hatch threshold of 10 and simulates command
+counts of 0, 1, 5, 10, 20, and 40. These show all five growth stages:
+
+| Commands recorded | Stage |
+|---|---|
+| 0 | egg |
+| 1 | egg |
+| 5 | cracking |
+| 10 | hatchling |
+| 20 | young python |
+| 40 | full python |
+
+It also shows the pet without a speech bubble, with its default messages,
+and with a custom message. No real terminal commands are executed or
+monitored by the demo.
 
 ## Contributing
 
