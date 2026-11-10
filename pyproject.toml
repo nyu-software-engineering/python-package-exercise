@@ -1,0 +1,23 @@
+
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "magic8ball-csyy"
+version = "0.1.0"
+description = "A fun Magic 8 Ball Python package"
+readme = "README.md"
+requires-python = ">=3.12"
+license = "GPL-3.0"
+authors = [
+    { name = "Coco Ke" },
+    { name = "Sofia" },
+    { name = "Yazid" },
+    { name = "Yasmine" },
+    { name = "Leslie" }
+]
+dependencies = []
+
+[tool.setuptools]
+packages = ["project"]
