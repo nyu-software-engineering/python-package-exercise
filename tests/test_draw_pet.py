@@ -2,7 +2,7 @@ import pytest
 
 #from draw_pet import draw_pet
 #from get_stage import STAGES, get_stage
-from terminal_pet_respin import STAGES, draw_pet, get_stage
+from terminal_pet_respin import STAGES, draw_pet, get_stage, pet_says
 
 
 def test_returns_string_for_every_stage():
@@ -63,3 +63,42 @@ def test_non_string_stage_raises_type_error():
         draw_pet(None)
     with pytest.raises(TypeError):
         draw_pet(["egg"])
+
+
+def test_no_message_means_no_bubble():
+    assert draw_pet("egg") == draw_pet("egg", None)
+    assert draw_pet("egg", "") == draw_pet("egg")
+    assert "<" not in draw_pet("egg")
+
+
+def test_message_appears_in_bubble_above_art():
+    art = draw_pet("hatchling", "I'm out!")
+    assert "< I'm out! >" in art
+    assert art.endswith(draw_pet("hatchling"))
+
+
+def test_bubble_width_matches_message():
+    lines = draw_pet("egg", "hi").splitlines()
+    assert lines[0] == " " + "_" * 4
+    assert lines[1] == "< hi >"
+    assert lines[2] == " " + "-" * 4
+
+
+def test_message_must_be_a_string():
+    with pytest.raises(TypeError):
+        draw_pet("egg", 42)
+    with pytest.raises(TypeError):
+        draw_pet("egg", ["hi"])
+
+
+def test_every_stage_has_its_own_message():
+    messages = [pet_says(stage) for stage in STAGES]
+    assert all(isinstance(m, str) and m for m in messages)
+    assert len(set(messages)) == len(STAGES)
+
+
+def test_pet_says_rejects_bad_stage():
+    with pytest.raises(ValueError):
+        pet_says("dragon")
+    with pytest.raises(TypeError):
+        pet_says(5)
