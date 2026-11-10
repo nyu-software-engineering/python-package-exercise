@@ -69,4 +69,3 @@ def professionalize(truth):
     )
 
 
-    
