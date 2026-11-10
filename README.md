@@ -43,6 +43,14 @@ Simple example unit tests are included within the `tests` directory. To run thes
 3. Run the tests from the main project directory: `python3 -m pytest`.
 4. Tests should never fail. Any failed tests indicate that the production code is behaving differently from the behavior the tests expect.
 
+### 5. Build the Package
+
+From the main project directory, run:
+
+```bash
+pipenv run python -m build
+```
+
 ### Contribute
 
 Contributions are always welcome! If there are any bugs or feature suggestions, feel free to open an issue describing it.
@@ -52,8 +60,9 @@ To contribute to issues:
 1. Fork this repository and clone your fork to your local machine.
 2. Follow the installation & setup instructions.
 3. Make your changes by fixing an issue or adding a feature (make sure to add or update tests if necessary).
-4. Run the tests with `pipenv run python -m pytest`.
-5. Commit the changes, push them to the forked repository, and open a pull request explaining your changes.
+4. Run the tests: `pipenv run python -m pytest`.
+5. Build the package: `pipenv run python -m build.`
+6. Commit the changes, push them to the forked repository, and open a pull request explaining your changes.
 
 ## Documentation
 
