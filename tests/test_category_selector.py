@@ -1,4 +1,4 @@
-from project.category_selector import select_category
+from project.magic8ball import select_category
 
 
 def test_valid_numbers():

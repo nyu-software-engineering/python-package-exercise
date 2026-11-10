@@ -1,5 +1,5 @@
 import pytest
-from project.custom_answer import custom_answer
+from project.magic8ball import custom_answer
 
 class Tests:
     @pytest.fixture

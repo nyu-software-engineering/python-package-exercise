@@ -2,7 +2,7 @@ import random
 
 import pytest
 
-from project.random_response import RESPONSES, get_response, normalize_category
+from project.magic8ball import RESPONSES, get_response, normalize_category
 
 
 @pytest.mark.parametrize("category", ["positive", "non-committal", "negative"])

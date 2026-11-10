@@ -1,5 +1,55 @@
+"""
+Magic 8 Ball: ask a question, pick a number, get your fate.
+
+Functions, in order:
+1. get_question     - validate the user's question
+2. select_category  - turn a number 0-8 into Positive / Non-Committal / Negative
+3. get_response     - pick a random answer from that category
+4. custom_answer    - let the user add their own answer to a category
+"""
+
 import random
 
+
+# 1. Get question
+def get_question(question):
+    """
+    Accept and validate a user's Magic 8 Ball question.
+    """
+    if not isinstance(question, str):
+        raise TypeError("Question must be a string.")
+
+    question = question.strip()
+
+    if not question:
+        raise ValueError("Question cannot be empty.")
+
+    return question
+
+
+# 2. Get random category (pick a number 0-8)
+def select_category(number):
+    numbers = list(range(9))
+    random.shuffle(numbers)
+
+    positive = numbers[0:3]
+    non_committal = numbers[3:6]
+    negative = numbers[6:9]
+
+    if type(number) != int or number < 0 or number > 8:
+        return "Invalid number"
+
+    if number in positive:
+        return "Positive"
+    elif number in non_committal:
+        return "Non-Committal"
+    elif number in negative:
+        return "Negative"
+    else:
+        return "Invalid number"
+
+
+# 3. Get random response in the category / give response
 RESPONSES = {
     "positive": [
         "It is certain",
@@ -67,6 +117,18 @@ def get_response(category, custom_answers=None, rng=None):
     return (rng or random).choice(pool)
 
 
-if __name__ == "__main__":
-    for cat in RESPONSES:
-        print(f"{cat}: {get_response(cat)}")
+# 4. Take in custom answer (dictionary)
+def custom_answer(answer, category):
+    responses = {
+        "positive": [],
+        "non-committal": [],
+        "negative": []
+    }
+    
+    category = category.lower()
+    if category in responses:
+        responses[category].append(answer)
+        print("Answer added!")
+    else:
+        print("Invalid category")
+    return responses
