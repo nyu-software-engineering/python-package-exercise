@@ -1,10 +1,14 @@
 # all user interaction goes here
+from pathlib import Path
+
 from .pet import MIN_STAT, MAX_STAT
 from .play import play
+from .save_load import load_pet, save_pet
 
 COLOR = "\033[34m"
 BOLD = "\033[1m"
 UNBOLD = "\033[0m"
+SAVE_FILE = Path.home() / ".virtual_pet.json"
 INTRO = """
     *************************
     *                       *
@@ -30,12 +34,24 @@ def create_pet():
         name = input("Please enter a name").strip()
     return {
         "name": name,
+        "alive": True,
         "hunger": MIN_STAT,
         "happiness": MAX_STAT,
         "energy": MAX_STAT,
         "health": MAX_STAT,
         "hygiene": MAX_STAT,
     }
+
+def get_pet():
+    """Loads the saved pet if there is one, otherwise creates a new pet"""
+    if SAVE_FILE.exists():
+        try:
+            pet = load_pet(SAVE_FILE)
+            print(f"{BOLD}Welcome back, {pet['name']}!{UNBOLD}")
+            return pet
+        except (ValueError, TypeError):
+            print(f"{BOLD}Your save file couldn't be read, so let's start a new pet.{UNBOLD}")
+    return create_pet()
 
 def show_stats(pet):
     print(f"{BOLD}{pet['name']}'s stats:{UNBOLD}")
@@ -45,7 +61,7 @@ def show_stats(pet):
 # Primary function
 def main():
     print(f"{BOLD}{COLOR}{INTRO}{UNBOLD}")
-    pet = create_pet()
+    pet = get_pet()
 
     while True:
         print(f"{BOLD}{MENU}{UNBOLD}")
@@ -57,6 +73,7 @@ def main():
             play_type = input("> ").strip()
             print(play(pet, pet['name'], play_type))
         elif choice == "3":
+            save_pet(pet, SAVE_FILE)
             print(f"{BOLD}See you later, {pet['name']} will miss you!{UNBOLD}")
             break
         else:
