@@ -10,7 +10,7 @@ authors = [
     { name = "Angelina Zhu", email="az3231@nyu.edu" },
     { name = "Daran Tung", email="dyt2010@nyu.edu" },
     { name = "Anthony Wang", email="aw4580@nyu.edu" },
-    { name = "Sara Herschmann ", email="smh9864@nyu.edu" },
+    { name = "Sara Herschmann", email="smh9864@nyu.edu" },
     { name = "Tristan McCrea", email="ttm2041@nyu.edu" },
 ]
 license = "GPL-3.0-or-later"
