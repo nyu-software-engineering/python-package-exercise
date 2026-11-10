@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=77.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "funcasino"
+version = "0.0.1"
+authors = [
+  { name="Eric Wu" },
+  { name="Shuo Cao" },
+  { name="Ronald Szeto" },
+  { name="Ruikun Xu" },
+  { name="Jack Jiang" },
+]
+description = "FunCasino is a Python package that simulates some of the most popular casino games, including blackjack, roulette, and slots, for educational purposes."
+readme = "README.md"
+requires-python = ">=3.9"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Intended Audience :: Education",
+    "Operating System :: OS Independent",
+]
+license = "GPL-3.0-only"
+license-files = ["LICEN[CS]E*"]
+
+[project.urls]
+Homepage = "https://github.com/software-students-fall2026/python-package-exercise-forked"
+Repository = "https://github.com/software-students-fall2026/python-package-exercise-forked.git"
+Issues = "https://github.com/software-students-fall2026/python-package-exercise-forked/issues"
