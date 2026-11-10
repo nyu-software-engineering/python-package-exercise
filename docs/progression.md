@@ -1,3 +1,19 @@
+## Applying a reward
+
+Use `award_xp(total_xp, duration_minutes)` to calculate the updated XP total
+and level after one reward.
+
+```python
+from progression import award_xp
+
+progress = award_xp(90, 60)
+assert progress == {"totalXP": 150, "level": 2}
+```
+
+For the next reward, pass the updated `totalXP` as the starting total.
+The function only calculates values. The completion code handles saving
+progress and making sure each quest awards XP once.
+
 # XP and leveling
 
 Each planned minute is worth 1 XP. Users start at level 1 with 0 XP.
