@@ -6,7 +6,7 @@
 As seen on the PyPI website [here](https://www.google.com), our package is intended to mimic student and professor email responses in a university class. Specifically, our functions give representative samples of student excuses and apologies based on various personal factors (the student's grade, how professional the student seeks seek to be, etc.), and professor decisions based on their own personal factors (how "sympathetic" they seek to be, etc.).
 
 ## Installation and Usage
-We require Python 3 or greater. Install the package using pip: 
+We require Python 3 or greater. We do not require any environment or database variables. Install the package using pip: 
 ```console
 pip install realesagent 
 ```  
