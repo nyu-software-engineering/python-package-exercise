@@ -10,7 +10,7 @@ We require Python 3 or greater. Install the package using pip:
 ```console
 pip install realesagent 
 ``` 
-Alternative, if the above fails due to multiple python installations, use `python -m pip install realesagent'.
+Alternatively, if the above fails due to multiple python installations, use `python -m pip install realesagent`.
 To use the package in your program, add the following to your import statements at the top of the program:
 ```python
 import realesagent 
