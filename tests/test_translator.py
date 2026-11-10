@@ -316,3 +316,10 @@ class Tests:
     def test_age_and_health_comparisons(self):
         assert translator.translate_sentence("She is older than me.") == "She agemogged me."
         assert translator.translate_sentence("He is fitter than Ted.") == "He fitnessmogs Ted."
+    
+    def test_even_emphasizes_comparisons(self):
+        assert translator.translate_sentence("She is even smarter than me.") == (
+            "She giga IQmogs me."
+        )
+    
+    

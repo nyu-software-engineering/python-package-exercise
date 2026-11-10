@@ -554,7 +554,7 @@ def _comparative_swap(be_verb, words, original_words, next_word):
     adjective_index = 0
     if words[:2] in (["so", "much"], ["a", "lot"]):
         adjective_index = 2
-    elif words[0] == "way":
+    elif words[0] in ("way", "even"):
         adjective_index = 1
 
     if len(words) < adjective_index + 3:
