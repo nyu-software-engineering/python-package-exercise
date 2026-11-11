@@ -29,3 +29,7 @@ jobs:
         run: |
           pipenv install build
           pipenv run python -m build .
+      - name: Check package metadata
+        run: |
+          pipenv install twine
+          pipenv run python -m twine check dist/*
