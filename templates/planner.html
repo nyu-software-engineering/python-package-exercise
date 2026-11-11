@@ -34,6 +34,7 @@
         <p id="list-message" aria-live="polite">Loading quests…</p>
         <ul id="quest-list" aria-label="Saved quests"></ul>
         <p id="detail-message" aria-live="polite"></p>
+        <p id="action-message" aria-live="polite"></p>
         <section id="quest-detail" aria-labelledby="detail-heading" hidden>
           <h2 id="detail-heading" tabindex="-1">Quest details</h2>
           <h3 id="detail-title" dir="auto"></h3>
@@ -45,6 +46,35 @@
             <dt>Completed at</dt><dd id="detail-completed"></dd>
             <dt>Quest ID</dt><dd id="detail-id"></dd>
           </dl>
+          <p id="completed-note" hidden>Completed quests are read-only.</p>
+          <div id="quest-actions" hidden>
+            <div class="action-buttons">
+              <button id="edit-quest" type="button">Edit quest</button>
+              <button id="delete-quest" type="button">Delete quest</button>
+              <button id="complete-quest" type="button">Complete quest</button>
+            </div>
+            <p>Completion is final and awards the planned XP once.</p>
+          </div>
+          <form id="quest-edit-form" hidden novalidate>
+            <h3>Edit quest</h3>
+            <label for="edit-title">Edit title</label>
+            <input id="edit-title" type="text" required aria-describedby="edit-title-error">
+            <p id="edit-title-error"></p>
+            <label for="edit-minutes">Edit minutes</label>
+            <input id="edit-minutes" type="text" inputmode="numeric" required aria-describedby="edit-minutes-error">
+            <p id="edit-minutes-error"></p>
+            <div class="action-buttons">
+              <button id="save-quest" type="submit">Save changes</button>
+              <button id="cancel-edit" type="button">Cancel edit</button>
+            </div>
+          </form>
+          <div id="delete-confirmation" hidden>
+            <p>Delete this pending quest? This cannot be undone.</p>
+            <div class="action-buttons">
+              <button id="confirm-delete" type="button">Confirm delete</button>
+              <button id="cancel-delete" type="button">Cancel delete</button>
+            </div>
+          </div>
         </section>
       </section>
     </div>
@@ -53,3 +83,4 @@
   <script type="module" src="/static/quest_list.js"></script>
 </body>
 </html>
+

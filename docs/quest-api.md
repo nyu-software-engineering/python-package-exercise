@@ -148,8 +148,9 @@ console.log(progress.totalXP, progress.level);
 ```
 
 The planner page shows saved quests, details, and progress, and refreshes the
-list after creation. Editing, deletion, and completion controls are the next
-UI integration step.
+list after creation. Pending details offer editing, confirmed deletion, and
+completion controls. Completed details are read-only. All write controls use
+the same session token as the creation form.
 
 ## Errors and tests
 
@@ -165,7 +166,9 @@ the source-only API and form test modules. It still runs them in the source phas
 
 `tests/test_quest_completion_api.py` covers the completion/progress routes and
 the create → edit → complete → retry flow through the HTTP API. The planner
-now connects the list/detail and progress reads; editing/deleting and
-completion page controls will follow separately.
+now connects list/detail and progress reads plus editing/deletion/completion
+controls. Browser tests exercise those controls with mocked HTTP responses;
+API tests separately verify their real persistence and progression behavior.
+
 
 

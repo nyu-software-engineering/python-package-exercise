@@ -1,4 +1,5 @@
 from pathlib import Path
+from urllib.parse import parse_qs, unquote, urlsplit
 
 import pytest
 from jinja2 import Environment, FileSystemLoader
@@ -102,7 +103,9 @@ def test_creation_refreshes_saved_list(planner):
     planner.get_by_label("Title", exact=True).fill("Water plants")
     planner.get_by_label("Minutes", exact=True).fill("60")
     planner.get_by_role("button", name="Create Quest").click()
-    expect(planner.locator("#quest-status")).to_have_text("Quest created.")
+    expect(planner.locator("#quest-status")).to_have_text(
+        "Quest created: Water plants — Decipher an Ancient Scroll (60 min, 60 planned XP)."
+    )
     expect(planner.locator("#quest-list li")).to_have_count(3)
     expect(planner.get_by_role("button", name="View details for Water plants")).to_be_visible()
 
@@ -185,3 +188,261 @@ def test_detail_buttons_wait_for_refresh_then_allow_retry(planner):
     expect(view).to_be_enabled()
     view.click()
     expect(planner.locator("#quest-detail")).to_be_visible()
+
+
+@pytest.fixture
+def actions(planner):
+    state = {"quests": [dict(QUEST), dict(COMPLETED)], "totalXP": 90, "writes": []}
+
+    def handle(route):
+        url = urlsplit(route.request.url)
+        method = route.request.method
+        if method != "GET":
+            state["writes"].append((method, url.path, route.request.post_data_json))
+            if route.request.headers.get("x-csrf-token") != "page-token":
+                route.fulfill(status=403, json={"error": "Missing token"})
+                return
+        if url.path == "/quests":
+            status = parse_qs(url.query).get("status", [None])[0]
+            route.fulfill(json=[quest for quest in state["quests"] if not status or quest["status"] == status])
+            return
+        quest_id = unquote(url.path.split("/")[2])
+        quest = next((quest for quest in state["quests"] if quest["id"] == quest_id), None)
+        if quest is None:
+            route.fulfill(status=404, json={"error": "Quest not found."})
+        elif method == "GET":
+            route.fulfill(json=quest)
+        elif method == "PATCH":
+            data = route.request.post_data_json
+            if "title" in data:
+                quest.update(title=data["title"], fantasyDescription="An updated description")
+            if "durationMinutes" in data:
+                quest.update(durationMinutes=data["durationMinutes"], xpReward=data["durationMinutes"])
+            route.fulfill(json=quest)
+        elif method == "DELETE":
+            state["quests"].remove(quest)
+            route.fulfill(json={"deleted": quest_id})
+        elif method == "POST" and url.path.endswith("/complete"):
+            reward = quest["xpReward"] if quest["status"] == "pending" else 0
+            quest.update(status="completed", completedAt="2026-11-10T22:00:00+00:00")
+            state["totalXP"] += reward
+            route.fulfill(json={"quest": quest, "totalXP": state["totalXP"], "level": 1 + state["totalXP"] // 100, "awardedXP": reward})
+        else:
+            route.fulfill(status=405)
+
+    planner.route("**/quests**", handle)
+    planner.route("**/progress", lambda route: route.fulfill(json={"totalXP": state["totalXP"], "level": 1 + state["totalXP"] // 100}))
+    planner.get_by_role("button", name="Refresh quests").click()
+    expect(planner.locator("#progress-summary")).to_have_text("90 XP | Level 1")
+    planner.get_by_role("button", name="View details for Study math").click()
+    expect(planner.locator("#quest-actions")).to_be_visible()
+    return planner, state
+
+
+def test_edit_changes_title_duration_and_planned_reward(actions):
+    page, state = actions
+    page.get_by_role("button", name="Edit quest", exact=True).click()
+    expect(page.get_by_label("Edit title", exact=True)).to_have_value("Study math")
+    page.get_by_label("Edit title", exact=True).fill("  Go swimming  ")
+    page.get_by_label("Edit minutes", exact=True).fill("45")
+    page.get_by_role("button", name="Save changes").click()
+    expect(page.locator("#action-message")).to_have_text("Quest updated.")
+    expect(page.locator("#detail-title")).to_have_text("Go swimming")
+    expect(page.locator("#detail-description")).to_have_text("An updated description")
+    expect(page.locator("#detail-reward")).to_have_text("45 XP")
+    expect(page.locator("#progress-summary")).to_have_text("90 XP | Level 1")
+    assert state["writes"] == [("PATCH", "/quests/q1", {"title": "Go swimming", "durationMinutes": 45})]
+
+
+@pytest.mark.parametrize("minutes", ["0", "-1", "2.5", "abc", "9007199254740992"])
+def test_invalid_edit_minutes_do_not_send_a_request(actions, minutes):
+    page, state = actions
+    page.get_by_role("button", name="Edit quest", exact=True).click()
+    page.get_by_label("Edit minutes", exact=True).fill(minutes)
+    page.get_by_role("button", name="Save changes").click()
+    expect(page.locator("#edit-minutes-error")).to_have_text("Enter a positive whole number of minutes.")
+    expect(page.get_by_label("Edit minutes", exact=True)).to_have_attribute("aria-invalid", "true")
+    assert state["writes"] == []
+
+
+def test_blank_title_and_unchanged_edit_do_not_send_a_request(actions):
+    page, state = actions
+    page.get_by_role("button", name="Edit quest", exact=True).click()
+    page.get_by_role("button", name="Save changes").click()
+    expect(page.locator("#action-message")).to_have_text("No changes to save.")
+    page.get_by_label("Edit title", exact=True).fill(" ")
+    page.get_by_role("button", name="Save changes").click()
+    expect(page.locator("#edit-title-error")).to_have_text("Enter a quest title.")
+    page.get_by_role("button", name="Cancel edit").click()
+    expect(page.locator("#quest-edit-form")).to_be_hidden()
+    assert state["writes"] == []
+
+
+def test_title_only_edit_sends_only_title(actions):
+    page, state = actions
+    page.get_by_role("button", name="Edit quest", exact=True).click()
+    page.get_by_label("Edit title", exact=True).fill("A new title")
+    page.get_by_role("button", name="Save changes").click()
+    expect(page.locator("#detail-title")).to_have_text("A new title")
+    assert state["writes"] == [("PATCH", "/quests/q1", {"title": "A new title"})]
+
+
+def test_completed_quest_hides_edit_delete_and_complete(actions):
+    page, state = actions
+    page.get_by_role("button", name="View details for Do laundry").click()
+    expect(page.locator("#quest-actions")).to_be_hidden()
+    expect(page.locator("#quest-edit-form")).to_be_hidden()
+    expect(page.locator("#completed-note")).to_have_text("Completed quests are read-only.")
+    assert state["writes"] == []
+
+
+def test_delete_confirmation_can_be_cancelled_then_confirmed(actions):
+    page, state = actions
+    page.get_by_role("button", name="Delete quest", exact=True).click()
+    expect(page.locator("#delete-confirmation")).to_be_visible()
+    page.get_by_role("button", name="Cancel delete").click()
+    assert state["writes"] == []
+    page.get_by_role("button", name="Delete quest", exact=True).click()
+    page.get_by_role("button", name="Confirm delete").click()
+    expect(page.locator("#action-message")).to_have_text("Quest deleted.")
+    expect(page.locator("#quest-detail")).to_be_hidden()
+    expect(page.locator("#quest-list li")).to_have_count(1)
+    expect(page.locator("#progress-summary")).to_have_text("90 XP | Level 1")
+    assert state["writes"] == [("DELETE", "/quests/q1", None)]
+
+
+def test_complete_updates_progress_and_keeps_detail_read_only(actions):
+    page, state = actions
+    page.get_by_label("Show quests").select_option("pending")
+    expect(page.locator("#quest-list li")).to_have_count(1)
+    page.get_by_role("button", name="View details for Study math").click()
+    page.get_by_role("button", name="Complete quest", exact=True).click()
+    expect(page.locator("#action-message")).to_have_text("Quest completed. 60 XP awarded.")
+    expect(page.locator("#progress-summary")).to_have_text("150 XP | Level 2")
+    expect(page.locator("#detail-status")).to_have_text("Completed")
+    expect(page.locator("#quest-actions")).to_be_hidden()
+    expect(page.locator("#quest-list li")).to_have_count(0)
+    expect(page.get_by_label("Show quests")).to_have_value("pending")
+    assert state["writes"] == [("POST", "/quests/q1/complete", None)]
+
+
+def test_failed_edit_keeps_values_and_can_retry(actions):
+    page, _ = actions
+
+    def fail_once(route):
+        if route.request.method == "PATCH":
+            route.fulfill(status=500, json={"error": "private error details"})
+        else:
+            route.fallback()
+
+    page.route("**/quests/q1", fail_once)
+    page.get_by_role("button", name="Edit quest", exact=True).click()
+    page.get_by_label("Edit title", exact=True).fill("Keep my typing")
+    page.get_by_role("button", name="Save changes").click()
+    expect(page.locator("#action-message")).to_have_text("Could not save changes. Your inputs have been kept. Try again.")
+    expect(page.get_by_label("Edit title", exact=True)).to_have_value("Keep my typing")
+    expect(page.get_by_role("button", name="Save changes")).to_be_enabled()
+    page.unroute("**/quests/q1", fail_once)
+    page.get_by_role("button", name="Save changes").click()
+    expect(page.locator("#detail-title")).to_have_text("Keep my typing")
+
+
+def test_edit_conflict_requires_refresh_then_allows_saving_again(actions):
+    page, _ = actions
+
+    def conflict(route):
+        if route.request.method == "PATCH":
+            route.fulfill(status=409)
+        else:
+            route.fallback()
+
+    page.route("**/quests/q1", conflict)
+    page.get_by_role("button", name="Edit quest", exact=True).click()
+    page.get_by_label("Edit title", exact=True).fill("A new title")
+    page.get_by_role("button", name="Save changes").click()
+    expect(page.locator("#action-message")).to_contain_text("Refresh quests before trying again.")
+    expect(page.get_by_role("button", name="Save changes")).to_be_disabled()
+    page.unroute("**/quests/q1", conflict)
+    page.get_by_role("button", name="Refresh quests").click()
+    page.get_by_role("button", name="View details for Study math").click()
+    page.get_by_role("button", name="Edit quest", exact=True).click()
+    expect(page.get_by_role("button", name="Save changes")).to_be_enabled()
+    page.get_by_label("Edit title", exact=True).fill("A reloaded edit")
+    page.get_by_role("button", name="Save changes").click()
+    expect(page.locator("#detail-title")).to_have_text("A reloaded edit")
+
+
+def test_pending_write_disables_controls_and_sends_once(actions):
+    page, state = actions
+    page.evaluate("""() => {
+        const send = window.fetch.bind(window);
+        window.fetch = (...args) => {
+            if (args[1]?.method === 'POST') {
+                return new Promise(resolve => {
+                    window.finishCompletion = () => resolve(send(...args));
+                });
+            }
+            return send(...args);
+        };
+        document.getElementById('complete-quest').click();
+        document.getElementById('complete-quest').click();
+    }""")
+    expect(page.get_by_role("button", name="Complete quest", exact=True)).to_be_disabled()
+    expect(page.get_by_role("button", name="Refresh quests")).to_be_disabled()
+    expect(page.get_by_label("Show quests")).to_be_disabled()
+    expect(page.get_by_label("Title", exact=True)).to_be_disabled()
+    page.evaluate("window.finishCompletion()")
+    expect(page.locator("#action-message")).to_have_text("Quest completed. 60 XP awarded.")
+    expect(page.get_by_role("button", name="Refresh quests")).to_be_enabled()
+    assert state["writes"] == [("POST", "/quests/q1/complete", None)]
+
+
+def test_lost_completion_response_retries_without_extra_xp(actions):
+    page, state = actions
+    attempts = []
+
+    def lost_response(route):
+        quest = state["quests"][0]
+        if not attempts:
+            attempts.append(1)
+            quest.update(status="completed", completedAt="2026-11-10T22:00:00+00:00")
+            state["totalXP"] = 150
+            route.abort("failed")
+        else:
+            attempts.append(1)
+            route.fulfill(json={"quest": quest, "totalXP": 150, "level": 2, "awardedXP": 0})
+
+    page.route("**/quests/q1/complete", lost_response)
+    page.get_by_role("button", name="Complete quest", exact=True).click()
+    expect(page.locator("#action-message")).to_contain_text("Could not confirm completion.")
+    page.get_by_role("button", name="Complete quest", exact=True).click()
+    expect(page.locator("#action-message")).to_have_text("Quest was already completed. No extra XP awarded.")
+    expect(page.locator("#progress-summary")).to_have_text("150 XP | Level 2")
+    assert len(attempts) == 2
+
+
+def test_open_edit_must_be_saved_or_cancelled_before_completion(actions):
+    page, state = actions
+    page.get_by_role("button", name="Edit quest", exact=True).click()
+    page.get_by_label("Edit minutes", exact=True).fill("45")
+    page.get_by_role("button", name="Complete quest", exact=True).click()
+    expect(page.locator("#action-message")).to_have_text("Save or cancel your edit before completing the quest.")
+    assert state["writes"] == []
+    page.get_by_role("button", name="Cancel edit").click()
+    page.get_by_role("button", name="Complete quest", exact=True).click()
+    expect(page.locator("#action-message")).to_have_text("Quest completed. 60 XP awarded.")
+
+
+def test_duration_only_edit_preserves_untouched_title_and_description(actions):
+    page, state = actions
+    state["quests"][0]["title"] = "  Study math  "
+    page.get_by_role("button", name="Refresh quests").click()
+    page.locator("#quest-list li button").first.click()
+    page.get_by_role("button", name="Edit quest", exact=True).click()
+    page.get_by_label("Edit minutes", exact=True).fill("45")
+    page.get_by_role("button", name="Save changes").click()
+    expect(page.locator("#action-message")).to_have_text("Quest updated.")
+    expect(page.locator("#detail-description")).to_have_text("Decipher an Ancient Scroll")
+    assert state["writes"] == [("PATCH", "/quests/q1", {"durationMinutes": 45})]
+    assert state["quests"][0]["title"] == "  Study math  "
+

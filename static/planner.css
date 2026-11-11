@@ -27,7 +27,10 @@ button[type="submit"]:hover { background: #194a37; }
 button:disabled { opacity: .65; cursor: wait; }
 :focus-visible { outline: 3px solid #236149; outline-offset: 3px; }
 [aria-invalid="true"] { border-color: #9b2525; }
-#quest-title-error, #quest-minutes-error { color: #9b2525; }
+#quest-title-error, #quest-minutes-error, #edit-title-error, #edit-minutes-error { color: #9b2525; }
+.action-buttons { display: flex; flex-wrap: wrap; gap: .75rem; }
+#quest-edit-form, #delete-confirmation { margin-block-start: 1.5rem; }
+#confirm-delete { border-color: #9b2525; color: #9b2525; }
 .list-controls { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem; }
 #quest-list { list-style: none; padding: 0; margin: 0; }
 #quest-list li { border-block-start: 1px solid #a8bdc9; padding-block: 1rem; overflow-wrap: anywhere; }
@@ -44,3 +47,4 @@ dd { margin: 0; overflow-wrap: anywhere; }
   dl { grid-template-columns: minmax(0, 1fr); gap: .25rem; }
   dd { margin-block-end: .75rem; }
 }
+

@@ -59,8 +59,9 @@ async function submitQuest(event) {
 
     const quest = await response.json();
     form.reset();
-    status.textContent = "Quest created.";
-
+    status.textContent =
+      `Quest created: ${quest.title} — ${quest.fantasyDescription} ` +
+      `(${quest.durationMinutes} min, ${quest.xpReward} planned XP).`;
     form.dispatchEvent(
       new CustomEvent("quest:created", { detail: quest, bubbles: true })
     );

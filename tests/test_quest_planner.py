@@ -61,3 +61,18 @@ def test_home_contains_no_inline_scripts(client):
     scripts = [attrs for tag, attrs in page.elements if tag == "script"]
     assert {attrs["src"] for attrs in scripts} == {"/static/quest_form.js", "/static/quest_list.js"}
     assert not any(name.startswith("on") for _, attrs in page.elements for name in attrs)
+
+
+def test_edit_fields_and_action_feedback_are_accessible(client):
+    page = PageElements()
+    page.feed(client.get("/").get_data(as_text=True))
+    by_id = {attrs["id"]: (tag, attrs) for tag, attrs in page.elements if "id" in attrs}
+    labels = {attrs.get("for") for tag, attrs in page.elements if tag == "label"}
+    for name in ["edit-title", "edit-minutes"]:
+        assert name in labels
+        assert by_id[name][1]["aria-describedby"] == name + "-error"
+    assert by_id["quest-edit-form"][0] == "form"
+    assert by_id["action-message"][1]["aria-live"] == "polite"
+    assert "hidden" in by_id["quest-actions"][1]
+    assert "hidden" in by_id["delete-confirmation"][1]
+

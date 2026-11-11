@@ -5,6 +5,14 @@ const detail = document.getElementById("quest-detail");
 const detailMessage = document.getElementById("detail-message");
 const progressSummary = document.getElementById("progress-summary");
 const progressMessage = document.getElementById("progress-message");
+const actionMessage = document.getElementById("action-message");
+const editForm = document.getElementById("quest-edit-form");
+const actions = document.getElementById("quest-actions");
+const deleteConfirmation = document.getElementById("delete-confirmation");
+const creationForm = document.getElementById("quest-form");
+let selectedQuest = null;
+let actionPending = false;
+let needsReload = false;
 let listRequest = 0;
 let detailRequest = 0;
 let progressRequest = 0;
@@ -13,9 +21,24 @@ function clearDetail() {
   detailRequest += 1;
   detail.hidden = true;
   detailMessage.textContent = "";
+  selectedQuest = null;
+  needsReload = false;
+  editForm.hidden = true;
+  deleteConfirmation.hidden = true;
+  actions.hidden = true;
+  document.getElementById("completed-note").hidden = true;
 }
 
 function showDetail(quest) {
+  selectedQuest = quest;
+  needsReload = false;
+  editForm.hidden = true;
+  deleteConfirmation.hidden = true;
+  actions.hidden = quest.status !== "pending";
+  document.getElementById("completed-note").hidden = quest.status !== "completed";
+  for (const button of actions.querySelectorAll("button")) button.disabled = actionPending;
+  document.getElementById("save-quest").disabled = actionPending;
+  document.getElementById("confirm-delete").disabled = actionPending;
   document.getElementById("detail-title").textContent = quest.title;
   document.getElementById("detail-description").textContent = quest.fantasyDescription;
   document.getElementById("detail-duration").textContent = `${quest.durationMinutes} minutes`;
@@ -38,7 +61,9 @@ function showDetail(quest) {
 }
 
 async function loadDetail(questId) {
+  if (actionPending) return;
   clearDetail();
+  actionMessage.textContent = "";
   const requestNumber = detailRequest;
   detailMessage.textContent = "Loading details…";
   try {
@@ -80,10 +105,11 @@ function showQuests(quests) {
   }
 }
 
-async function loadQuests() {
+async function loadQuests(keepDetail = false) {
+  if (actionPending && !keepDetail) return;
   const requestNumber = ++listRequest;
   const status = filter.value;
-  clearDetail();
+  if (!keepDetail) clearDetail();
   listMessage.textContent = "Loading quests…";
   list.setAttribute("aria-busy", "true");
   for (const button of list.querySelectorAll("button")) button.disabled = true;
@@ -93,7 +119,7 @@ async function loadQuests() {
     if (!response.ok) throw new Error("Could not load quests.");
     const quests = await response.json();
     if (requestNumber !== listRequest) return;
-    clearDetail();
+    if (!keepDetail) clearDetail();
     showQuests(quests);
     if (quests.length === 0) {
       listMessage.textContent = status ? `No ${status} quests.` : "No quests yet. Create one to get started.";
@@ -106,7 +132,7 @@ async function loadQuests() {
   } finally {
     if (requestNumber === listRequest) {
       list.setAttribute("aria-busy", "false");
-      for (const button of list.querySelectorAll("button")) button.disabled = false;
+      for (const button of list.querySelectorAll("button")) button.disabled = actionPending;
     }
   }
 }
@@ -128,11 +154,164 @@ async function loadProgress() {
 }
 
 function refreshPlanner() {
-  loadQuests();
-  loadProgress();
+  if (actionPending) return;
+  return Promise.all([loadQuests(), loadProgress()]);
 }
 
-filter.addEventListener("change", loadQuests);
+function canChangeQuest() {
+  if (actionPending || needsReload || !selectedQuest || selectedQuest.status !== "pending") return false;
+  if (creationForm.querySelector('button[type="submit"]').disabled) {
+    actionMessage.textContent = "Wait for the new quest to finish saving.";
+    return false;
+  }
+  return true;
+}
+
+function setActionBusy(busy) {
+  actionPending = busy;
+  actions.setAttribute("aria-busy", String(busy));
+  filter.disabled = busy;
+  document.getElementById("refresh-quests").disabled = busy;
+  for (const field of creationForm.querySelectorAll("input, button")) field.disabled = busy;
+  for (const field of editForm.querySelectorAll("input, button")) field.disabled = busy;
+  for (const button of actions.querySelectorAll("button")) button.disabled = busy || needsReload;
+  document.getElementById("save-quest").disabled = busy || needsReload;
+  document.getElementById("confirm-delete").disabled = busy || needsReload;
+  document.getElementById("cancel-delete").disabled = busy;
+  for (const button of list.querySelectorAll("button")) {
+    button.disabled = busy || list.getAttribute("aria-busy") === "true";
+  }
+}
+
+function showEditErrors(errors = {}) {
+  for (const name of ["title", "minutes"]) {
+    const field = document.getElementById(`edit-${name}`);
+    document.getElementById(`edit-${name}-error`).textContent = errors[name] || "";
+    field.setAttribute("aria-invalid", String(Boolean(errors[name])));
+  }
+}
+
+async function changeQuest(method, payload) {
+  if (!canChangeQuest()) return;
+  const questId = selectedQuest.id;
+  setActionBusy(true);
+  progressRequest += 1;
+  actionMessage.textContent = "Saving changes…";
+  const options = { method, headers: { "X-CSRF-Token": creationForm.dataset.csrfToken } };
+  if (payload) {
+    options.headers["Content-Type"] = "application/json";
+    options.body = JSON.stringify(payload);
+  }
+  let deleted = false;
+  try {
+    const suffix = method === "POST" ? "/complete" : "";
+    const response = await fetch(`/quests/${encodeURIComponent(questId)}${suffix}`, options);
+    if (!response.ok) {
+      if (response.status === 403) {
+        actionMessage.textContent = "Your page session expired. Reload the page and try again.";
+      } else if (response.status === 404) {
+        clearDetail();
+        actionMessage.textContent = "This quest no longer exists. Refresh the list.";
+      } else if (response.status === 409) {
+        needsReload = true;
+        actionMessage.textContent = "Quest changed or is no longer pending. Refresh quests before trying again.";
+      } else {
+        throw new Error("Quest change failed.");
+      }
+      return;
+    }
+    const result = await response.json();
+    if (method === "DELETE") {
+      deleted = true;
+      clearDetail();
+      actionMessage.textContent = "Quest deleted.";
+    } else if (method === "PATCH") {
+      showDetail(result);
+      actionMessage.textContent = "Quest updated.";
+    } else {
+      showDetail(result.quest);
+      progressSummary.textContent = `${result.totalXP} XP | Level ${result.level}`;
+      actionMessage.textContent = result.awardedXP === 0
+        ? "Quest was already completed. No extra XP awarded."
+        : `Quest completed. ${result.awardedXP} XP awarded.`;
+    }
+    await Promise.all([loadQuests(true), loadProgress()]);
+  } catch {
+    actionMessage.textContent = method === "POST"
+      ? "Could not confirm completion. Refresh quests or try again."
+      : "Could not save changes. Your inputs have been kept. Try again.";
+  } finally {
+    setActionBusy(false);
+    if (deleted) document.getElementById("refresh-quests").focus();
+  }
+}
+
+document.getElementById("edit-quest").addEventListener("click", () => {
+  if (!canChangeQuest()) return;
+  showEditErrors();
+  document.getElementById("edit-title").value = selectedQuest.title;
+  document.getElementById("edit-minutes").value = selectedQuest.durationMinutes;
+  editForm.hidden = false;
+  deleteConfirmation.hidden = true;
+  document.getElementById("edit-title").focus();
+});
+
+editForm.addEventListener("submit", event => {
+  event.preventDefault();
+  if (!canChangeQuest()) return;
+  const titleText = document.getElementById("edit-title").value;
+  const title = titleText.trim();
+  const minutesText = document.getElementById("edit-minutes").value.trim();
+  const durationMinutes = Number(minutesText);
+  const errors = {};
+  if (!title) errors.title = "Enter a quest title.";
+  if (!/^[0-9]+$/.test(minutesText) || !Number.isSafeInteger(durationMinutes) || durationMinutes <= 0) {
+    errors.minutes = "Enter a positive whole number of minutes.";
+  }
+  showEditErrors(errors);
+  if (Object.keys(errors).length) {
+    document.getElementById(errors.title ? "edit-title" : "edit-minutes").focus();
+    return;
+  }
+  const payload = {};
+  if (titleText !== selectedQuest.title && title !== selectedQuest.title) payload.title = title;
+  if (durationMinutes !== selectedQuest.durationMinutes) payload.durationMinutes = durationMinutes;
+  if (!Object.keys(payload).length) {
+    actionMessage.textContent = "No changes to save.";
+    return;
+  }
+  changeQuest("PATCH", payload);
+});
+
+document.getElementById("cancel-edit").addEventListener("click", () => {
+  if (actionPending) return;
+  editForm.hidden = true;
+  document.getElementById(needsReload ? "refresh-quests" : "edit-quest").focus();
+});
+document.getElementById("delete-quest").addEventListener("click", () => {
+  if (!canChangeQuest()) return;
+  editForm.hidden = true;
+  deleteConfirmation.hidden = false;
+  document.getElementById("cancel-delete").focus();
+});
+document.getElementById("cancel-delete").addEventListener("click", () => {
+  if (actionPending) return;
+  deleteConfirmation.hidden = true;
+  document.getElementById(needsReload ? "refresh-quests" : "delete-quest").focus();
+});
+document.getElementById("confirm-delete").addEventListener("click", () => {
+  if (!deleteConfirmation.hidden) changeQuest("DELETE");
+});
+document.getElementById("complete-quest").addEventListener("click", () => {
+  if (!editForm.hidden) {
+    actionMessage.textContent = "Save or cancel your edit before completing the quest.";
+    return;
+  }
+  changeQuest("POST");
+});
+
+filter.addEventListener("change", () => loadQuests());
 document.getElementById("refresh-quests").addEventListener("click", refreshPlanner);
 document.getElementById("quest-form").addEventListener("quest:created", refreshPlanner);
 refreshPlanner();
+
