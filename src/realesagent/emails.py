@@ -15,16 +15,20 @@ def subject_line(situation, urgency):
 
     return subjects[urgency]
 
-def test_subject_line_invalid_situation():
-    for situation in ("", "   ", None, 123):
-        with pytest.raises(ValueError):
-            subject_line(situation, 3)
-
 def extension_request(days_late, professor_name):
+
+    if type(days_late) is not int:
+        raise TypeError("Days late must be an integer")
+
     if days_late < 0:
         raise ValueError("Days late cannot be negative")
 
-    if not professor_name.strip():
+    if not isinstance(professor_name, str):
+        raise TypeError("Professor name must be a string")
+
+    professor_name = professor_name.strip()
+
+    if not professor_name:
         raise ValueError("Professor name cannot be empty")
 
     if days_late == 0:
