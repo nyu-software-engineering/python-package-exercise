@@ -1,4 +1,4 @@
-import pytest, random
+import pytest
 from games_package import blackjack 
 from games_package.blackjack import (CARD_RANKS, CARD_SUITS, create_deck, display_hand, play_blackjack, shuffle_deck, sum_hand)
 
