@@ -1,5 +1,6 @@
 """How long it would take to travel from Earth to another planet."""
 
+import math
 from datetime import date
 
 import ephem
@@ -20,6 +21,21 @@ SECONDS_PER_UNIT = [
     ("minute", 60),
     ("second", 1),
 ]
+
+
+def _check_number(value, name):
+    """Raise unless value is a real, finite number (True/False don't count)."""
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        raise TypeError(f"{name} must be a number")
+    if not math.isfinite(value):
+        raise ValueError(f"{name} must be a finite number")
+
+
+def _check_speed(speed_kmh):
+    """Raise unless speed_kmh is a finite number greater than 0."""
+    _check_number(speed_kmh, "speed_kmh")
+    if speed_kmh <= 0:
+        raise ValueError("speed_kmh must be greater than 0")
 
 
 def _to_date(on_date):
@@ -75,10 +91,15 @@ def distance_from_earth(planet: str, on_date=None) -> float:
 
 
 def format_duration(seconds: float) -> str:
-    """Turn a number of seconds into readable text, like '89 years'."""
-    for unit, size in SECONDS_PER_UNIT:
-        if seconds >= size:
-            amount = round(seconds / size)
+    """Turn a number of seconds into readable text, like '89 years'.
+
+    A value that rounds up to a full unit moves to the next unit,
+    so 59.6 seconds is '1 minute', not '60 seconds'.
+    """
+    for index, (unit, size) in enumerate(SECONDS_PER_UNIT):
+        smaller = SECONDS_PER_UNIT[index + 1][1] if index + 1 < len(SECONDS_PER_UNIT) else 0
+        if seconds >= size - smaller / 2:
+            amount = max(1, round(seconds / size))
             return f"{amount} {unit}" + ("" if amount == 1 else "s")
     return "less than a second"
 
@@ -101,10 +122,7 @@ def travel_at_speed(planet: str, speed_kmh: float, on_date=None) -> str:
         ValueError: If planet is unknown or Earth, speed is not positive,
             or on_date is not a real date.
     """
-    if isinstance(speed_kmh, bool) or not isinstance(speed_kmh, (int, float)):
-        raise TypeError("speed_kmh must be a number")
-    if speed_kmh <= 0:
-        raise ValueError("speed_kmh must be greater than 0")
+    _check_speed(speed_kmh)
     hours = distance_from_earth(planet, on_date) / speed_kmh
     return format_duration(hours * 3600)
 
@@ -143,12 +161,8 @@ def arrival_age(planet: str, speed_kmh: float, current_age: float, on_date=None)
         ValueError: If planet is unknown or Earth, speed is not positive,
             age is negative, or on_date is not a real date.
     """
-    if isinstance(speed_kmh, bool) or not isinstance(speed_kmh, (int, float)):
-        raise TypeError("speed_kmh must be a number")
-    if speed_kmh <= 0:
-        raise ValueError("speed_kmh must be greater than 0")
-    if isinstance(current_age, bool) or not isinstance(current_age, (int, float)):
-        raise TypeError("current_age must be a number")
+    _check_speed(speed_kmh)
+    _check_number(current_age, "current_age")
     if current_age < 0:
         raise ValueError("current_age cannot be negative")
 

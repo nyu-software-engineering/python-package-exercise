@@ -296,3 +296,23 @@ def test_arrival_age_bad_planet_speed_and_date():
         arrival_age("mars", "fast", 20)
     with pytest.raises(ValueError, match="not a real"):
         arrival_age("mars", 100, 20, "2026-02-30")
+
+
+def test_format_duration_rolls_over_to_next_unit():
+    """Verify values that round up to a full unit move to the next unit."""
+    assert format_duration(59.6) == "1 minute", "Expected 59.6 s to be '1 minute'"
+    assert format_duration(3599) == "1 hour", "Expected 3599 s to be '1 hour'"
+    assert format_duration(86399) == "1 day", "Expected 86399 s to be '1 day'"
+    assert format_duration(59.4) == "59 seconds", "Expected 59.4 s to stay '59 seconds'"
+
+
+def test_speed_and_age_must_be_finite():
+    """Verify nan and infinity are rejected for speed and age."""
+    with pytest.raises(ValueError, match="finite"):
+        travel_at_speed("mars", float("nan"))
+    with pytest.raises(ValueError, match="finite"):
+        travel_at_speed("mars", float("inf"))
+    with pytest.raises(ValueError, match="finite"):
+        arrival_age("mars", float("nan"), 20)
+    with pytest.raises(ValueError, match="finite"):
+        arrival_age("mars", 100, float("inf"))
