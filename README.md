@@ -227,7 +227,7 @@ run()
 ### Example Program
 
 
-See the [example Python program](https://github.com/software-students-fall2026/python-package-exercise-busy-bees/blob/main/example.py) demonstrating package usage.
+See the [example Python program](https://github.com/software-students-fall2026/python-package-exercise-busy-bees/blob/1313f1b7943aa7df77a0f919fdc23804b488d0d8/example_program.py) demonstrating package usage.
 
 
 ## Contributing and Development Setup
