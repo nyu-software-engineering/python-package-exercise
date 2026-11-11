@@ -1,5 +1,5 @@
 
-from desktop_cat import Cat, MOODS, FOODS
+from desktop_cat import Cat, MOODS, FOODS, PET_AREAS
 
 import inspect
 print(inspect.getfile(Cat))
@@ -14,18 +14,27 @@ def main():
 
     print("\nAvailable moods:", MOODS)
     print("Available foods:", FOODS)
+    print("Available petting areas:", PET_AREAS)
 
     # Demonstrate renaming
     print("\n" + cat.set_name("Mittens"))
 
     # Demonstrate feeding
     print(cat.feed("fish"))
+    print(cat.feed("kibble"))
+
+    # Demonstrate feeding statistics
+    print("Foods eaten:", cat.foods_eaten)
 
     # Demonstrate petting
+    print("\n" + cat.pet("belly", times=5))
+    print(cat.status())
     print(cat.pet("head", times=3))
+    print(cat.status())
+    print("Total times petted:", cat.times_petted)
 
     # Demonstrate sleeping
-    print(cat.sleep(2))
+    print("\n" +cat.sleep(2))
 
     # Demonstrate status
     print("\nShort status:")
@@ -33,9 +42,6 @@ def main():
 
     print("\nDetailed status:")
     print(cat.status(long=True))
-
-    # Demonstrate feeding statistics
-    print("\nFoods eaten:", cat.foods_eaten)
 
     # Demonstrate GUI (optional dependency)
     print("\nWould you like to launch the desktop cat?")
