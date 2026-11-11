@@ -1,4 +1,11 @@
+import pytest
 from realesagent import extension_request, subject_line
+
+
+def test_subject_line_invalid_situation():
+    for situation in ("", "   ", None, 123):
+        with pytest.raises(ValueError):
+            subject_line(situation, 3)
 
 
 def test_subject_line_levels():
@@ -41,12 +48,11 @@ def test_extension_request_tiers():
 
 
 def test_extension_request_invalid_values():
-    # Check the original function's errors without changing its behavior.
     cases = [
         (-1, "Rivera", ValueError),
         (0, "   ", ValueError),
         ("one", "Rivera", TypeError),
-        (0, None, AttributeError),
+        (0, None, TypeError),
     ]
     for days, name, expected_error in cases:
         try:
@@ -55,3 +61,21 @@ def test_extension_request_invalid_values():
             pass
         else:
             assert False, "Expected an error for invalid extension input"
+
+def test_subject_line_invalid_situation():
+    for situation in ("", "   ", None, 123):
+        with pytest.raises(ValueError):
+            subject_line(situation, 3)
+
+def test_extension_request_input_validation():
+    with pytest.raises(TypeError):
+        extension_request(2.5, "Rivera")
+
+    with pytest.raises(TypeError):
+        extension_request(True, "Rivera")
+
+    with pytest.raises(TypeError):
+        extension_request(1, 123)
+
+    result = extension_request(1, "  Rivera  ")
+    assert result.startswith("Dear Professor Rivera,\n\n")
