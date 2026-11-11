@@ -20,7 +20,6 @@ from cosmicly.planetary_travel import (
 YEAR_SECONDS = 365.25 * 24 * 3600
 
 
-
 def test_travel_at_speed_known_values():
     """Verify expected travel times for Mars, Venus, and the Moon."""
     actual = travel_at_speed("mars", 100)
@@ -36,11 +35,17 @@ def test_travel_at_speed_known_values():
 def test_travel_at_speed_units_and_plurals():
     """Verify time units, singular and plural forms, and subsecond wording."""
     actual = travel_at_speed("moon", 384_400)
-    assert actual == "1 hour", f"Expected singular '1 hour'. Instead, it returned {actual}"
+    assert (
+        actual == "1 hour"
+    ), f"Expected singular '1 hour'. Instead, it returned {actual}"
     actual = travel_at_speed("moon", 384_400 / 2)
-    assert actual == "2 hours", f"Expected plural '2 hours'. Instead, it returned {actual}"
+    assert (
+        actual == "2 hours"
+    ), f"Expected plural '2 hours'. Instead, it returned {actual}"
     actual = travel_at_speed("jupiter", LIGHT_SPEED_KMH)
-    assert actual == "35 minutes", f"Expected '35 minutes'. Instead, it returned {actual}"
+    assert (
+        actual == "35 minutes"
+    ), f"Expected '35 minutes'. Instead, it returned {actual}"
     actual = travel_at_speed("moon", LIGHT_SPEED_KMH)
     assert actual == "1 second", f"Expected '1 second'. Instead, it returned {actual}"
     actual = travel_at_speed("moon", 1e15)
@@ -63,12 +68,15 @@ def test_travel_at_speed_int_and_float_speed():
     as_int = travel_at_speed("mars", 100)
     as_float = travel_at_speed("mars", 100.0)
     assert as_int == as_float, (
-        f"Expected int and float speeds to match."
-        f"Got {as_int} and {as_float}"
+        f"Expected int and float speeds to match." f"Got {as_int} and {as_float}"
     )
     slow = travel_at_speed("mars", 0.5)
-    assert slow != as_int, f"Expected a slower speed to give a different time. Both were {slow}"
-    assert isinstance(as_float, str), f"Expected a string. Instead, it returned {as_float!r}"
+    assert (
+        slow != as_int
+    ), f"Expected a slower speed to give a different time. Both were {slow}"
+    assert isinstance(
+        as_float, str
+    ), f"Expected a string. Instead, it returned {as_float!r}"
 
 
 def test_travel_at_speed_unknown_planet():
@@ -155,7 +163,6 @@ def test_light_speed_to():
         light_speed_to("earth")
 
 
-
 def test_format_duration_units():
     """Verify each time unit and its singular and plural forms."""
     assert format_duration(1) == "1 second", "Expected '1 second'"
@@ -169,11 +176,17 @@ def test_format_duration_units():
 def test_format_duration_rounding_and_tiny_values():
     """Verify rounding to the nearest unit and wording for under a second."""
     actual = format_duration(0)
-    assert actual == "less than a second", f"Expected 'less than a second'. Got {actual}"
+    assert (
+        actual == "less than a second"
+    ), f"Expected 'less than a second'. Got {actual}"
     actual = format_duration(0.5)
-    assert actual == "less than a second", f"Expected 'less than a second'. Got {actual}"
+    assert (
+        actual == "less than a second"
+    ), f"Expected 'less than a second'. Got {actual}"
     actual = format_duration(89)
-    assert actual == "1 minute", f"Expected 89 seconds to round to '1 minute'. Got {actual}"
+    assert (
+        actual == "1 minute"
+    ), f"Expected 89 seconds to round to '1 minute'. Got {actual}"
 
 
 def test_distance_from_earth_without_date():
@@ -205,7 +218,9 @@ def test_distance_from_earth_with_date():
         203_187_602, rel=1e-4
     ), f"Expected about 203,187,602 km on 2026-11-10. Got {from_string}"
     from_date = distance_from_earth("mars", date(2026, 11, 10))
-    assert from_date == from_string, f"Expected date and string to match. Got {from_date}"
+    assert (
+        from_date == from_string
+    ), f"Expected date and string to match. Got {from_date}"
     from_datetime = distance_from_earth("mars", datetime(2026, 11, 10, 15, 0))
     assert (
         from_datetime == from_string
@@ -214,13 +229,17 @@ def test_distance_from_earth_with_date():
 
 def test_distance_from_earth_changes_over_the_year():
     """Verify distances move during a year and stay within real limits."""
-    distances = [distance_from_earth("mars", date(2026, month, 1)) for month in range(1, 13)]
+    distances = [
+        distance_from_earth("mars", date(2026, month, 1)) for month in range(1, 13)
+    ]
     assert len(set(distances)) == 12, "Expected Mars's distance to change every month"
     assert all(
         54_000_000 < d < 402_000_000 for d in distances
     ), f"Expected Mars to stay 54M to 402M km away. Got {distances}"
     moon = distance_from_earth("moon", "2026-11-10")
-    assert 356_000 < moon < 407_000, f"Expected the Moon 356k to 407k km away. Got {moon}"
+    assert (
+        356_000 < moon < 407_000
+    ), f"Expected the Moon 356k to 407k km away. Got {moon}"
 
 
 def test_distance_from_earth_bad_dates():
@@ -268,7 +287,9 @@ def test_arrival_age_with_date_and_light_speed():
     assert actual == 251.79, f"Expected 251.79. Got {actual}"
     same = arrival_age("mars", 100, 20, date(2026, 11, 10))
     assert same == actual, f"Expected date and string to match. Got {same}"
-    assert actual > arrival_age("mars", 100, 20), "Expected a later, farther trip to take longer"
+    assert actual > arrival_age(
+        "mars", 100, 20
+    ), "Expected a later, farther trip to take longer"
     actual = arrival_age("moon", LIGHT_SPEED_KMH, 40)
     assert actual == 40.0, f"Expected 40.0 at light speed. Got {actual}"
 
@@ -283,6 +304,7 @@ def test_arrival_age_bad_age():
         arrival_age("mars", 100, True)
     with pytest.raises(TypeError, match="current_age must be a number"):
         arrival_age("mars", 100, None)
+
 
 def test_arrival_age_bad_planet_speed_and_date():
     """Verify bad planets, speeds, and dates are rejected."""
