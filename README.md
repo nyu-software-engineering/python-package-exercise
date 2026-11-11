@@ -29,7 +29,7 @@ from realesagent import excuses            # module style: excuses.generate_excu
 from realesagent import generate_excuse    # direct style: generate_excuse(...)
 ```
 
-For a program that uses every function, see [demos/example.py](demos/example.py).
+For a program that uses every function, see [examples/demo.py](examples/demo.py).
 
 ---
 
@@ -272,7 +272,7 @@ pipenv run pytest tests/test_emails.py
 ### Run the example program
 
 ```bash
-pipenv run python demos/example.py
+pipenv run python examples/demo.py
 ```
 
 ### Build the package
