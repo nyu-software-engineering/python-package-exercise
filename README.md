@@ -68,7 +68,7 @@ normalize_category("Non Committal")   # "non-committal"
 ```
 
 ### Example Program
-See See [`examples/example.py`](https://github.com/software-students-fall2026/python-package-exercise-csyy/blob/main/examples/example.py) for a program that uses every function. Run it from the project folder: for a program that uses every function. Run it from the project folder:
+See [`examples/example.py`](https://github.com/software-students-fall2026/python-package-exercise-csyy/blob/main/examples/example.py) for a program that uses every function. Run it from the project folder: for a program that uses every function. 
 
 ```bash
 python -m examples.example
