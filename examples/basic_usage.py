@@ -9,7 +9,7 @@ from quest_manager import (
 )
 from progression import award_xp, calculate_level, calculate_xp
 from storage import (
-    delete_pending_quest, initialize_database, insert_quest, load_progress,
+    complete_quest, delete_pending_quest, initialize_database, insert_quest, load_progress,
     load_quests, update_pending_quest,
 )
 
@@ -37,6 +37,21 @@ def main() -> None:
         print("Saved planned XP:", reloaded[0]["xpReward"])
         delete_pending_quest(database_path, quest_id)
         print("Stored quests after deletion:", len(load_quests(database_path)))
+
+        completion_quest = create_quest([], "Read a chapter", 100)[0]
+        insert_quest(database_path, completion_quest)
+        completed = complete_quest(database_path, completion_quest["id"])
+        retry = complete_quest(database_path, completion_quest["id"])
+        assert completed["awardedXP"] == 100
+        assert retry["awardedXP"] == 0
+        assert retry["quest"]["completedAt"] == completed["quest"]["completedAt"]
+        assert load_progress(database_path) == {"totalXP": 100}
+        assert load_quests(database_path, status="completed") == [completed["quest"]]
+        print("Completed status:", completed["quest"]["status"])
+        print("First completion reward:", completed["awardedXP"])
+        print("Reward on retry:", retry["awardedXP"])
+        print("Saved XP after completion:", load_progress(database_path)["totalXP"])
+        print("Saved level after completion:", retry["level"])
 
     print(f"Original: {title} -> {quests[0]['fantasyDescription']}")
     print("Seeded description:", generate_fantasy_description(title, seed=7))
