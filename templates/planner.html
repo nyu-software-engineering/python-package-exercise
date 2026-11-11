@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Quest planner</title>
+  <link rel="stylesheet" href="/static/planner.css">
+</head>
+<body>
+  <main>
+    <header>
+      <h1>Quest planner</h1>
+      <p>Plan a task. Find your next adventure.</p>
+      <p id="progress-summary" aria-live="polite">Loading progress…</p>
+      <p id="progress-message" aria-live="polite"></p>
+    </header>
+
+    <div class="planner-layout">
+      <section class="creation-panel" aria-label="Create a quest">
+        {% include "quest_form.html" %}
+      </section>
+
+      <section class="saved-panel" aria-labelledby="saved-heading">
+        <h2 id="saved-heading">Your quests</h2>
+        <div class="list-controls">
+          <label for="quest-filter">Show quests</label>
+          <select id="quest-filter">
+            <option value="">All</option>
+            <option value="pending">Pending</option>
+            <option value="completed">Completed</option>
+          </select>
+          <button id="refresh-quests" type="button">Refresh quests</button>
+        </div>
+        <p id="list-message" aria-live="polite">Loading quests…</p>
+        <ul id="quest-list" aria-label="Saved quests"></ul>
+        <p id="detail-message" aria-live="polite"></p>
+        <section id="quest-detail" aria-labelledby="detail-heading" hidden>
+          <h2 id="detail-heading" tabindex="-1">Quest details</h2>
+          <h3 id="detail-title" dir="auto"></h3>
+          <p id="detail-description" class="fantasy-description" dir="auto"></p>
+          <dl>
+            <dt>Duration</dt><dd id="detail-duration"></dd>
+            <dt>Status</dt><dd id="detail-status"></dd>
+            <dt>Planned reward</dt><dd id="detail-reward"></dd>
+            <dt>Completed at</dt><dd id="detail-completed"></dd>
+            <dt>Quest ID</dt><dd id="detail-id"></dd>
+          </dl>
+        </section>
+      </section>
+    </div>
+    <noscript>Enable JavaScript to create quests and view saved progress.</noscript>
+  </main>
+  <script type="module" src="/static/quest_list.js"></script>
+</body>
+</html>

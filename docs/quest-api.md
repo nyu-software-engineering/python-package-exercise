@@ -147,8 +147,9 @@ const progress = await fetch("/progress").then(response => response.json());
 console.log(progress.totalXP, progress.level);
 ```
 
-The existing creation page does not yet have completion or progress controls.
-These endpoints are ready for the later list/detail UI integration.
+The planner page shows saved quests, details, and progress, and refreshes the
+list after creation. Editing, deletion, and completion controls are the next
+UI integration step.
 
 ## Errors and tests
 
@@ -163,6 +164,8 @@ not part of the installable Python library, so the CI wheel-only phase excludes
 the source-only API and form test modules. It still runs them in the source phase.
 
 `tests/test_quest_completion_api.py` covers the completion/progress routes and
-the create → edit → complete → retry flow through the HTTP API. List/detail,
-editing/deleting, and completion controls will be connected in the UI steps.
+the create → edit → complete → retry flow through the HTTP API. The planner
+now connects the list/detail and progress reads; editing/deleting and
+completion page controls will follow separately.
+
 

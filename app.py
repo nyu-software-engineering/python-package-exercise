@@ -53,7 +53,7 @@ def create_app(database_path="quests.db"):
 
     @app.get("/")
     def planner():
-        return render_template("quest_form.html", csrf_token=csrf_token())
+        return render_template("planner.html", csrf_token=csrf_token())
 
     @app.get("/quests")
     def quest_list():
@@ -213,4 +213,5 @@ def create_app(database_path="quests.db"):
 
 if __name__ == "__main__":
     create_app().run(host="127.0.0.1", port=8000)
+
 
