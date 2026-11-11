@@ -2,9 +2,9 @@ import sqlite3
 
 from flask import Flask, jsonify, render_template, request
 
-from quest_manager import create_quest
+from quest_manager import create_quest, get_quest
 from quest_validation import validate_quest_input
-from storage import initialize_database, insert_quest
+from storage import initialize_database, insert_quest, load_quests
 
 
 def create_app(database_path="quests.db"):
@@ -14,6 +14,35 @@ def create_app(database_path="quests.db"):
     @app.get("/")
     def planner():
         return render_template("quest_form.html")
+
+    @app.get("/quests")
+    def quest_list():
+        status = request.args.get("status")
+        if status not in (None, "pending", "completed"):
+            return jsonify(error="Status must be pending or completed."), 400
+
+        try:
+            quests = load_quests(database_path, status)
+        except sqlite3.Error:
+            app.logger.exception("Could not load quests")
+            return jsonify(error="Could not load quests."), 500
+
+        return jsonify(quests)
+
+    @app.get("/quests/<quest_id>")
+    def quest_detail(quest_id):
+        if not quest_id.strip():
+            return jsonify(error="Enter a quest ID."), 400
+
+        try:
+            quest = get_quest(load_quests(database_path), quest_id)
+        except KeyError:
+            return jsonify(error="Quest not found."), 404
+        except sqlite3.Error:
+            app.logger.exception("Could not load quests")
+            return jsonify(error="Could not load quests."), 500
+
+        return jsonify(quest)
 
     @app.post("/quests")
     def post_quest():
