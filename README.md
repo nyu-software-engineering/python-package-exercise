@@ -2,6 +2,10 @@
 
 An exercise to create a Python package, build it, test it, distribute it, and use it. See [instructions](./instructions.md) for details.
 
+## Badge
+
+[![CodeQL](https://github.com/software-students-fall2026/python-package-exercise-busy-bees/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/software-students-fall2026/python-package-exercise-busy-bees/actions/workflows/github-code-scanning/codeql)
+
 ## Available Moods, Foods, and Petting Areas
 **Moods:** Happy, Sad, Angry, Tired, Hungry, Annoyed
 **Foods:** Fish, Milk, Kibble, Canned Food, Mouse
