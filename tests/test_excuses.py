@@ -2,7 +2,8 @@ import pytest
 from realesagent.excuses import (
     generate_excuse,
     grade_beg,
-    apology_multiplier
+    apology_multiplier,
+    absence_excuse
 )
 
 
@@ -45,3 +46,12 @@ class Tests:
 
         assert email in actual
         assert "apologize" in actual.lower()
+
+    # Test absence_excuse()
+
+    def test_absence_excuse(self):
+        result = absence_excuse("English")
+
+        assert isinstance(result, str)
+        assert "English" in result
+        assert len(result) > 0

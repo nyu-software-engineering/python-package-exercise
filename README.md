@@ -75,7 +75,7 @@ See [examples/demo.py](https://github.com/software-students-fall2026/python-pack
 If you cloned the repository, run the example from the repository root:
 
 ```bash
-pipenv run python demos/example.py
+pipenv run python examples/demo.py
 ```
 
 ## Functions
