@@ -122,3 +122,37 @@ def fly_to(planet: str, on_date=None) -> str:
 def light_speed_to(planet: str, on_date=None) -> str:
     """Travel time to a planet at the speed of light."""
     return travel_at_speed(planet, LIGHT_SPEED_KMH, on_date)
+
+
+def arrival_age(planet: str, speed_kmh: float, current_age: float, on_date=None) -> float:
+    """Return how old you will be when you arrive at a planet.
+
+    Args:
+        planet: Planet name, case-insensitive (e.g. "Mars").
+        speed_kmh: Travel speed in kilometres per hour, greater than 0.
+        current_age: Your age in Earth years today, 0 or more.
+        on_date: Optional departure date ("YYYY-MM-DD" or a date) to use the
+            real distance on that day instead of the closest approach.
+
+    Returns:
+        Your age in Earth years on arrival, rounded to 2 decimals.
+
+    Raises:
+        TypeError: If planet is not a string, speed or age is not a number,
+            or on_date is the wrong type.
+        ValueError: If planet is unknown or Earth, speed is not positive,
+            age is negative, or on_date is not a real date.
+    """
+    if isinstance(speed_kmh, bool) or not isinstance(speed_kmh, (int, float)):
+        raise TypeError("speed_kmh must be a number")
+    if speed_kmh <= 0:
+        raise ValueError("speed_kmh must be greater than 0")
+    if isinstance(current_age, bool) or not isinstance(current_age, (int, float)):
+        raise TypeError("current_age must be a number")
+    if current_age < 0:
+        raise ValueError("current_age cannot be negative")
+
+    hours = distance_from_earth(planet, on_date) / speed_kmh
+    years = hours / (365.25 * 24)
+    return round(current_age + years, 2)
+
