@@ -25,10 +25,13 @@ jobs:
           cache: "pip"
 
       - name: Install dependencies
-        run: pip install -e ".[gui]" pytest build
+        run: pip install -e ".[gui]" pytest build twine
 
       - name: Build package
         run: python -m build
+
+      - name: Check package distributions
+        run: python -m twine check dist/*
 
       - name: Run tests
         run: pytest
