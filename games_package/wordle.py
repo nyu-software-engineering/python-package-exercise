@@ -32,7 +32,7 @@ def _choose_word(words, rng=None):
 
 def _score_guess(secret, guess):
     if not _is_valid_word(secret) or not _is_valid_word(guess):
-        raise ValueError("secret and guess must both have five English letters")
+        raise ValueError("secret and guess must both contain five letters")
     secret = secret.lower()
     guess = guess.lower()
     statuses = ["absent"] * WORD_LENGTH
@@ -113,4 +113,7 @@ def play_wordle(max_attempts=6, *, words=None, secret=None, input_fn=input, outp
         "guesses": tuple(guesses),
         "cancelled": False
     }
+
+if __name__ == "__main__":
+    play_wordle()
 
