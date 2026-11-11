@@ -1,9 +1,6 @@
-
-![Python Build and Test](https://github.com/software-students-fall2026/python-package-exercise-realesagent/actions/workflows/build.yaml/badge.svg?branch=main)
+[![Python Build and Test](https://github.com/software-students-fall2026/python-package-exercise-realesagent/actions/workflows/build-and-test.yaml/badge.svg?branch=main)](https://github.com/software-students-fall2026/python-package-exercise-realesagent/actions/workflows/build-and-test.yaml)
 
 # Realesagent
-Build and Test
-
 A light-hearted Python package that mimics student and professor email responses in a university class. Generate student excuses, apologies, grade requests, and extension emails based on different personal factors, such as grades, deadlines, and desperation levels. You can also simulate professor responses in different tones, including strict, sympathetic, and sarcastic.
 
 PyPI: https://pypi.org/project/realesagent/
@@ -73,7 +70,7 @@ Every pull request is automatically built and tested using GitHub Actions on two
 
 ## Example Program
 
-See [demos/example.py](https://github.com/software-students-fall2026/python-package-exercise-realesagent/blob/main/demos/example.py), which demonstrates the functions available in the package.
+See [examples/demo.py](https://github.com/software-students-fall2026/python-package-exercise-realesagent/blob/main/examples/demo.py), which demonstrates the functions available in the package.
 
 If you cloned the repository, run the example from the repository root:
 
