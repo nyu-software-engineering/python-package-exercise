@@ -13,32 +13,31 @@ def weight_on_planet(mode, value, planet):
         TypeError: If mode or planet is not a string, or value is not a number.
         ValueError: If mode or planet is unknown, or value is negative.
     """
-    if type(mode) != str:
-       raise TypeError("_type_ must be a string")
-    
-    if type(planet) != str:
-           raise TypeError("planet must be a string")
+    if not isinstance(mode, str):
+        raise TypeError("_type_ must be a string")
+
+    if not isinstance(planet, str):
+        raise TypeError("planet must be a string")
+
     mode = mode.lower()
     planet = planet.lower()
 
-    if type(value) != int and type(value) != float:
+    if not isinstance(value, (int, float)) or isinstance(value, bool):
         raise TypeError("value must be a number")
 
-    if mode != "m" and mode != "mass" and mode != "weight" and mode != "w":
-       raise ValueError("mode must be either mass or weight (m or w)")
+    if mode not in {"m", "mass", "w", "weight"}:
+        raise ValueError("mode must be either mass or weight (m or w)")
 
-    if planet not in PLANETS.keys():
-       raise ValueError("No such planet in our solar system")
-       
+    if planet not in PLANETS:
+        raise ValueError("No such planet in our solar system")
+
     if value < 0:
-       raise ValueError("Neither weight nor mass can be negative")
+        raise ValueError("Neither weight nor mass can be negative")
 
-    if mode == "m" or mode == "mass":
-    
-     return round(value * PLANETS[planet]['gravity_m_s2'],2)
+    planet_gravity = PLANETS[planet]["gravity_m_s2"]
 
-    elif mode == "w" or mode == "weight":
-        weight = value / PLANETS['earth']['gravity_m_s2']
-        weight = weight * PLANETS[planet]['gravity_m_s2']
+    if mode in {"m", "mass"}:
+        return round(value * planet_gravity, 2)
 
-        return round (weight,2)
+    earth_gravity = PLANETS["earth"]["gravity_m_s2"]
+    return round(value / earth_gravity * planet_gravity, 2)
