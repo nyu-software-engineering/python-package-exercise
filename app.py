@@ -198,7 +198,7 @@ def create_app(database_path="quests.db"):
         except ValueError as error:
             return jsonify(error=str(error)), 400
 
-        quest = create_quest([], title, minutes)[0]
+        quest = create_quest([], title, minutes, seed=secrets.randbits(64))[0]
 
         try:
             insert_quest(database_path, quest)
