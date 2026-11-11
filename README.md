@@ -69,6 +69,9 @@ To contribute to issues:
 ### Blackjack
 
 ### Coin Toss
+CLI implementation of a coin toss game for the `funcasino` package.
+
+#### How It Works
 
 ### Slots
 
