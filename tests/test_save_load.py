@@ -47,6 +47,19 @@ def test_history_survives_save_and_load(tmp_path):
     assert get_history(loaded, 1)[0]["after"] == 0
 
 
+def test_last_seen_survives_save_and_load(tmp_path):
+    pet = create_pet("Mochi")
+    pet["last_seen"] = 1700000000
+    path = tmp_path / "pet.json"
+
+    save_pet(pet, path)
+    loaded = load_pet(path)
+
+    assert loaded["last_seen"] == 1700000000
+    assert loaded["history"] == []
+    assert loaded["name"] == "Mochi"
+
+
 def test_save_rejects_a_bad_pet(tmp_path):
     path = tmp_path / "pet.json"
     pet = {
