@@ -4,6 +4,7 @@ import sqlite3
 import pytest
 
 from app import create_app
+from quest_descriptions import generate_fantasy_description
 from storage import load_progress, load_quests
 
 
@@ -69,3 +70,25 @@ def test_saved_quest_survives_app_recreation(client, database):
 
     assert load_quests(database) == [quest]
     assert load_progress(database) == {"totalXP": 0}
+
+
+def test_web_creation_uses_template_variants_and_preserves_saved_descriptions(client, database, monkeypatch):
+    seeds = iter([0, 1])
+    monkeypatch.setattr("app.secrets.randbits", lambda bits: next(seeds))
+    first = client.post("/quests", json={"title": "Read books", "durationMinutes": 30})
+    second = client.post("/quests", json={"title": "Read books", "durationMinutes": 30})
+    assert first.status_code == second.status_code == 201
+    first_quest, second_quest = first.get_json(), second.get_json()
+    assert first_quest["fantasyDescription"] == generate_fantasy_description("Read books", seed=0)
+    assert second_quest["fantasyDescription"] == generate_fantasy_description("Read books", seed=1)
+    assert first_quest["fantasyDescription"] != second_quest["fantasyDescription"]
+    assert first_quest["id"] != second_quest["id"]
+    expected = [first_quest, second_quest]
+    assert client.get("/quests").get_json() == expected
+    assert create_app(database).test_client().get("/quests").get_json() == expected
+    assert load_quests(database) == expected
+    assert load_progress(database) == {"totalXP": 0}
+    edited = client.patch(f"/quests/{first_quest['id']}", json={"durationMinutes": 45})
+    assert edited.status_code == 200
+    assert edited.get_json()["fantasyDescription"] == first_quest["fantasyDescription"]
+    assert edited.get_json()["xpReward"] == 45

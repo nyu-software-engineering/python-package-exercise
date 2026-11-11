@@ -1,10 +1,20 @@
-"""Tests for fantasy templates, category priority, and the generic fallback."""
-
 import random
 
 import pytest
 
 from quest_descriptions import generate_fantasy_description
+
+
+FALLBACK_CHOICES = {
+    "Embark on a New Quest",
+    "Follow the Trail Beyond the Village",
+    "Answer a Call from the Adventurers' Guild",
+    "Take the Next Step on Your Hero's Journey",
+    "Explore a New Path Through the Enchanted Woods",
+    "Discover What Awaits Beyond the Old Gate",
+    "Begin a Chapter in the Chronicle of Adventures",
+    "Carry Out a Favor for the Woodland Council",
+}
 
 
 @pytest.mark.parametrize(
@@ -96,7 +106,7 @@ def test_chores_do_not_override_existing_categories(title, expected):
         "Buy bread",
         "Preview a movie",
         "Sort unread emails",
-        "学习数学",
+        "\u5b66\u4e60\u6570\u5b66",
         "Buy a swimsuit",
         "Run unit tests",
         "Train a model",
@@ -157,6 +167,11 @@ def test_seeds_offer_multiple_study_templates():
         "Decipher an Ancient Scroll",
         "Explore the Ancient Library",
         "Unlock the Sage's Hidden Knowledge",
+        "Solve the Riddle of the Moonlit Tower",
+        "Translate the Wizard's Forgotten Notes",
+        "Chart the Stars in the Scholar's Observatory",
+        "Uncover the Secrets of the Crystal Archive",
+        "Master a Lesson at the Academy of Mages",
     }
 
 
@@ -176,10 +191,10 @@ def test_seed_does_not_change_global_random_state(title):
     assert random.getstate() == state
 
 
-def test_seed_preserves_the_generic_fallback():
+def test_seeded_fallback_stays_in_generic_templates():
     assert (
         generate_fantasy_description("Water the plants", seed=7)
-        == "Embark on a New Quest"
+        in FALLBACK_CHOICES
     )
 
 
@@ -217,6 +232,11 @@ def test_seeds_offer_multiple_exercise_templates():
         "Train for the Royal Tournament",
         "Conquer the Knight's Endurance Trial",
         "Prepare for the Dragon's Challenge",
+        "Climb the Steps of the Sky Fortress",
+        "Cross the Ranger's Mountain Pass",
+        "Practice with the Guardians of the Grove",
+        "Build Your Strength at the Adventurer's Camp",
+        "Complete the Trial of the Swift Falcon",
     }
 
 
@@ -257,6 +277,11 @@ def test_seeds_offer_multiple_chore_templates():
         "Restore Order to the Kingdom",
         "Polish the Royal Castle",
         "Clear the Goblin Hideout",
+        "Prepare the Village for the Harvest Festival",
+        "Restore the Ranger's Woodland Cabin",
+        "Set the Guild Hall in Order",
+        "Tend the Royal Courtyard",
+        "Bring Balance to the Keeper's Cottage",
     }
 
 
@@ -271,4 +296,4 @@ def test_no_seed_preserves_the_original_chore_description():
 @pytest.mark.parametrize("title", ["Clean code", "Visit the kitchen", "Buy a dishwasher"])
 def test_seed_does_not_broaden_chore_matching(title):
     for seed in range(20):
-        assert generate_fantasy_description(title, seed=seed) == "Embark on a New Quest"
+        assert generate_fantasy_description(title, seed=seed) in FALLBACK_CHOICES

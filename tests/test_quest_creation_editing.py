@@ -57,7 +57,7 @@ def test_create_first_quest():
         ("Go swimming", "Train for the Royal Tournament"),
         ("Do laundry", "Restore Order to the Kingdom"),
         ("Buy bread", "Embark on a New Quest"),
-        ("学习数学", "Embark on a New Quest"),
+        ("\u5b66\u4e60\u6570\u5b66", "Embark on a New Quest"),
         ("  STUDY math!  ", "Decipher an Ancient Scroll"),
     ],
 )
@@ -105,8 +105,8 @@ def test_create_and_rename_forward_seed(quests):
     created = quest_manager.create_quest([], "Study math", 30, seed=7)[0]
     renamed = quest_manager.rename_quest(quests, "q1", "Read a book", seed=7)
 
-    assert created["fantasyDescription"] == "Explore the Ancient Library"
-    assert renamed[0]["fantasyDescription"] == "Explore the Ancient Library"
+    assert created["fantasyDescription"] == "Chart the Stars in the Scholar's Observatory"
+    assert renamed[0]["fantasyDescription"] == "Chart the Stars in the Scholar's Observatory"
 
 
 @pytest.mark.parametrize(
