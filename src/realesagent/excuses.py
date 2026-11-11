@@ -2,6 +2,14 @@
 import random
 
 def generate_excuse(assignment):
+    if not isinstance(assignment, str):
+        raise TypeError("Assignment must be a string")
+
+    assignment = assignment.strip()
+
+    if not assignment:
+        raise ValueError("Assignment cannot be empty")
+    
     excuses = [
         "My laptop broke down from the academic pressure. Honestly, I think we both need an extension.",
 
