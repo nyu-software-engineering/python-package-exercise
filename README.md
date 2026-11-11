@@ -9,10 +9,7 @@
 - What time is it on Mars right now?
 - How long would it take to *drive* to Neptune?
 
-It uses real planetary data, so the numbers are (mostly) real, even if the questions are strange.
-
-
-Find out how old you would be on Mars, how much you would weigh on the Moon, or how long it would take to fly to Jupiter at airplane speed. **cosmicly** is a Python package that uses orbital periods, gravity, and solar day lengths to explore the eight planets and Earth's Moon.
+It uses real orbital periods, gravity, and solar day lengths for the eight planets and Earth's Moon, so the numbers are (mostly) real, even if the questions are strange.
 
 ## Install from source
 
@@ -109,7 +106,7 @@ The build writes a wheel and a source archive to `dist/`. The tests live in [`te
 
 - [Carina Ilie](https://github.com/carinutza)
 - [Abubakar Diallo](https://github.com/Dialloni)
-- [Julian  Leitersdorf](https://github.com/Jrleitersdorf)
+- [Julian Leitersdorf](https://github.com/Jrleitersdorf)
 - [Leonid (Leo) Gurevich](https://github.com/Leonid2004)
 
 ## Data sources
