@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "terminal-pet-respin"
+version = "0.1.0"
+description = "A tiny pet python that grows as you run terminal commands."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "GPL-3.0-or-later" }
+dependencies = ["python-dateutil"]
+authors = [
+    { name = "YusefMoustafa" },
+    { name = "sing1179" },
+    { name = "TonyyZhou" },
+    { name = "denisekos" },
+]
+
+[project.urls]
+Homepage = "https://github.com/software-students-fall2026/python-package-exercise-respin"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
