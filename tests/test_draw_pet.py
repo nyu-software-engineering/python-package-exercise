@@ -1,8 +1,7 @@
 import pytest
 
-#from draw_pet import draw_pet
-#from get_stage import STAGES, get_stage
 from terminal_pet_respin import STAGES, draw_pet, get_stage, pet_says
+from terminal_pet_respin.draw_pet import MOODS
 
 
 def test_returns_string_for_every_stage():
@@ -102,9 +101,86 @@ def test_pet_says_rejects_bad_stage():
         pet_says("dragon")
     with pytest.raises(TypeError):
         pet_says(5)
-        
+
+
 def test_easter_egg():
     # Test that the easter egg art is returned on Easter
     easter_art = draw_pet("egg", easter_override=True)
     assert "O O" not in easter_art
     assert "/\\/\\/\\/" in easter_art
+
+GROWN_STAGES = STAGES[1:]  # every stage after the plain egg has a face
+
+def test_default_mood_is_surprised():
+    for stage in STAGES:
+        assert draw_pet(stage, easter_override=False) == draw_pet(stage, easter_override=False, mood="surprised")
+        assert draw_pet(stage, "hi") == draw_pet(stage, "hi", mood="surprised")
+
+def test_every_mood_has_three_character_eyes():
+    assert "surprised" in MOODS
+    for eyes in MOODS.values():
+        assert isinstance(eyes, str)
+        assert len(eyes) == 3
+
+
+def test_each_mood_shows_its_own_eyes():
+    for stage in GROWN_STAGES:
+        for mood, eyes in MOODS.items():
+            assert eyes in draw_pet(stage, mood=mood)
+
+
+def test_each_mood_gives_different_art():
+    for stage in GROWN_STAGES:
+        drawings = [draw_pet(stage, mood=mood) for mood in MOODS]
+        assert len(set(drawings)) == len(MOODS)
+
+
+def test_other_moods_replace_the_surprised_eyes():
+    for stage in GROWN_STAGES:
+        for mood in MOODS:
+            if mood != "surprised":
+                assert "O O" not in draw_pet(stage, mood=mood)
+
+
+def test_mood_does_not_change_the_egg():
+    for mood in MOODS:
+        assert draw_pet("egg", easter_override=False, mood=mood) == draw_pet("egg", easter_override=False)
+        assert draw_pet("egg", easter_override=True, mood=mood) == draw_pet("egg", easter_override=True)
+
+
+def test_mood_works_with_speech_bubble():
+    art = draw_pet("hatchling", pet_says("hatchling"), mood="happy")
+    assert f"< {pet_says('hatchling')} >" in art
+    assert "^ ^" in art
+    assert art.endswith(draw_pet("hatchling", mood="happy"))
+
+
+def test_mood_never_changes_the_message():
+    art = draw_pet("young python", "O O", mood="sleepy")
+    assert "< O O >" in art
+    assert "- -" in art
+
+
+def test_unknown_mood_raises_value_error():
+    with pytest.raises(ValueError):
+        draw_pet("hatchling", mood="furious")
+    with pytest.raises(ValueError):
+        draw_pet("hatchling", mood="")
+    with pytest.raises(ValueError):
+        draw_pet("hatchling", mood="Happy")
+
+
+def test_non_string_mood_raises_type_error():
+    with pytest.raises(TypeError):
+        draw_pet("hatchling", mood=1)
+    with pytest.raises(TypeError):
+        draw_pet("hatchling", mood=None)
+    with pytest.raises(TypeError):
+        draw_pet("hatchling", mood=["happy"])
+
+
+def test_bad_stage_still_raises_with_a_mood():
+    with pytest.raises(ValueError):
+        draw_pet("dragon", mood="happy")
+    with pytest.raises(TypeError):
+        draw_pet(5, mood="happy")
