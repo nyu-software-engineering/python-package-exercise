@@ -1,7 +1,6 @@
 
 import random
 
-
 def generate_excuse(assignment):
     excuses = [
         "My laptop broke down from the academic pressure. Honestly, I think we both need an extension.",
@@ -74,6 +73,19 @@ def apology_multiplier(email, desperation):
 
     return apology + "\n\n" + email
 
+ABSENCE_EXCUSES = [
+    "I meant to come to class, but my morning unraveled before I could pull it back together.",
+    "I woke up convinced I still had time, which was honestly the most confident mistake I made all day.",
+    "I was ready to leave, but the quiet of my room became strangely difficult to walk away from.",
+    "I missed class after losing an argument with my alarm, and unfortunately, it had the stronger case.",
+    "I had every intention of showing up, but the morning moved faster than I did.",
+    "I stayed home because I needed a moment to collect myself, and that moment became the entire class period.",
+    "I was not absent by choice; I was simply overwhelmed by the very ordinary tragedy of getting out the door."
+]
+
+def absence_excuse(class_name):
+    excuse = random.choice(ABSENCE_EXCUSES)
+    return f"I am sorry I missed {class_name}. {excuse}"
 
 if __name__=="__main__":
     email = grade_beg(current_grade=70, desired_grade=100, professor_name="John Smith")
