@@ -333,10 +333,10 @@ def start_game():
     canvas.pack(pady=5)
 
     # Draw the gallows
-    canvas.create_line(30, 160, 130, 160, width=3)
-    canvas.create_line(80, 160, 80, 20, width=3)
-    canvas.create_line(80, 20, 140, 20, width=3)
-    canvas.create_line(140, 20, 140, 40, width=3)
+    canvas.create_line(30, 160, 130, 160, width=3, fill="black")
+    canvas.create_line(80, 160, 80, 20, width=3, fill="black")
+    canvas.create_line(80, 20, 140, 20, width=3, fill="black")
+    canvas.create_line(140, 20, 140, 40, width=3, fill="black")
 
     word_label = tk.Label(
         window,
@@ -374,22 +374,22 @@ def start_game():
     # The full drawing takes 9 incorrect guesses.
     def draw_hangman(wrong_guesses):
         if wrong_guesses == 1:
-            canvas.create_oval(125, 40, 155, 70, width=3)
+            canvas.create_oval(125, 40, 155, 70, width=3, outline="black")
 
         elif wrong_guesses == 2:
-            canvas.create_line(140, 70, 140, 115, width=3)
+            canvas.create_line(140, 70, 140, 115, width=3, fill="black")
 
         elif wrong_guesses == 3:
-            canvas.create_line(140, 85, 115, 100, width=3)
+            canvas.create_line(140, 85, 115, 100, width=3, fill="black")
 
         elif wrong_guesses == 4:
-            canvas.create_line(140, 85, 165, 100, width=3)
+            canvas.create_line(140, 85, 165, 100, width=3, fill="black")
 
         elif wrong_guesses == 5:
-            canvas.create_line(140, 115, 120, 145, width=3)
+            canvas.create_line(140, 115, 120, 145, width=3, fill="black")
 
         elif wrong_guesses == 6:
-            canvas.create_line(140, 115, 160, 145, width=3)
+            canvas.create_line(140, 115, 160, 145, width=3, fill="black")
 
         elif wrong_guesses == 7:
             canvas.create_oval(131, 49, 135, 53, fill="black")
@@ -401,7 +401,8 @@ def start_game():
             canvas.create_arc(
                 133, 54, 147, 66,
                 start=0, extent=180,
-                style=tk.ARC, width=2
+                style=tk.ARC, width=2,
+                outline="black"
             )
 
     # Handle a letter button click, update the display, and check
@@ -463,10 +464,10 @@ def start_game():
         canvas.delete("all")
 
         # Redraw the gallows after clearing the previous Hangman.
-        canvas.create_line(30, 160, 130, 160, width=3)
-        canvas.create_line(80, 160, 80, 20, width=3)
-        canvas.create_line(80, 20, 140, 20, width=3)
-        canvas.create_line(140, 20, 140, 40, width=3)
+        canvas.create_line(30, 160, 130, 160, width=3, fill="black")
+        canvas.create_line(80, 160, 80, 20, width=3, fill="black")
+        canvas.create_line(80, 20, 140, 20, width=3, fill="black")
+        canvas.create_line(140, 20, 140, 40, width=3, fill="black")
 
         word_label.config(text=display_word(word, []))
         attempts_label.config(text="Attempts Remaining: 9")
