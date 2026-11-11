@@ -11,6 +11,9 @@ from .pet import MIN_STAT, MAX_STAT
 from .happy import play
 from .save_load import load_pet, save_pet
 from .time_passed import apply_time
+from .diagnosis import diagnose_pet, recommend_action
+from package import pet
+from package import pet
 
 COLOR = "\033[34m"
 BOLD = "\033[1m"
@@ -31,8 +34,10 @@ MENU_LINES = [
     "(3) feed",
     "(4) clean",
     "(5) history",
-    "(6) quit",
+    "(6) check health",
+    "(7) quit",
 ]
+
 PLAY_LINES = [
     "(1) pet",
     "(2) catch",
@@ -121,9 +126,9 @@ def history_text(pet):
     return "\n".join(lines)
 
 def _fit(lines):
-    """Pad or trim lines so a box has six rows of the same width."""
-    fitted = [line[:INNER].ljust(INNER) for line in lines[:6]]
-    return fitted + [" " * INNER] * (6 - len(fitted))
+    """Pad or trim lines so a box has seven rows."""
+    fitted = [line[:INNER].ljust(INNER) for line in lines[:7]]
+    return fitted + [" " * INNER] * (7 - len(fitted))
 
 def _box(lines):
     """Return one asterisk box as a list of rows."""
@@ -135,7 +140,7 @@ def _screen(pet, menu_lines, pet_lines=None):
     """Build the menu, pet, and stats boxes on one row."""
     if pet_lines is None:
         cat = show_pet(pet).splitlines()
-        top = (6 - len(cat)) // 2
+        top = (7 - len(cat)) // 2
         pet_lines = [""] * top + cat
     stats = [pet["name"]] + [
         f"{stat.capitalize()} {pet[stat]}"
@@ -210,11 +215,21 @@ def main():
         elif choice == "5":
             message = history_text(pet)
         elif choice == "6":
+            issues = diagnose_pet(pet)
+            recommendation = recommend_action(pet)
+
+            message = (
+                f"{BOLD}Health Diagnosis:{UNBOLD}\n"
+                + "\n".join(f"- {issue}" for issue in issues)
+                + f"\n\n{BOLD}Recommendation:{UNBOLD}\n"
+                + recommendation
+            )
+
+        elif choice == "7":
             save_pet(pet, SAVE_FILE)
             print(f"{BOLD}See you later, {pet['name']} will miss you!{UNBOLD}")
             break
-        else:
-            message = f"{BOLD}Please choose a valid option{UNBOLD}"
+                
 
 # run by typing: python3 -m package.interaction
 if __name__ == "__main__":
