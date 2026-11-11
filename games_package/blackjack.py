@@ -161,3 +161,6 @@ def play_blackjack(init_balance=100):
                     break    
     
     print(f"Walking away with ${balance:.2f}!")
+
+if __name__ == "__main__":
+    play_blackjack()
