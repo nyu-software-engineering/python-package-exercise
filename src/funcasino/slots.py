@@ -1,4 +1,6 @@
 import random
+import sys
+import time
 from funcasino.wallet import Wallet
 
 class Slots:
@@ -11,6 +13,13 @@ class Slots:
     def spin(self):        
         return [random.choice(self.SYMBOLS) for _ in range(3)]
 
+    def animate_spin(self, result, frames=12):
+        for i in range(frames):
+            sys.stdout.write("\r🎰 " + " | ".join(self.spin()))
+            sys.stdout.flush()
+            time.sleep(0.05 + i * 0.02)
+            
+        sys.stdout.write("\r🎰 " + " | ".join(result) + "\n")
 
     def payout(self, result, bet):
         if bet <= 0:
@@ -37,7 +46,7 @@ class Slots:
             winnings = self.payout(result, bet)
             self.wallet.deposit(winnings)
 
-            print(" | ".join(result))
+            self.animate_spin(result)
             print(f"You won ${winnings}!" if winnings else f"You lost ${bet}.")
 
         print("Thank you for your generous donation to the house!")
