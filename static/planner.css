@@ -1,0 +1,50 @@
+body {
+  margin: 0;
+  background: #eef4f8;
+  color: #17344a;
+  font: 1rem/1.5 system-ui, sans-serif;
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+main { max-width: 72rem; margin: auto; padding: 1.5rem; }
+header { padding-block-end: 1rem; }
+h1 { font-size: 2rem; margin-block: 0 .5rem; }
+h2 { font-size: 1.35rem; margin-block: 0 1rem; }
+h3 { font-size: 1.1rem; margin-block: 0 .5rem; }
+p { margin-block: .5rem 1rem; }
+#progress-summary { font-weight: 700; }
+.planner-layout { display: grid; grid-template-columns: minmax(16rem, 1fr) minmax(0, 2fr); gap: 1.5rem; align-items: start; }
+.creation-panel, .saved-panel { min-width: 0; padding: 1.5rem; background: #fff; border: 1px solid #a8bdc9; border-radius: .5rem; }
+label { display: block; font-weight: 600; }
+input, select, button { font: inherit; min-height: 2.75rem; border: 1px solid #6b8393; border-radius: .25rem; }
+input, select { padding: .5rem; max-width: 100%; background: #fff; color: #17344a; }
+input { width: 100%; }
+button { padding: .5rem .85rem; background: #fff; color: #17344a; cursor: pointer; }
+button:hover { background: #e4eef4; }
+button[type="submit"] { background: #236149; color: #fff; }
+button[type="submit"]:hover { background: #194a37; }
+button:disabled { opacity: .65; cursor: wait; }
+:focus-visible { outline: 3px solid #236149; outline-offset: 3px; }
+[aria-invalid="true"] { border-color: #9b2525; }
+#quest-title-error, #quest-minutes-error, #edit-title-error, #edit-minutes-error { color: #9b2525; }
+.action-buttons { display: flex; flex-wrap: wrap; gap: .75rem; }
+#quest-edit-form, #delete-confirmation { margin-block-start: 1.5rem; }
+#confirm-delete { border-color: #9b2525; color: #9b2525; }
+.list-controls { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem; }
+#quest-list { list-style: none; padding: 0; margin: 0; }
+#quest-list li { border-block-start: 1px solid #a8bdc9; padding-block: 1rem; overflow-wrap: anywhere; }
+#quest-list li p { color: #4b6170; }
+#quest-detail { border-block-start: 2px solid #236149; margin-block-start: 1.5rem; padding-block-start: 1.5rem; overflow-wrap: anywhere; }
+.fantasy-description { font-family: Georgia, serif; font-size: 1.15rem; }
+dl { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: .5rem 1rem; }
+dt { font-weight: 600; }
+dd { margin: 0; overflow-wrap: anywhere; }
+@media (max-width: 45rem) {
+  main { padding: 1rem; }
+  .planner-layout { grid-template-columns: minmax(0, 1fr); }
+  .creation-panel, .saved-panel { padding: 1rem; }
+  dl { grid-template-columns: minmax(0, 1fr); gap: .25rem; }
+  dd { margin-block-end: .75rem; }
+}
+

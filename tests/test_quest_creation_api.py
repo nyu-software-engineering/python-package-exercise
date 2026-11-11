@@ -16,7 +16,10 @@ def database(tmp_path):
 def client(database):
     app = create_app(database)
     app.config["TESTING"] = True
-    return app.test_client()
+    test_client = app.test_client()
+    token = test_client.get("/csrf-token").get_json()["csrfToken"]
+    test_client.environ_base["HTTP_X_CSRF_TOKEN"] = token
+    return test_client
 
 
 def test_create_quest_returns_and_saves_pending_quest(client, database):

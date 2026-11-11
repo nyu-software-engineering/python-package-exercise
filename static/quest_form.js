@@ -48,7 +48,10 @@ async function submitQuest(event) {
   try {
     const response = await fetch(form.action, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRF-Token": form.dataset.csrfToken,
+      },
       body: JSON.stringify(data),
     });
 

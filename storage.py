@@ -1,7 +1,10 @@
 from contextlib import closing
+from datetime import datetime, timezone
 from os import PathLike, fspath
 from pathlib import Path
 import sqlite3
+
+from progression import award_xp, calculate_level
 
 
 _QUEST_COLUMNS = (
@@ -63,12 +66,25 @@ def insert_quest(database_path: str | PathLike[str], quest: dict) -> None:
             )
 
 
-def update_pending_quest(database_path: str | PathLike[str], quest: dict) -> None:
+def update_pending_quest(
+    database_path: str | PathLike[str], quest: dict, *, expected_quest: dict | None = None,
+) -> None:
+    """Save a pending quest, optionally rejecting changes to an outdated copy."""
     _validate_pending_quest(quest)
+    if expected_quest is not None:
+        _validate_pending_quest(expected_quest)
+        if expected_quest["id"] != quest["id"]:
+            raise ValueError("expected quest must have the same ID")
     with closing(_connect_existing(database_path)) as connection:
         with connection:
             connection.execute("BEGIN IMMEDIATE")
             _require_pending_quest(connection, quest["id"])
+            if expected_quest is not None:
+                current = connection.execute(
+                    _SELECT_QUESTS + " WHERE id = ?", (quest["id"],),
+                ).fetchone()
+                if current != tuple(expected_quest[field] for field in _QUEST_COLUMNS):
+                    raise ValueError("quest has changed; reload before editing")
             connection.execute(
                 "UPDATE quests SET title = ?, fantasyDescription = ?, "
                 "durationMinutes = ?, xpReward = ? WHERE id = ? AND status = 'pending'",
@@ -89,6 +105,57 @@ def delete_pending_quest(database_path: str | PathLike[str], quest_id: str) -> N
             connection.execute(
                 "DELETE FROM quests WHERE id = ? AND status = 'pending'", (quest_id,),
             )
+
+
+def complete_quest(database_path: str | PathLike[str], quest_id: str) -> dict:
+    """Complete a saved quest and award XP once, in the same transaction."""
+    if not isinstance(quest_id, str):
+        raise TypeError("quest_id must be a string")
+    if not quest_id.strip():
+        raise ValueError("quest_id must not be blank")
+    with closing(_connect_existing(database_path)) as connection:
+        connection.row_factory = sqlite3.Row
+        with connection:
+            # Read after taking the write lock, so another completion cannot race us.
+            connection.execute("BEGIN IMMEDIATE")
+            row = connection.execute(
+                _SELECT_QUESTS + " WHERE id = ?", (quest_id,),
+            ).fetchone()
+            if row is None:
+                raise KeyError(f"quest not found: {quest_id}")
+            quest = dict(row)
+            progress = connection.execute(
+                "SELECT totalXP FROM progress WHERE id = 1",
+            ).fetchone()
+            if progress is None:
+                raise ValueError("progress is not initialized; call initialize_database first")
+            total_xp = progress["totalXP"]
+            awarded_xp = 0
+
+            if quest["status"] == "pending":
+                updated = award_xp(total_xp, quest["durationMinutes"])
+                if updated["totalXP"] > 2**63 - 1:
+                    raise ValueError("totalXP exceeds the SQLite integer limit")
+                quest["status"] = "completed"
+                quest["completedAt"] = datetime.now(timezone.utc).isoformat()
+                saved_quest = connection.execute(
+                    "UPDATE quests SET status = 'completed', completedAt = ? "
+                    "WHERE id = ? AND status = 'pending'",
+                    (quest["completedAt"], quest_id),
+                )
+                saved_progress = connection.execute(
+                    "UPDATE progress SET totalXP = ? WHERE id = 1",
+                    (updated["totalXP"],),
+                )
+                if saved_quest.rowcount != 1 or saved_progress.rowcount != 1:
+                    raise sqlite3.IntegrityError("quest completion could not be saved")
+                total_xp = updated["totalXP"]
+                awarded_xp = quest["xpReward"]
+
+            return {
+                "quest": quest, "totalXP": total_xp,
+                "level": calculate_level(total_xp), "awardedXP": awarded_xp,
+            }
 
 
 def load_quests(database_path: str | PathLike[str], status: str | None = None) -> list[dict]:
