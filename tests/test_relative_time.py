@@ -28,7 +28,7 @@ def test_earth_matches_real_clock():
     before = datetime.now().strftime("%H:%M:%S")
     result = relative_time("earth")
     after = datetime.now().strftime("%H:%M:%S")
-    assert result == before or result == after
+    assert result in {before, after}
 
 
 def test_planet_name_is_not_case_sensitive():
