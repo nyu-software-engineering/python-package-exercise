@@ -19,3 +19,38 @@ STRAIGHTS = {}
 for pocket in range(37):
     STRAIGHTS[pocket] = {pocket}
 
+TABLE_ROWS = []
+for first in range(1, 37, 3):
+    TABLE_ROWS.append([first, first + 1, first + 2])
+
+SPLITS = {}
+for pockets in TABLE_ROWS[0]:
+    SPLITS[(0, pocket)] = {0, pocket}
+
+STREETS = {}
+CORNERS = {}
+SIX_LINES = {}
+
+for row in TABLE_ROWS:
+    STREETS[row[0]] = set(row)
+    for column in range(2):
+        left = row[column]
+        right = row[column + 1]
+        SPLITS[(left, right)] = {left, right}
+
+for row_index in range(len(TABLE_ROWS) - 1):
+    top_row = TABLE_ROWS[row_index]
+    bottom_row = TABLE_ROWS[row_index + 1]
+    SIX_LINES[top_row[0]] = set(top_row + bottom_row)
+
+    for column in range(3):
+        above = top_row[column]
+        below = bottom_row[column]
+        SPLITS[(above, below)] = {above, below}
+
+    for column in range(2):
+        top_left = top_row[column]
+        top_right = top_row[column + 1]
+        bottom_left = bottom_row[column]
+        bottom_right = bottom_row[column + 1]
+        CORNERS[top_left] = {top_left, top_right, bottom_left, bottom_right}
