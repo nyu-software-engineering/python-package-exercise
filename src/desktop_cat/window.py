@@ -6,6 +6,7 @@ try:
     from PySide6.QtCore import Qt, QTimer
     from PySide6.QtGui import QPixmap
     from PySide6.QtWidgets import QApplication, QLabel
+    import signal
 except ImportError as exc:
     raise ImportError("The desktop-cat GUI requires PySide6. Install it with: pip install desktop-cat[gui]") from exc
 
@@ -112,4 +113,5 @@ class Window(QLabel):
 def run() -> None:
     app = QApplication.instance()
     if app is not None:
+        signal.signal(signal.SIGINT, signal.SIG_DFL)
         app.exec()
