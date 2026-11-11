@@ -119,18 +119,21 @@ Run `pipenv sync --dev` again to return to editable development.
 | `storage` | `insert_quest(database_path, quest)` | Commit one new pending quest without changing earned XP; duplicate IDs raise `sqlite3.IntegrityError`. |
 | `storage` | `update_pending_quest(database_path, quest)` | Save an existing pending quest's title, description, duration, and reward together. |
 | `storage` | `delete_pending_quest(database_path, quest_id)` | Delete one saved pending quest without changing earned XP. |
+| `storage` | `complete_quest(database_path, quest_id)` | Complete a saved quest and award XP in one transaction; retries award 0 XP and preserve its completion time. |
 | `storage` | `load_quests(database_path, status=None)` | Read quest dictionaries in insertion order, optionally filtering by `pending` or `completed`. |
 | `storage` | `load_progress(database_path)` | Read `{"totalXP": saved_integer}`; derive the level with `calculate_level`. |
 | `storage` | `complete_quest(database_path, quest_id)` | Save completion and award XP in one transaction. Repeating completion awards zero additional XP. |
 
 For example, `from quest_manager import list_quests` imports the listing function.
-The [usage example](examples/basic_usage.py) calls all eighteen public functions:
+The [usage example](examples/basic_usage.py) calls all nineteen public functions:
 initialize a temporary database, create/save/reload a quest, read saved progress,
-persist edits and deletion, filter/look up/edit/delete in-memory copies, generate
+persist edits and deletion, complete a quest and retry it, filter/look up/edit/delete in-memory copies, generate
 descriptions, and calculate XP, a level, and updated progress. The temporary
 database is removed when the storage demonstration finishes. More XP details are in the
 [progression notes](docs/progression.md).
-Expected output includes `Pending quests: 1` and ends with `Remaining quests: 0`.
+Expected output includes `First completion reward: 100`, `Reward on retry: 0`,
+`Saved XP after completion: 100`, `Saved level after completion: 2`, and
+`Pending quests: 1`. It ends with `Remaining quests: 0`.
 Extend the example and module list in `pyproject.toml` as public functions and
 modules are added. More title-editing details are in the
 [integration notes](docs/quest-description-integration.md).
@@ -249,7 +252,11 @@ roll back. These helpers require an existing initialized database and use the
 same path/error rules as the earlier storage helpers. Deleting the same ID
 again raises `KeyError`. No completion or reward is performed by either helper.
 
-Completion saves the quest status, completion time, and earned XP in one SQLite transaction. See the [completion guide](docs/quest-completion.md) for the retry behavior and example.
+`complete_quest` checks the stored status and saves completion, its timestamp,
+and the XP award in one transaction. Retrying a completed quest returns 0 awarded
+XP and preserves its original completion time. The main example verifies the
+saved quest and XP through fresh database connections. See the
+[completion notes](docs/quest-completion.md) for the full contract.
 
 ## Automated checks
 
