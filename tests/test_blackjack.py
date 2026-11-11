@@ -61,3 +61,22 @@ class TestSumHand:
         for rank in ranks:
             hand.append(deck[f"{rank} of hearts"])
         assert sum_hand(hand) == correct
+
+class TestSetup:
+    @pytest.mark.parametrize("balance", ["abc", 0, -5, 0.5])
+    def test_invalid_init_balance(balance):
+        with pytest.raises(ValueError):
+            play_blackjack(balance)
+ 
+    @pytest.mark.parametrize("balance", [100, 200, 500, 4])
+    def test_valid_init_balance(balance):
+        play_blackjack(balance)
+        printed = capsys.readouterr().out
+        assert "Welcome to Blackjack!" in printed
+        assert f"Balance: ${balance:.2f}" in printed
+    
+    def test_blank_init_balance():
+        play_blackjack()
+        printed = capsys.readouterr().out
+        assert "Welcome to Blackjack!" in printed
+        assert "Balance: $100.00" in printed
