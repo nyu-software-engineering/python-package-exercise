@@ -1,4 +1,4 @@
-from pet import clamp
+from .pet import clamp
 
 def increase_happiness(pet, happiness_change):
     """Increment pet happiness by specified amount"""

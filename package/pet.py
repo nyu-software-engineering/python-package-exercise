@@ -16,7 +16,7 @@ def create_pet(name):
     """Return a new pet with full stats."""
     if not isinstance(name, str) or not name.strip():
         raise ValueError("name must be a non-empty string")
-    return {"name": name.strip(), "alive": True, **DEFAULT_STATS}
+    return {"name": name.strip(), "alive": True, "history": [], **DEFAULT_STATS}
 
 
 def clamp(value):
