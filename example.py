@@ -5,19 +5,31 @@ from cosmicly.data import PLANETS
 from cosmicly.planetary_age import age_on_planet
 from cosmicly.planetary_weight import weight_on_planet
 from cosmicly.relative_time import relative_time
-from cosmicly.planetary_travel import distance_from_earth, drive_to, fly_to, format_duration, light_speed_to, travel_at_speed
-
+from cosmicly.planetary_travel import (
+    distance_from_earth,
+    drive_to,
+    fly_to,
+    format_duration,
+    light_speed_to,
+    travel_at_speed,
+)
 
 
 def show_weight():
+    """Show example weights on Mars, Jupiter, and the Moon."""
     print("========= Weight =========")
     print("70 kg on Earth weighs this much on Mars:", weight_on_planet("w", 70, "mars"))
     print("70 kg on Earth weighs this much on Jupiter:", weight_on_planet("weight", 70, "jupiter"))
-    print("A 70 kg person on the Moon feels a force of", weight_on_planet("m", 70, "moon"), "newtons")
+    print(
+        "A 70 kg person on the Moon feels a force of",
+        weight_on_planet("m", 70, "moon"),
+        "newtons",
+    )
     print()
 
 
 def show_age():
+    """Show example age conversions and an age calculated from a birthdate."""
     print("========= Age =========")
     print("Being 20 on Earth means on Mercury you are:", age_on_planet(20, "mercury"))
     print("Being 20 on Earth means on Neptune you are:", age_on_planet(20, "neptune"))
@@ -26,6 +38,7 @@ def show_age():
 
 
 def show_time():
+    """Show the current simulated time on Earth, Mars, and Jupiter."""
     print("========= Time right now =========")
     print("On Earth:", relative_time("earth"))
     print("On Mars:", relative_time("mars"))
@@ -34,6 +47,7 @@ def show_time():
 
 
 def show_travel():
+    """Show example distances and travel times from Earth."""
     print("========= Travel from Earth =========")
     print("Driving to the Moon:", drive_to("moon"))
     print("Flying to Mars:", fly_to("mars"))
@@ -45,14 +59,16 @@ def show_travel():
 
 
 def show_comparison():
+    """Show an example age and weight comparison for two planets."""
     print("========= Mars vs Jupiter for someone born 2000-01-01 who weighs 70 =========")
     result = compare_planets("mars", "jupiter", "2000-01-01", 70)
-    for planet in result:
-        print(planet, "-> age:", result[planet]["age"], "| weight:", result[planet]["weight"])
+    for planet, stats in result.items():
+        print(planet, "-> age:", stats["age"], "| weight:", stats["weight"])
     print()
 
 
 def show_table():
+    """Show age, weight, and time for each destination."""
     print("========= All planets for a 20-year-old who weighs 70 =========")
     print("Planet", "Weight", "Age", "Time now", sep="\t")
     for planet in PLANETS:
@@ -65,14 +81,17 @@ def show_table():
 
 
 def ask_planet(prompt="Planet: "):
+    """Read a destination name and trim surrounding whitespace."""
     return input(prompt).strip()
 
 
 def ask_number(prompt):
+    """Read a number from the user as a float."""
     return float(input(prompt))
 
 
 def menu():
+    """Run the interactive menu until the user quits."""
     while True:
         print("=== Cosmicly ===")
         print("1. My weight on another planet")
@@ -106,8 +125,8 @@ def menu():
                 birthdate = input("Your birthdate (YYYY-MM-DD): ").strip()
                 weight = ask_number("Your weight on Earth: ")
                 result = compare_planets(planet_a, planet_b, birthdate, weight)
-                for planet in result:
-                    print(planet, "-> age:", result[planet]["age"], "| weight:", result[planet]["weight"])
+                for planet, stats in result.items():
+                    print(planet, "-> age:", stats["age"], "| weight:", stats["weight"])
             elif choice == "6":
                 print("Goodbye, space traveler!")
                 break
@@ -119,6 +138,7 @@ def menu():
 
 
 def main():
+    """Show the examples and start the interactive menu."""
     show_weight()
     show_age()
     show_time()
@@ -128,4 +148,3 @@ def main():
     menu()
 
 main()
-
