@@ -28,7 +28,3 @@ def age_on_planet(age, planet):
     earth_year = PLANETS["earth"]["orbital_period_days"]
     planetary_age = age * earth_year / planet_year
     return round(planetary_age, 2)
-
-
-if __name__ == "__main__":
-    print(age_on_planet(20, "mercury"))
