@@ -1,6 +1,6 @@
 [![Test and build](https://github.com/software-students-fall2026/python-package-exercise-Chipotle/actions/workflows/ci.yml/badge.svg?branch=main&event=push)](https://github.com/software-students-fall2026/python-package-exercise-Chipotle/actions/workflows/ci.yml)
 
-# RPG Quest Planner
+# Python Package Exercise - RPG Quest Planner
 
 Turn everyday tasks into fantasy quests. Enter a task title and planned duration, then manage the saved quest and earn XP when you complete it. The Flask app stores quests and player progress locally in SQLite.
 
