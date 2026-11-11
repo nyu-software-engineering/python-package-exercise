@@ -226,9 +226,9 @@ Generates a humorous excuse for missing a class.
 **Returns:** `str`, an apology followed by a randomly selected excuse for the absence.
 
 ```python
-from realesagent import absence_excuse
+from realesagent import excuses
 
-print(absence_excuse("English"))
+print(excuses.absence_excuse("English"))
 ```
 
 Example output:
