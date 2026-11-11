@@ -72,22 +72,23 @@ To contribute to issues:
 
 ### Slots
 
-### Craps
+#### Craps
 CLI implementation of standard Pass Line Craps for the `funcasino` package.
 
-## How It Works
+#### How It Works
 
 * **Phase 1 (Come-Out Roll):** Win on 7 or 11. Lose on 2, 3, or 12 ("Craps"). Roll 4, 5, 6, 8, 9, or 10 to set the target Point.
 * **Phase 2 (Point Phase):** Reroll until hitting your Point number again to win, or rolling a 7 to lose ("Seven Out").
 
-## Function Descriptions
+#### Function Descriptions
 
 * `print_dice(dice1, dice2)`: Takes two die and prints an ASCII art representation in the terminal.
 * `play_craps(player)`: Main game controller function. Validates bets, runs Come-Out and Point roll loops, displays dice art, and updates the global `Player` object 
 
-## Example Output
+#### Example Output
 
------- Welcome to CRAPS  ------
+```text
+------ Welcome to CRAPS ------
 Current Balance: $100
 Enter your Pass Line bet: $25
 Press Enter to roll the dice!
