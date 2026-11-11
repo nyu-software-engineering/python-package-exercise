@@ -1,4 +1,5 @@
 # all user interaction goes here
+import time
 from pathlib import Path
 
 from .history import get_history
@@ -7,6 +8,7 @@ from .hygiene import clean
 from .pet import MIN_STAT, MAX_STAT
 from .play import play
 from .save_load import load_pet, save_pet
+from .time_passed import apply_time
 
 COLOR = "\033[34m"
 BOLD = "\033[1m"
@@ -42,6 +44,7 @@ def create_pet():
         "name": name,
         "alive": True,
         "history": [],
+        "last_seen": int(time.time()),
         "hunger": MIN_STAT,
         "happiness": MAX_STAT,
         "energy": MAX_STAT,
@@ -78,12 +81,21 @@ def show_history(pet):
             change = f": {event['stat']} {event['before']} -> {event['after']}"
         print(f"{BOLD}{event['action']}{detail}{change}{UNBOLD}")
 
+def pass_time(pet):
+    """Apply minutes since last_seen and save the pet when anything changed."""
+    minutes = apply_time(pet)
+    if minutes:
+        print(f"{BOLD}{minutes} minute(s) passed. {pet['name']} grew hungrier and more tired.{UNBOLD}")
+        save_pet(pet, SAVE_FILE)
+    return minutes
+
 # Primary function
 def main():
     print(f"{BOLD}{COLOR}{INTRO}{UNBOLD}")
     pet = get_pet()
 
     while True:
+        pass_time(pet)
         print(f"{BOLD}{MENU}{UNBOLD}")
         choice = input("> ").strip()
         if choice == "1":

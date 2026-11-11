@@ -35,6 +35,13 @@ def _check_pet_record(pet):
         if not isinstance(history, list) or not all(isinstance(event, dict) for event in history):
             raise TypeError("history must be a list of dicts")
 
+    if "last_seen" in pet:
+        last_seen = pet["last_seen"]
+        if isinstance(last_seen, bool) or not isinstance(last_seen, int):
+            raise TypeError("last_seen must be an int")
+        if last_seen < 0:
+            raise ValueError("last_seen can't be negative")
+
 
 def _record(pet):
     """Copy only the fields that get stored."""
@@ -42,11 +49,13 @@ def _record(pet):
     data.update({stat: pet[stat] for stat in STATS})
     if "history" in pet:
         data["history"] = [dict(event) for event in pet["history"]]
+    if "last_seen" in pet:
+        data["last_seen"] = pet["last_seen"]
     return data
 
 
 def save_pet(pet, path):
-    """Write the pet's name, current stats, and history to a JSON file."""
+    """Write the pet's name, current stats, history, and last_seen to a JSON file."""
     _check_pet_record(pet)
     destination = Path(path)
     destination.write_text(
