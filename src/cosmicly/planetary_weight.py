@@ -14,7 +14,7 @@ def weight_on_planet(mode, value, planet):
         ValueError: If mode or planet is unknown, or value is negative.
     """
     if not isinstance(mode, str):
-        raise TypeError("_type_ must be a string")
+        raise TypeError("mode must be a string")
 
     if not isinstance(planet, str):
         raise TypeError("planet must be a string")
