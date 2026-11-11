@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "1d9001717b18289aa5c97b52f856fafd0ccb49da25704b9366565fa503045ebc"
+            "sha256": "26e05f10f548a9a1396c6adc07e066e37be89ed76f8980de74c483bb2261af9f"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -15,7 +15,12 @@
             }
         ]
     },
-    "default": {},
+    "default": {
+        "funcasino": {
+            "editable": true,
+            "path": "."
+        }
+    },
     "develop": {
         "build": {
             "hashes": [

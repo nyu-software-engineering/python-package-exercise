@@ -79,7 +79,7 @@ def play_craps(balance):
     #5 or 9 gives 2.5x
     #6 or 8 gives 2.2x
 
-while True:
+    while True:
         input("Press enter to roll again!")
         dice1 = random.randint(1, 6)
         dice2 = random.randint(1, 6)
