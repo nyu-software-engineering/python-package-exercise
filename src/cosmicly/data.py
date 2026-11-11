@@ -10,12 +10,6 @@ PLANETS = {
         "distance_from_sun_km": 57_900_000,
         "solar_day_hours": 4222.6,
     },
-    "moon": {
-        "orbital_period_days": 365.2,
-        "gravity_m_s2": 1.6,
-        "distance_from_sun_km": 149_600_000,
-        "solar_day_hours": 708.7,
-    },
     "venus": {
         "orbital_period_days": 224.7,
         "gravity_m_s2": 8.9,
@@ -57,5 +51,11 @@ PLANETS = {
         "gravity_m_s2": 11.0,
         "distance_from_sun_km": 4_515_000_000,
         "solar_day_hours": 16.1,
+    },
+    "moon": {
+        "orbital_period_days": 365.2,
+        "gravity_m_s2": 1.6,
+        "distance_from_sun_km": 149_600_000,
+        "solar_day_hours": 708.7,
     },
 }
