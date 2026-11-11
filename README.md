@@ -4,6 +4,28 @@
 
 Turn everyday tasks into fantasy quests. Enter a task title and planned duration, then manage the saved quest and earn XP when you complete it. The Flask app stores quests and player progress locally in SQLite.
 
+## Install from PyPI
+
+[chipotle-quests 0.1.0 on PyPI](https://pypi.org/project/chipotle-quests/0.1.0/)
+requires Python 3.11 or newer. Install it in your Python environment:
+
+```sh
+python -m pip install chipotle-quests==0.1.0
+```
+
+Use the installed package in your own Python program:
+
+```python
+from quest_manager import create_quest
+
+quest = create_quest([], "Study math", 60, seed=1)[0]
+print(quest["fantasyDescription"])
+print(quest["xpReward"])
+```
+
+The PyPI distribution provides the Python modules. To run the Flask web planner,
+clone this repository and follow the development setup and planner instructions below.
+
 ## Development setup
 
 Use Python 3.11 or newer. Run these commands from the repository root.
@@ -58,10 +80,9 @@ Open [the planner](http://127.0.0.1:8000/). Create `Study math` for `60` minutes
 
 ## Build and use the Python package
 
-The working distribution name is `chipotle-quests` (version `0.1.0`). It contains
+The published distribution is `chipotle-quests` (version `0.1.0`). It contains
 the `quest_descriptions`, `quest_manager`, `progression`, `storage`, and
-`quest_validation` modules. The package has
-not been published to PyPI; confirm the distribution name before publishing.
+`quest_validation` modules.
 
 Pipenv now installs the project in editable mode, so source edits are available
 immediately. From the repository root on macOS/Linux:
@@ -122,7 +143,6 @@ Run `pipenv sync --dev` again to return to editable development.
 | `storage` | `complete_quest(database_path, quest_id)` | Complete a saved quest and award XP in one transaction; retries award 0 XP and preserve its completion time. |
 | `storage` | `load_quests(database_path, status=None)` | Read quest dictionaries in insertion order, optionally filtering by `pending` or `completed`. |
 | `storage` | `load_progress(database_path)` | Read `{"totalXP": saved_integer}`; derive the level with `calculate_level`. |
-| `storage` | `complete_quest(database_path, quest_id)` | Save completion and award XP in one transaction. Repeating completion awards zero additional XP. |
 
 For example, `from quest_manager import list_quests` imports the listing function.
 The [usage example](examples/basic_usage.py) calls all nineteen public functions:
