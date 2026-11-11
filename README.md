@@ -9,6 +9,7 @@
 - What time is it on Mars right now?
 - How long would it take to *drive* to Neptune?
 
+It uses real planetary data, so the numbers are (mostly) real, even if the questions are strange.
 
 
 An exercise to create a Python package, build it, test it, distribute it, and use it. See [instructions](./instructions.md) for details.
