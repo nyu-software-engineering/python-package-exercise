@@ -1,4 +1,5 @@
 import pytest, random
+from games_package import blackjack 
 from games_package.blackjack import (CARD_RANKS, CARD_SUITS, create_deck, display_hand, play_blackjack, shuffle_deck, sum_hand)
 
 # TestCreateDeck
@@ -127,9 +128,9 @@ def test_blank_init_balance(capsys, monkeypatch):
         if inputs:
             return inputs.pop(0)
         if not hasattr(filler, "done"):
-            filler.done_playing = True
-            return "n"
-        return ""
+            filler.done = True
+            return ""
+        return "n"
 
     monkeypatch.setattr('builtins.input', filler)
     play_blackjack()
@@ -150,12 +151,85 @@ def test_valid_init_balance(balance, capsys, monkeypatch):
         if inputs:
             return inputs.pop(0)
         if not hasattr(filler, "done"):
-            filler.done_playing = True
-            return "n"
-        return ""
+            filler.done = True
+            return ""
+        return "n"
 
     monkeypatch.setattr('builtins.input', filler)
     play_blackjack(balance)
     printed = capsys.readouterr().out
     assert "Welcome to Blackjack!" in printed
     assert f"Balance: ${balance:.2f}" in printed
+
+# TestGameOutcomes
+def test_player_wins_higher(capsys, monkeypatch):
+    inputs = ["10", "s"]
+    deck = {}
+    deck["7 of diamonds"] = {"rank": "7", "suit": ("diamonds", "♦"), "value": 7}
+    deck["8 of diamonds"] = {"rank": "8", "suit": ("diamonds", "♦"), "value": 8}
+    deck["10 of diamonds"] = {"rank": "10", "suit": ("diamonds", "♦"), "value": 10}
+    deck["A of diamonds"] = {"rank": "A", "suit": ("diamonds", "♦"), "value": 11}
+    deck_list = list(deck.items())
+
+    def filler(_):
+        if inputs:
+            return inputs.pop(0)
+        if not hasattr(filler, "done"):
+            filler.done = True
+            return ""
+        return "n"
+
+    monkeypatch.setattr('builtins.input', filler)
+    monkeypatch.setattr(blackjack, "shuffle_deck", lambda d: deck_list)
+    play_blackjack()
+    printed = capsys.readouterr().out
+    assert "You won! You won $10.00!" in printed
+    assert "Walking away with $110.00!" in printed
+
+def test_dealer_wins_higher(capsys, monkeypatch):
+    inputs = ["10", "s"]
+    deck = {}
+    deck["A of diamonds"] = {"rank": "A", "suit": ("diamonds", "♦"), "value": 11}
+    deck["10 of diamonds"] = {"rank": "10", "suit": ("diamonds", "♦"), "value": 10}
+    deck["8 of diamonds"] = {"rank": "8", "suit": ("diamonds", "♦"), "value": 8}
+    deck["7 of diamonds"] = {"rank": "7", "suit": ("diamonds", "♦"), "value": 7}
+    deck_list = list(deck.items())
+
+    def filler(_):
+        if inputs:
+            return inputs.pop(0)
+        if not hasattr(filler, "done"):
+            filler.done = True
+            return ""
+        return "n"
+
+    monkeypatch.setattr('builtins.input', filler)
+    monkeypatch.setattr(blackjack, "shuffle_deck", lambda d: deck_list)
+    play_blackjack()
+    printed = capsys.readouterr().out
+    assert "Dealer won! You lost $10.00!" in printed
+    assert "Walking away with $90.00!" in printed
+
+def test_tie(capsys, monkeypatch):
+    inputs = ["10", "s"]
+    deck = {}
+    deck["7 of diamonds"] = {"rank": "7", "suit": ("diamonds", "♦"), "value": 7}
+    deck["8 of diamonds"] = {"rank": "8", "suit": ("diamonds", "♦"), "value": 8}
+    deck["10 of diamonds"] = {"rank": "10", "suit": ("diamonds", "♦"), "value": 10}
+    deck["9 of diamonds"] = {"rank": "9", "suit": ("diamonds", "♦"), "value": 9}
+    deck_list = list(deck.items())
+
+    def filler(_):
+        if inputs:
+            return inputs.pop(0)
+        if not hasattr(filler, "done"):
+            filler.done = True
+            return ""
+        return "n"
+
+    monkeypatch.setattr('builtins.input', filler)
+    monkeypatch.setattr(blackjack, "shuffle_deck", lambda d: deck_list)
+    play_blackjack()
+    printed = capsys.readouterr().out
+    assert "Tie! You keep your bet." in printed
+    assert "Walking away with $100.00!" in printed
