@@ -8,7 +8,7 @@ from .history import get_history
 from .hunger import feed
 from .hygiene import clean
 from .pet import MIN_STAT, MAX_STAT
-from .play import play
+from .happy import play
 from .save_load import load_pet, save_pet
 from .time_passed import apply_time
 

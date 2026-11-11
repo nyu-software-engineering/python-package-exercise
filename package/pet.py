@@ -32,6 +32,16 @@ def check_count(value, name):
         raise ValueError(f"{name} can't be negative")
 
 def check_pet(pet, stat):
-    """Raise TypeError unless pet is a dict that has the given stat."""
+    """Validate that pet has the given stat with a valid integer value."""
     if not isinstance(pet, dict) or stat not in pet:
         raise TypeError(f"pet must be a dict with a '{stat}' key")
+
+    value = pet[stat]
+
+    if isinstance(value, bool) or not isinstance(value, int):
+        raise TypeError(f"{stat} must be an int")
+
+    if value < MIN_STAT or value > MAX_STAT:
+        raise ValueError(
+            f"{stat} must be between {MIN_STAT} and {MAX_STAT}"
+        )
