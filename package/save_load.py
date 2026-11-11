@@ -30,16 +30,23 @@ def _check_pet_record(pet):
         if value < MIN_STAT or value > MAX_STAT:
             raise ValueError(f"{stat} must be between {MIN_STAT} and {MAX_STAT}")
 
+    if "history" in pet:
+        history = pet["history"]
+        if not isinstance(history, list) or not all(isinstance(event, dict) for event in history):
+            raise TypeError("history must be a list of dicts")
+
 
 def _record(pet):
     """Copy only the fields that get stored."""
     data = {"name": pet["name"].strip(), "alive": pet["alive"]}
     data.update({stat: pet[stat] for stat in STATS})
+    if "history" in pet:
+        data["history"] = [dict(event) for event in pet["history"]]
     return data
 
 
 def save_pet(pet, path):
-    """Write the pet's name and current stats to a JSON file."""
+    """Write the pet's name, current stats, and history to a JSON file."""
     _check_pet_record(pet)
     destination = Path(path)
     destination.write_text(
