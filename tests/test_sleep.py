@@ -10,6 +10,7 @@ def test_sleep_reduces_sleepiness():
 
     assert cat.sleepiness == 4
     assert isinstance(text, str)
+    assert cat.last_action == "sleeping"
 
 # Test that sleepiness cannot go below 0
 def test_sleep_cannot_go_below_0():
@@ -21,16 +22,19 @@ def test_sleep_cannot_go_below_0():
     assert cat.sleepiness == 0
     assert cat.mood == "happy"
     assert "hours and is fully rested!" in text
+    assert cat.last_action == "sleeping"
 
 # Test that sleeping doesn't work when already at 0 sleepiness
 def test_sleep_when_already_rested():
     cat = Cat()
     cat.sleepiness = 0
+    cat.last_action = "petted"
 
     text = cat.sleep(8)
 
     assert cat.sleepiness == 0
     assert "is already fully rested." in text
+    assert cat.last_action == "petted"
 
 # Test that invalid types don't work
 def test_sleep_invalid_types():

@@ -9,16 +9,19 @@ def test_head_below_threshold_makes_happy():
     reaction = cat.pet("head", 2)
     assert cat.mood == "happy"
     assert reaction == f"{cat.name} purrs and enjoys the head pets."
+    assert cat.last_action == "petted"
 
     cat.mood = "sad"
     reaction = cat.pet("back", 2)
     assert cat.mood == "happy"
     assert reaction == f"{cat.name} purrs and enjoys the back pets."
+    assert cat.last_action == "petted"
 
     cat.mood = "sad"
     reaction = cat.pet("tail", 2)
     assert cat.mood == "happy"
     assert reaction == f"{cat.name} purrs and enjoys the tail pets."
+    assert cat.last_action == "petted"
 
 # Test that belly, paws pets below threshold make mood happy
 def test_belly_below_threshold_makes_happy():
@@ -28,11 +31,13 @@ def test_belly_below_threshold_makes_happy():
     reaction = cat.pet("belly", 2)
     assert cat.mood == "happy"
     assert reaction == f"{cat.name} lets you pet its belly."
+    assert cat.last_action == "petted"
 
     cat.mood = "sad"
     reaction = cat.pet("paws", 2)
     assert cat.mood == "happy"
     assert reaction == f"{cat.name} lets you pet its paws."
+    assert cat.last_action == "petted"
 
 
 # Test that pets above threshold make mood annoyed, if not already annoyed
@@ -43,11 +48,13 @@ def test_pets_above_threshold_annoyed():
     reaction = cat.pet("belly", 5)
     assert cat.mood == "annoyed"
     assert reaction == f"{cat.name} gets annoyed when you pet its belly."
+    assert cat.last_action == "petted"
 
     cat.mood = "happy"
     reaction = cat.pet("head", 10)
     assert cat.mood == "annoyed"
     assert reaction == f"{cat.name} gets tired of being pet on its head."
+    assert cat.last_action == "petted"
 
 
 # Test that pets above threshold make mood angry, if annoyed
@@ -58,11 +65,13 @@ def test_annoyed_becomes_angry():
     reaction = cat.pet("belly", 5)
     assert cat.mood == "angry"
     assert reaction == f"{cat.name} is angry after being bothered so much!"
+    assert cat.last_action == "petted"
 
     cat.mood = "annoyed"
     reaction = cat.pet("head", 10)
     assert cat.mood == "angry"
     assert reaction == f"{cat.name} is angry after being bothered so much!"
+    assert cat.last_action == "petted"
 
 # Test that invalid areas raise error
 def test_invalid_areas_raise_error():

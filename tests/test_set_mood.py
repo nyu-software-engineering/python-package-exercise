@@ -6,6 +6,7 @@ def test_set_mood_changes_mood():
     cat.set_mood("sad")
 
     assert cat.mood == "sad"
+    assert cat.last_action == "idle"
 
 @pytest.mark.parametrize("mood", MOODS)
 def test_set_mood_valid_moods(mood):

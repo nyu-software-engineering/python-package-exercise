@@ -11,6 +11,7 @@ def test_eating_reduces_hunger(monkeypatch):
 
     cat.feed("fish")
     assert cat.hunger == starthunger - 2
+    assert cat.last_action == "eating"
 
 
 # Test that hunger cannot go below 0
@@ -98,6 +99,7 @@ def test_refused_food_angry_mood(monkeypatch):
     assert reaction == f"{cat.name} refused to eat the kibble."
     assert cat.hunger == starthunger
     assert "kibble" not in cat.foods_eaten
+    assert cat.last_action == "eating"
 
 # Test that text inputs are normalized
 def test_text_input_normalized(monkeypatch):
