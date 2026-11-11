@@ -1,4 +1,7 @@
 include Pipfile Pipfile.lock
 include examples/basic_usage.py
 include examples/quest_management.py
+include examples/quest_completion.py
 include docs/quest-management.md
+include docs/quest-completion.md
+include docs/progression.md

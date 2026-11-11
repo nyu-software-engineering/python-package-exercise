@@ -50,11 +50,16 @@ Save the completed status, completion timestamp, and updated total XP in
 one transaction. If saving fails, all of those changes must roll back.
 Concurrent requests for the same quest must award XP only once.
 
+`storage.complete_quest(database_path, quest_id)` now handles this saved
+completion flow using `award_xp` and `calculate_level`. It returns the completed
+quest, current `totalXP` and `level`, and `awardedXP` (0 on a retry).
+See [saved quest completion](quest-completion.md) for usage and error rules.
+
 ## Completion acceptance checks
 
-These checks are for the upcoming completion integration. They are not
-implemented by the calculation helper alone. Yvonne and Sirius should
-verify them together once the completion code is available.
+These storage acceptance checks are covered by `tests/test_quest_completion.py`.
+They are not implemented by the calculation helper alone. HTTP completion
+routes and browser controls still need separate integration checks.
 
 Start each independent scenario with 90 total XP and a pending quest
 worth 60 XP, with `completedAt` set to `None`.
