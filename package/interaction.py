@@ -1,6 +1,9 @@
 # all user interaction goes here
 from pathlib import Path
 
+from .history import get_history
+from .hunger import feed
+from .hygiene import clean
 from .pet import MIN_STAT, MAX_STAT
 from .play import play
 from .save_load import load_pet, save_pet
@@ -21,7 +24,10 @@ MENU = """
     *                       *
     *   (1) CHECK WELLNESS  *
     *   (2) PLAY            *
-    *   (3) QUIT            *
+    *   (3) FEED            *
+    *   (4) CLEAN           *
+    *   (5) HISTORY         *
+    *   (6) QUIT            *
     *                       *
     *************************
 """
@@ -35,6 +41,7 @@ def create_pet():
     return {
         "name": name,
         "alive": True,
+        "history": [],
         "hunger": MIN_STAT,
         "happiness": MAX_STAT,
         "energy": MAX_STAT,
@@ -58,6 +65,19 @@ def show_stats(pet):
     for stat in ("health", "hunger", "happiness", "hygiene", "energy"):
         print(f"{BOLD}{stat.capitalize()}: {pet[stat]}%{UNBOLD}")
 
+def show_history(pet):
+    events = get_history(pet, 10)
+    if not events:
+        print(f"{BOLD}No history yet.{UNBOLD}")
+        return
+    print(f"{BOLD}Recent history:{UNBOLD}")
+    for event in events:
+        detail = f" ({event['detail']})" if event["detail"] else ""
+        change = ""
+        if event["stat"] is not None:
+            change = f": {event['stat']} {event['before']} -> {event['after']}"
+        print(f"{BOLD}{event['action']}{detail}{change}{UNBOLD}")
+
 # Primary function
 def main():
     print(f"{BOLD}{COLOR}{INTRO}{UNBOLD}")
@@ -71,8 +91,19 @@ def main():
         elif choice == "2":
             print(f"{BOLD}Chose a type of play: (1) pet, (2) catch, or (3) walk{UNBOLD}")
             play_type = input("> ").strip()
-            print(play(pet, pet['name'], play_type))
+            print(play(pet, pet["name"], play_type))
+            save_pet(pet, SAVE_FILE)
         elif choice == "3":
+            feed(pet)
+            print(f"{BOLD}You fed {pet['name']}.{UNBOLD}")
+            save_pet(pet, SAVE_FILE)
+        elif choice == "4":
+            clean(pet)
+            print(f"{BOLD}You cleaned {pet['name']}.{UNBOLD}")
+            save_pet(pet, SAVE_FILE)
+        elif choice == "5":
+            show_history(pet)
+        elif choice == "6":
             save_pet(pet, SAVE_FILE)
             print(f"{BOLD}See you later, {pet['name']} will miss you!{UNBOLD}")
             break
