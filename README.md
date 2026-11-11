@@ -1,18 +1,8 @@
 [![Test and build](https://github.com/software-students-fall2026/python-package-exercise-Chipotle/actions/workflows/ci.yml/badge.svg?branch=main&event=push)](https://github.com/software-students-fall2026/python-package-exercise-Chipotle/actions/workflows/ci.yml)
 
-# Python Package Exercise
+# RPG Quest Planner
 
-An exercise to create a Python package, build it, test it, distribute it, and use it. See [instructions](./instructions.md) for details.
-
-
-Team Roles:
-
-
-**Ali — Frontend Integration & Documentation**
-
-**Ownership and Deliverables:** Maintain and improve the RPG Quest Planner frontend, assist with frontend-backend integration and Docker configuration, and develop comprehensive README documentation. Document the project overview, architecture, installation procedures, environment variables, Docker setup, testing commands, and team contributions. Coordinate with backend and infrastructure developers to ensure all setup instructions are accurate and reproducible.
-
-**Test Responsibilities:** Verify frontend functionality, API integration, and error handling. Independently follow the README instructions to confirm that the application can be configured, built, and launched successfully. Validate documentation accuracy and ensure all referenced commands and configuration examples are functional.
+Turn everyday tasks into fantasy quests. Enter a task title and planned duration, then manage the saved quest and earn XP when you complete it. The Flask app stores quests and player progress locally in SQLite.
 
 ## Development setup
 
@@ -47,6 +37,24 @@ $env:PIPENV_VENV_IN_PROJECT = "1"
 The `test` script runs the existing pytest tests. `colorama` is explicitly
 included so a lock generated on macOS also covers pytest's Windows dependency.
 After changing `Pipfile`, run `pipenv lock` and commit both dependency files.
+
+## Run the planner
+
+After completing the development setup, run the app from the repository root.
+
+**Windows Command Prompt**
+
+```cmd
+.\.tools\Scripts\pipenv.exe run python app.py
+```
+
+**macOS and Linux**
+
+```sh
+.tools/bin/pipenv run python app.py
+```
+
+Open [the planner](http://127.0.0.1:8000/). Create `Study math` for `60` minutes, open its details, and click **Complete quest**. On a fresh database, the header shows **60 XP | Level 1**. The app saves quests and progress in `quests.db`.
 
 ## Build and use the Python package
 
@@ -113,6 +121,7 @@ Run `pipenv sync --dev` again to return to editable development.
 | `storage` | `delete_pending_quest(database_path, quest_id)` | Delete one saved pending quest without changing earned XP. |
 | `storage` | `load_quests(database_path, status=None)` | Read quest dictionaries in insertion order, optionally filtering by `pending` or `completed`. |
 | `storage` | `load_progress(database_path)` | Read `{"totalXP": saved_integer}`; derive the level with `calculate_level`. |
+| `storage` | `complete_quest(database_path, quest_id)` | Save completion and award XP in one transaction. Repeating completion awards zero additional XP. |
 
 For example, `from quest_manager import list_quests` imports the listing function.
 The [usage example](examples/basic_usage.py) calls all eighteen public functions:
@@ -240,9 +249,7 @@ roll back. These helpers require an existing initialized database and use the
 same path/error rules as the earlier storage helpers. Deleting the same ID
 again raises `KeyError`. No completion or reward is performed by either helper.
 
-A future completion operation must check the saved status and commit both the status
-change and XP award in one transaction, including retry/concurrency protection.
-Do not implement completion using separately committed task and XP writes.
+Completion saves the quest status, completion time, and earned XP in one SQLite transaction. See the [completion guide](docs/quest-completion.md) for the retry behavior and example.
 
 ## Automated checks
 
@@ -255,3 +262,13 @@ example from a fresh wheel installation outside the source checkout, catching
 missing packaged modules as well as source failures. A failed step fails that job.
 The badge at the top shows the latest `main` push result. The instructor's
 separate event-logging workflow is unchanged.
+
+## Team and presentation
+
+- [Yuyang](https://github.com/Yuyang-Ding1102) — backend, SQLite persistence, and CI
+- [Ali](https://github.com/AliG119) — Create Quest form, submission, and validation
+- [Yvonne](https://github.com/Lyvoj) — XP, leveling, and tests
+- [Sirius](https://github.com/S1rius-Yang) — quest APIs and management controls
+- [Zihan](https://github.com/Vent1Zzz) — fantasy descriptions and templates
+
+[Project 3 team roles](PROJECT3_TEAM_ROLES.md)
