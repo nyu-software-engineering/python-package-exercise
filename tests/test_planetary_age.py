@@ -1,8 +1,11 @@
+"""Tests for the planetary_age module."""
+
 import pytest
 from cosmicly.planetary_age import age_on_planet
 
 
 def test_value_age_function():
+    """Verify age conversions for several worlds, including zero age on Mars."""
     assert age_on_planet(20, "earth") == 20.0
     assert age_on_planet(20, "mercury") == 83.0
     assert age_on_planet(20, "mars") == 10.63
@@ -12,6 +15,7 @@ def test_value_age_function():
 
 
 def test_age_type():
+    """Verify that Earth ages retain their values for integer and float inputs, including zero."""
     assert age_on_planet(20, "earth") == 20.0
     assert age_on_planet(20.5, "earth") == 20.5
     assert age_on_planet(10, "earth") == 10.0
@@ -19,6 +23,7 @@ def test_age_type():
 
 
 def test_unknown_planet():
+    """Verify that unknown or empty planet names and non-string inputs raise the expected errors."""
     with pytest.raises(ValueError):
         age_on_planet(20, "pluto")
     with pytest.raises(ValueError):
@@ -32,6 +37,7 @@ def test_unknown_planet():
 
 
 def test_wrong_age():
+    """Verify that negative ages raise ValueError and invalid age types raise TypeError."""
     with pytest.raises(ValueError):
         age_on_planet(-5, "mars")
     with pytest.raises(TypeError):
@@ -45,6 +51,7 @@ def test_wrong_age():
 
 
 def test_planet_name():
+    """Verify that planet names are matched regardless of capitalization."""
     assert age_on_planet(20, "MARS") == 10.63
     assert age_on_planet(20, "Mars") == 10.63
     assert age_on_planet(20, "MArS") == 10.63
@@ -53,6 +60,7 @@ def test_planet_name():
 
 
 def test_zero_age():
+    """Verify that an age of zero converts to 0.0 for Earth, Mars, Mercury, and the Moon."""
     assert age_on_planet(0, "earth") == 0.0
     assert age_on_planet(0, "mars") == 0.0
     assert age_on_planet(0, "mercury") == 0.0
