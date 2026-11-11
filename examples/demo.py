@@ -17,9 +17,10 @@ if __name__ == "__main__":
     section("Excuses")
     print(excuses.generate_excuse(assignment="Web Development Project"))
     email = excuses.grade_beg(current_grade=70, desired_grade=100, professor_name="John Smith")
-    print("\n--- Grade request ---\n" + email)
-    print("\n--- With apology (desperation 7) ---\n" + excuses.apology_multiplier(email=email, desperation=7))
-
+    print("\n===== Grade request ======\n" + email)
+    print("\n===== With apology (desperation 7) =====\n" + excuses.apology_multiplier(email=email, desperation=7))
+    print("\n====== Absence excuse =====")
+    print(excuses.absence_excuse(class_name="Operating Systems"))
     # Emails: subject lines at every urgency, extension requests at different lateness
     section("Emails")
     for urgency in range(1, 6):
@@ -33,6 +34,6 @@ if __name__ == "__main__":
     section("Professor replies")
     informal_email = "Yo prof, I have a C rn but I need an A to graduate. Can you help a brother out. Thanks man."
     for tone in ("strict", "sympathetic", "sarcastic"):
-        print(f"--- {tone} ---")
+        print(f"=== {tone.capitalize()} ===")
         print(responses.professor_reply(email=informal_email, tone=tone))
         print()
