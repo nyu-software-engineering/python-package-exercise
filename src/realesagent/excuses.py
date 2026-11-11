@@ -18,7 +18,7 @@ def generate_excuse(assignment):
         f"My dog ate {assignment}, but in his defense, he has always been more interested in academics than I am."
     ]
 
-    return random.choice(excuses)
+    return random.choice(excuses) + f" Unfortunately, I couldn't submit {assignment}."
 
 
 def grade_beg(current_grade, desired_grade, professor_name):

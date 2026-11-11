@@ -1,40 +1,47 @@
 import pytest
-# from your_package import your_module
+from realesagent.excuses import (
+    generate_excuse,
+    grade_beg,
+    apology_multiplier
+)
 
 
 class Tests:
-    #
-    # Fixtures
-    #
 
-    @pytest.fixture
-    def example_fixture(self):
-        """
-        Setup and teardown shared by any test that uses this fixture.
-        """
-        # setup
+    # Test generate_excuse()
 
-        yield
+    def test_generate_excuse(self):
+        actual = generate_excuse("Math Homework")
 
-        # teardown
+        assert isinstance(actual, str)
+        assert len(actual) > 0
+        assert "Math Homework" in actual
 
-    #
-    # Test functions
-    #
+    # Test grade_beg()
 
-    def test_sanity_check(self, example_fixture):
-        """
-        A test that always passes, to check that pytest runs.
-        Run all tests from the main project directory with `python3 -m pytest`.
-        """
-        expected = True
-        actual = True
-        assert actual == expected, "Expected True to be equal to True!"
+    def test_grade_beg(self):
+        actual = grade_beg(69, 70, "Smith")
 
-    def test_example(self):
-        """
-        Describe what this test checks.
-        """
-        expected = None  # replace with the expected value
-        actual = None  # replace with a call to the code under test
-        assert actual == expected, f"Expected {expected}, got {actual}"
+        assert isinstance(actual, str)
+        assert "69" in actual
+        assert "70" in actual
+        assert "Smith" in actual
+
+    # Test apology_multiplier()
+
+    def test_apology_multiplier(self):
+        email = "Dear Professor Smith, I need an extension."
+
+        actual = apology_multiplier(email, 9)
+
+        assert isinstance(actual, str)
+        assert email in actual
+        assert "forgiveness" in actual.lower()
+
+    def test_apology_multiplier_low_desperation(self):
+        email = "Dear Professor Smith."
+
+        actual = apology_multiplier(email, 1)
+
+        assert email in actual
+        assert "apologize" in actual.lower()
