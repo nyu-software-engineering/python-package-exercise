@@ -4,7 +4,7 @@ from datetime import datetime
 from .data import PLANETS
 
 
-def relative_time(planet, now=None):
+def relative_time(planet: str, now: datetime | None = None) -> str:
     """Return the simulated time on a planet as an HH:MM:SS string.
 
     Convert the time elapsed since local Earth midnight using the planet's
@@ -24,6 +24,8 @@ def relative_time(planet, now=None):
 
     if now is None:
         now = datetime.now()
+    elif not isinstance(now, datetime):
+        raise TypeError("now must be a datetime or None")
 
     earth_seconds = now.hour * 3600 + now.minute * 60 + now.second
     day_seconds = PLANETS[planet]["solar_day_hours"] * 3600
