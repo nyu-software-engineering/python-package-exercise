@@ -6,33 +6,35 @@ from cosmicly.planetary_weight import weight_on_planet
 
 def test_value_weight_function():
     """Verify expected results in weight and mass modes for Earth, Mars, and the Moon."""
-    assert weight_on_planet("w", 70, "earth") == 70.0
-    assert weight_on_planet("w", 70, "mars") == 26.43
-    assert weight_on_planet("w", 70, "moon") == 11.43
+    actual = weight_on_planet("w", 70, "earth")
+    assert actual == 70.0, f"Expected 70.0. Instead, it returned {actual}"
+    actual = weight_on_planet("w", 70, "mars")
+    assert actual == 26.43, f"Expected 26.43. Instead, it returned {actual}"
+    actual = weight_on_planet("w", 70, "moon")
+    assert actual == 11.43, f"Expected 11.43. Instead, it returned {actual}"
 
-    assert weight_on_planet("m", 70, "earth") == 686.0
-    assert weight_on_planet("m", 70, "mars") == 259.0
-    assert weight_on_planet("m", 70, "moon") == 112.0
+    actual = weight_on_planet("m", 70, "earth")
+    assert actual == 686.0, f"Expected 686.0. Instead, it returned {actual}"
+    actual = weight_on_planet("m", 70, "mars")
+    assert actual == 259.0, f"Expected 259.0. Instead, it returned {actual}"
+    actual = weight_on_planet("m", 70, "moon")
+    assert actual == 112.0, f"Expected 112.0. Instead, it returned {actual}"
 
 
 def test_type_weight_function():
     """Verify case-insensitive mode aliases and zero inputs in both modes."""
-    assert weight_on_planet("w", 70, "earth") == 70.0
-    assert weight_on_planet("weight", 70, "earth") == 70.0
-    assert weight_on_planet("Weight", 70, "earth") == 70.0
-    assert weight_on_planet("WeIGhT", 70, "earth") == 70.0
-    assert weight_on_planet("W", 70, "earth") == 70.0
+    for mode in ["w", "weight", "Weight", "WeIGhT", "W"]:
+        actual = weight_on_planet(mode, 70, "earth")
+        assert actual == 70.0, f"Expected 70.0 for mode {mode!r}. Instead, it returned {actual}"
 
-    assert weight_on_planet("m", 70, "earth") == 686.0
-    assert weight_on_planet("M", 70, "earth") == 686.0
-    assert weight_on_planet("Mass", 70, "earth") == 686.0
-    assert weight_on_planet("mass", 70, "earth") == 686.0
-    assert weight_on_planet("MASS", 70, "earth") == 686.0
+    for mode in ["m", "M", "Mass", "mass", "MASS"]:
+        actual = weight_on_planet(mode, 70, "earth")
+        assert actual == 686.0, f"Expected 686.0 for mode {mode!r}. Instead, it returned {actual}"
 
-    assert weight_on_planet("w", 0, "mars") == 0.0
-    assert weight_on_planet("w", 0, "earth") == 0.0
-    assert weight_on_planet("m", 0, "mars") == 0.0
-    assert weight_on_planet("m", 0, "earth") == 0.0
+    for mode in ["w", "m"]:
+        for planet in ["mars", "earth"]:
+            actual = weight_on_planet(mode, 0, planet)
+            assert actual == 0.0, f"Expected 0.0 on {planet} in mode {mode!r}. Instead, it returned {actual}"
 
 
 def test_unknown_planet():
@@ -46,13 +48,23 @@ def test_unknown_planet():
 
 
 def test_unknown_type():
-    """Verify that calls with invalid mode names and an unknown planet raise ValueError."""
+    """Verify that invalid mode names raise ValueError."""
     with pytest.raises(ValueError):
-        weight_on_planet("a", 70, "pluto")
+        weight_on_planet("a", 70, "mars")
     with pytest.raises(ValueError):
-        weight_on_planet("mas", 70, "pluto")
+        weight_on_planet("mas", 70, "mars")
     with pytest.raises(ValueError):
-        weight_on_planet("ww", 70, "pluto")
+        weight_on_planet("ww", 70, "mars")
+
+
+def test_mode_not_a_string():
+    """Verify that a mode that is not a string raises TypeError."""
+    with pytest.raises(TypeError):
+        weight_on_planet(5, 70, "mars")
+    with pytest.raises(TypeError):
+        weight_on_planet(None, 70, "mars")
+    with pytest.raises(TypeError):
+        weight_on_planet(["w"], 70, "mars")
 
 
 def test_wrong_value():
@@ -63,10 +75,12 @@ def test_wrong_value():
         weight_on_planet("w", "70", "mars")
     with pytest.raises(TypeError):
         weight_on_planet("w", None, "mars")
+    with pytest.raises(TypeError):
+        weight_on_planet("w", True, "mars")
 
 
 def test_planet_name():
     """Verify that different capitalizations of Mars return the same weight."""
-    assert weight_on_planet("w", 70, "MARS") == 26.43
-    assert weight_on_planet("w", 70, "Mars") == 26.43
-    assert weight_on_planet("w", 70, "MArS") == 26.43
+    for planet in ["MARS", "Mars", "MArS"]:
+        actual = weight_on_planet("w", 70, planet)
+        assert actual == 26.43, f"Expected 26.43 for {planet!r}. Instead, it returned {actual}"
