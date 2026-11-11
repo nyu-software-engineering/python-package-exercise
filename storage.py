@@ -63,12 +63,25 @@ def insert_quest(database_path: str | PathLike[str], quest: dict) -> None:
             )
 
 
-def update_pending_quest(database_path: str | PathLike[str], quest: dict) -> None:
+def update_pending_quest(
+    database_path: str | PathLike[str], quest: dict, *, expected_quest: dict | None = None,
+) -> None:
+    """Save a pending quest, optionally rejecting changes to an outdated copy."""
     _validate_pending_quest(quest)
+    if expected_quest is not None:
+        _validate_pending_quest(expected_quest)
+        if expected_quest["id"] != quest["id"]:
+            raise ValueError("expected quest must have the same ID")
     with closing(_connect_existing(database_path)) as connection:
         with connection:
             connection.execute("BEGIN IMMEDIATE")
             _require_pending_quest(connection, quest["id"])
+            if expected_quest is not None:
+                current = connection.execute(
+                    _SELECT_QUESTS + " WHERE id = ?", (quest["id"],),
+                ).fetchone()
+                if current != tuple(expected_quest[field] for field in _QUEST_COLUMNS):
+                    raise ValueError("quest has changed; reload before editing")
             connection.execute(
                 "UPDATE quests SET title = ?, fantasyDescription = ?, "
                 "durationMinutes = ?, xpReward = ? WHERE id = ? AND status = 'pending'",
