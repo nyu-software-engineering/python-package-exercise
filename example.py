@@ -6,6 +6,7 @@ from cosmicly.planetary_age import age_on_planet
 from cosmicly.planetary_weight import weight_on_planet
 from cosmicly.relative_time import relative_time
 from cosmicly.planetary_travel import (
+    arrival_age,
     distance_from_earth,
     drive_to,
     fly_to,
@@ -61,6 +62,8 @@ def show_travel():
     print("A rocket at 40,000 km/h to Mars:", travel_at_speed("mars", 40_000))
     print("Distance from Earth to Mars:", distance_from_earth("mars"), "km")
     print("100,000 seconds is about", format_duration(100_000))
+    print("Driving to Mars on 2026-11-10:", drive_to("mars", "2026-11-10"))
+    print("A 20-year-old driving to Mars arrives aged:", arrival_age("mars", 100, 20))
     print()
 
 
