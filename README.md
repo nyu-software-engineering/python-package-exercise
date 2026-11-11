@@ -70,10 +70,11 @@ print(comparison["jupiter"]["weight"])
 
 ### Travel from Earth
 
-`distance_from_earth` estimates distance from the difference in the planets' distances from the Sun and uses a fixed distance for the Moon. `travel_at_speed` estimates travel time at a constant speed in km/h. The car, plane, and light-speed shortcuts use preset speeds, and `format_duration` converts seconds to a readable duration.
+`distance_from_earth` gives the distance to a planet in km. Without a date it uses the closest approach; with a date (`"YYYY-MM-DD"` or a `date`) it uses the real distance on that day, since planets move. `travel_at_speed` gives the travel time at any speed in km/h, and `drive_to`, `fly_to`, and `light_speed_to` use car, plane, and light speed. `arrival_age` tells you how old you'll be when you arrive. `format_duration` turns seconds into readable text.
 
 ```python
 from cosmicly.planetary_travel import (
+    arrival_age,
     distance_from_earth,
     drive_to,
     fly_to,
@@ -82,12 +83,14 @@ from cosmicly.planetary_travel import (
     travel_at_speed,
 )
 
-print(distance_from_earth("moon"))            # 384400 km
+print(distance_from_earth("moon"))             # 384400 km
 print(travel_at_speed("mars", 40_000))         # Travel time at 40,000 km/h
-print(drive_to("mars"))                       # 89 years at 100 km/h
-print(fly_to("moon"))                        # 18 days at 900 km/h
-print(light_speed_to("mars"))                 # 4 minutes
-print(format_duration(3600))                  # 1 hour
+print(drive_to("mars"))                        # 89 years at 100 km/h
+print(drive_to("mars", "2026-11-10"))          # 232 years, real distance that day
+print(fly_to("moon"))                          # 18 days at 900 km/h
+print(light_speed_to("mars"))                  # 4 minutes
+print(arrival_age("mars", 100, 20))            # 109.44, your age when you arrive
+print(format_duration(3600))                   # 1 hour
 ```
 
 ## Build and test
