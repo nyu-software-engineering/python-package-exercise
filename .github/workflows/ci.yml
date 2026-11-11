@@ -48,5 +48,5 @@ jobs:
           "$RUNNER_TEMP/wheel-check/bin/python" -m pip install --no-deps --no-index dist/*.whl
           cp -R tests "$RUNNER_TEMP/tests"
           cd "$RUNNER_TEMP"
-          "$RUNNER_TEMP/wheel-check/bin/python" -I -m pytest --import-mode=importlib tests --ignore=tests/test_quest_form.py --ignore=tests/test_quest_creation_api.py --ignore=tests/test_quest_read_api.py
+          "$RUNNER_TEMP/wheel-check/bin/python" -I -m pytest --import-mode=importlib tests --ignore=tests/test_quest_form.py --ignore=tests/test_quest_creation_api.py --ignore=tests/test_quest_read_api.py --ignore=tests/test_quest_mutation_api.py
           "$RUNNER_TEMP/wheel-check/bin/python" -I "$GITHUB_WORKSPACE/examples/basic_usage.py"
