@@ -1,6 +1,6 @@
-from .cat import Cat, MOODS, FOODS
+from .cat import Cat, MOODS, FOODS, PET_AREAS
 
-__all__ = ["Cat", "MOODS", "FOODS", "Window", "run"] # Lists what `from desktop_cat import *` can actually bring in. Just easier for users to install
+__all__ = ["Cat", "MOODS", "FOODS", "PET_AREAS", "Window", "run"] # Lists what `from desktop_cat import *` can actually bring in. Just easier for users to install
 
 def __getattr__(name):
     if name in ("Window", "run"):
