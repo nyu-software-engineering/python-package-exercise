@@ -1,17 +1,24 @@
 def subject_line(situation, urgency):
-    if urgency == 1:
-        return f"Quick Question About {situation}"
-    elif urgency == 2:
-        return f"A Humble Request Regarding {situation}"
-    elif urgency == 3:
-        return f"URGENT: My Academic Future Depends on {situation}"
-    elif urgency == 4:
-        return f"FINAL PLEA: I Am Fighting for My Life Over {situation}"
-    elif urgency == 5:
-        return f"PLEASE READ BEFORE I BECOME A CAMPUS URBAN LEGEND: {situation}"
-    else:
+    if not isinstance(situation, str) or not situation.strip():
+        raise ValueError("Situation must be a non-empty string")
+
+    if type(urgency) is not int or urgency not in range(1, 6):
         return "Invalid urgency level"
 
+    subjects = {
+        1: f"Quick Question About {situation}",
+        2: f"A Humble Request Regarding {situation}",
+        3: f"URGENT: My Academic Future Depends on {situation}",
+        4: f"FINAL PLEA: I Am Fighting for My Life Over {situation}",
+        5: f"PLEASE READ BEFORE I BECOME A CAMPUS URBAN LEGEND: {situation}",
+    }
+
+    return subjects[urgency]
+
+def test_subject_line_invalid_situation():
+    for situation in ("", "   ", None, 123):
+        with pytest.raises(ValueError):
+            subject_line(situation, 3)
 
 def extension_request(days_late, professor_name):
     if days_late < 0:
