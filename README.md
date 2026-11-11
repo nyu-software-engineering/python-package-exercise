@@ -3,6 +3,7 @@
 
 A Python package for creating and interacting with a virtual desktop cat.
 
+[![CodeQL](https://github.com/software-students-fall2026/python-package-exercise-busy-bees/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/software-students-fall2026/python-package-exercise-busy-bees/actions/workflows/github-code-scanning/codeql)
 
 ## PyPI Package
 
