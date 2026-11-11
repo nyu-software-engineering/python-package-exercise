@@ -62,10 +62,12 @@ def test_extension_request_invalid_values():
         else:
             assert False, "Expected an error for invalid extension input"
 
+
 def test_subject_line_invalid_situation():
     for situation in ("", "   ", None, 123):
         with pytest.raises(ValueError):
             subject_line(situation, 3)
+
 
 def test_extension_request_input_validation():
     with pytest.raises(TypeError):

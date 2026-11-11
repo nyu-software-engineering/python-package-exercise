@@ -8,7 +8,7 @@ from realesagent import (
     professionalize,
     professor_reply,
     subject_line,
-    absence_excuse
+    absence_excuse,
 )
 from realesagent.excuses import generate_excuse as original_generate_excuse
 

@@ -11,8 +11,7 @@ def test_desperation_bounds_and_each_input():
 
 
 def test_deadline_boundaries():
-    cases = [(49, 1), (48, 2), (25, 2), (24, 3),
-             (1, 3), (0, 4), (-1, 4), (-100, 4)]
+    cases = [(49, 1), (48, 2), (25, 2), (24, 3), (1, 3), (0, 4), (-1, 4), (-100, 4)]
     for hours, expected in cases:
         assert desperation_level(100, hours, 0) == expected
 
@@ -77,8 +76,12 @@ def test_professionalize_normalization_and_fallback():
 
 
 def test_professionalize_invalid_input():
-    cases = [("", ValueError), (" \n\t", ValueError),
-             (None, TypeError), (42, TypeError)]
+    cases = [
+        ("", ValueError),
+        (" \n\t", ValueError),
+        (None, TypeError),
+        (42, TypeError),
+    ]
     for truth, expected_error in cases:
         try:
             professionalize(truth)

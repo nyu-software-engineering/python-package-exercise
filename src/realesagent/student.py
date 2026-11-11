@@ -2,8 +2,10 @@ import math
 
 
 def desperation_level(grade, hours_until_deadline, missing_assignments):
-    for name, value in (("grade", grade),
-                        ("hours_until_deadline", hours_until_deadline)):
+    for name, value in (
+        ("grade", grade),
+        ("hours_until_deadline", hours_until_deadline),
+    ):
         if isinstance(value, bool) or not isinstance(value, (int, float)):
             raise TypeError(f"{name} must be a number")
         if isinstance(value, float) and not math.isfinite(value):
@@ -35,8 +37,9 @@ def desperation_level(grade, hours_until_deadline, missing_assignments):
 
     if total > 10:
         total = 10
-    
+
     return total
+
 
 def professionalize(truth):
     if not isinstance(truth, str):
@@ -46,16 +49,26 @@ def professionalize(truth):
         raise ValueError("truth cannot be empty")
 
     explanations = (
-        (("overslept", "slept in"),
-         "I experienced an unforeseen disruption to my circadian scheduling."),
-        (("forgot",),
-         "I encountered a temporary interruption in my task retention system."),
-        (("procrastinated", "procrastinating"),
-         "I extended the preliminary planning phase beyond its intended duration."),
-        (("internet", "wifi", "wi-fi"),
-         "I experienced an unexpected interruption to my digital connectivity."),
-        (("dog ate",),
-         "My academic materials underwent an unauthorized canine review."),
+        (
+            ("overslept", "slept in"),
+            "I experienced an unforeseen disruption to my circadian scheduling.",
+        ),
+        (
+            ("forgot",),
+            "I encountered a temporary interruption in my task retention system.",
+        ),
+        (
+            ("procrastinated", "procrastinating"),
+            "I extended the preliminary planning phase beyond its intended duration.",
+        ),
+        (
+            ("internet", "wifi", "wi-fi"),
+            "I experienced an unexpected interruption to my digital connectivity.",
+        ),
+        (
+            ("dog ate",),
+            "My academic materials underwent an unauthorized canine review.",
+        ),
     )
     normalized = truth.lower()
     for phrases, explanation in explanations:
@@ -67,5 +80,3 @@ def professionalize(truth):
         f'I wish to formally report the following circumstance: "{truth}". '
         "I respectfully request your consideration while I address this matter."
     )
-
-

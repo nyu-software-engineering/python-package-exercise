@@ -3,7 +3,7 @@ from realesagent.excuses import (
     generate_excuse,
     grade_beg,
     apology_multiplier,
-    absence_excuse
+    absence_excuse,
 )
 
 
@@ -74,4 +74,3 @@ def test_generate_excuse_whitespace():
     assert isinstance(result, str)
     assert "Math Homework" in result
     assert "  Math Homework  " not in result
-

@@ -9,6 +9,7 @@ def test_absence_excuse():
     assert "English" in result
     assert len(result) > 0
 
+
 def test_absence_excuse_empty_name():
     with pytest.raises(ValueError):
         absence_excuse("")

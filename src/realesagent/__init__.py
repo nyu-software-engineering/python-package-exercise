@@ -14,5 +14,5 @@ __all__ = [
     "subject_line",
     "apology_multiplier",
     "professor_reply",
-    "absence_excuse"
+    "absence_excuse",
 ]

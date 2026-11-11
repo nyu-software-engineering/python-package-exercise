@@ -1,5 +1,5 @@
 def professor_reply(email, tone="strict"):
-   
+
     if not isinstance(email, str):
         raise TypeError("email must be a string")
     if not isinstance(tone, str):
@@ -18,7 +18,7 @@ def professor_reply(email, tone="strict"):
         ),
     }
     if tone not in replies:
-        raise ValueError("tone must be strict, sympathetic, or sarcastic")
+        raise ValueError("tone must be Strict, Sympathetic, or Sarcastic")
 
     return (
         f'Dear Student,\n\nRegarding your message: "{email}"\n\n'
