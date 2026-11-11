@@ -20,5 +20,8 @@ def main():
         else:
             print("Please enter valid input\n")
 
+    if wallet.balance <= 0:
+        print("Thank you for your generous donation to the house!")
+
 if __name__ == "__main__":
     main()
