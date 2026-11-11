@@ -4,6 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+funcasino = {path = ".", editable = true}
 
 [dev-packages]
 build = "*"

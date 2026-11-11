@@ -1,10 +1,11 @@
 import random
 import sys
 import time
+from funcasino.wallet import Wallet
 
 class CoinToss:
-    def __init__(self, balance=100):
-        self.balance = balance
+    def __init__(self, wallet=None):
+        self.wallet = wallet or Wallet()
         self.wins = 0
         self.losses = 0
         self.history = []
@@ -29,9 +30,9 @@ class CoinToss:
     def place_bet(self):
         while True:
             try:
-                bet = int(input(f"Balance: ${self.balance}. Enter bet: $"))
+                bet = int(input(f"Balance: ${self.wallet.balance}. Enter bet: $"))
 
-                if 0 < bet <= self.balance:
+                if 0 < bet <= self.wallet.balance:
                     return bet
 
                 print("Invalid bet amount.")
@@ -53,11 +54,11 @@ class CoinToss:
         print(f"The coin landed on {result.upper()}!")
 
         if choice == result:
-            self.balance += bet
+            self.wallet.deposit(bet)
             self.wins += 1
             print(f"You won ${bet}!")
         else:
-            self.balance -= bet
+            self.wallet.withdraw(bet)
             self.losses += 1
             print(f"You lost ${bet}!")
 
@@ -65,7 +66,7 @@ class CoinToss:
             "bet": bet,
             "choice": choice,
             "result": result,
-            "balance": self.balance
+            "balance": self.wallet.balance
         })
 
     def show_stats(self):
@@ -75,10 +76,10 @@ class CoinToss:
         print(f"\nWins: {self.wins}")
         print(f"Losses: {self.losses}")
         print(f"Win rate: {win_rate:.1f}%")
-        print(f"Balance: ${self.balance}")
+        print(f"Balance: ${self.wallet.balance}")
 
     def play(self):
-        while self.balance > 0:
+        while self.wallet.balance > 0:
             print("\n--- COIN TOSS ---")
             print("1. Play")
             print("2. View Stats")
