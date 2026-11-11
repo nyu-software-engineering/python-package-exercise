@@ -72,7 +72,7 @@ To contribute to issues:
 
 ### Slots
 
-#### Craps
+### Craps
 CLI implementation of standard Pass Line Craps for the `funcasino` package.
 
 #### How It Works
