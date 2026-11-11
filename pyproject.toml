@@ -19,6 +19,7 @@ play_tetris = "games_package.tetris:main"
 play_hangman = "games_package.hangman:start_game"
 play_wordle = "games_package.wordle:play_wordle"
 play_2048 = "games_package.game_2048:play_2048"
+play_blackjack = "games_package.blackjack:play_blackjack"
 
 [tool.setuptools.packages.find]
 include = ["games_package*"]
