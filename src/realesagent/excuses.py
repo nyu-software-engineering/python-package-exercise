@@ -75,6 +75,14 @@ def apology_multiplier(email, desperation):
 
 
 def absence_excuse(class_name):
+    if not isinstance(class_name, str):
+        raise TypeError("Class name must be a string")
+
+    class_name = class_name.strip()
+
+    if not class_name:
+        raise ValueError("Class name cannot be empty")
+    
     absence_excuses = [
          "I meant to come to class, but my morning unraveled before I could pull it back together.",
 
