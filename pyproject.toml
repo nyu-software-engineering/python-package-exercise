@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "desktop-cat"
 description = "A tiny desktop pet you can control from Python."
-version = "0.1.0"
+version = "0.1.1"
 authors = [
     { name = "Angelina Zhu", email="az3231@nyu.edu" },
     { name = "Daran Tung", email="dyt2010@nyu.edu" },
@@ -24,3 +24,6 @@ gui = ["PySide6-Essentials"]
 
 [project.urls]
 "Homepage" = "https://github.com/software-students-fall2026/python-package-exercise-busy-bees"
+
+[tool.setuptools.package-data]
+desktop_cat = ["**/*.png"]
