@@ -40,3 +40,24 @@ class TestShuffleDeck:
         shuffled1 = shuffle_deck(deck)
         shuffled2 = shuffle_deck(deck)
         assert shuffled1 != shuffled2
+
+class TestSumHand:
+    def test_sum_empty_hand():
+        hand = []
+        assert sum_hand(hand) == 0
+ 
+    @pytest.mark.parametrize(
+        ("ranks, correct"), 
+        [
+            (["10", "A"], 21),
+            (["10", "A", "A", "2"], 14),
+            (["10", "Q", "5"], 25),
+            (["10", "A", "9", "A", "A"], 22),
+        ],
+    )
+    def test_sums(ranks, correct):
+        hand = []
+        deck = create_deck()
+        for rank in ranks:
+            hand.append(deck[f"{rank} of hearts"])
+        assert sum_hand(hand) == correct
