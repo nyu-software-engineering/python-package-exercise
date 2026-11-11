@@ -11,7 +11,15 @@
 
 It uses real orbital periods, gravity, and solar day lengths for the eight planets and Earth's Moon, so the numbers are (mostly) real, even if the questions are strange.
 
-## Install from source
+## Install
+
+```bash
+pip install cosmicly
+```
+
+[cosmicly on PyPI](https://pypi.org/project/cosmicly/) · Requires Python 3.11 or newer.
+
+## Install from source (for contributors)
 
 You need Python 3.11 or newer and [Pipenv](https://pipenv.pypa.io/). Run these commands in a terminal:
 
@@ -24,11 +32,9 @@ pipenv run python -m pip install -e .
 
 The editable install lets Python import `cosmicly` from `src` and pick up your changes immediately. The package includes its planetary data and needs no environment variables or database.
 
-The distribution is named `cosmicly`. Use the source installation above until a release is available. [PyPI project page](https://pypi.org/project/cosmicly/)
-
 ## Use cosmicly
 
-Save these examples in a Python file and run it with `pipenv run python your_script.py`. For an interactive tour of the package, run the included [example program](example.py):
+Save these examples in a Python file and run it with `python your_script.py` (or `pipenv run python your_script.py` if you installed from source). For an interactive tour of the package, run the included [example program](example.py):
 
 ```bash
 pipenv run python example.py
