@@ -54,7 +54,10 @@ def test_travel_at_speed_int_and_float_speed():
     """Verify that integer and float speeds produce strings and equal speeds agree."""
     as_int = travel_at_speed("mars", 100)
     as_float = travel_at_speed("mars", 100.0)
-    assert as_int == as_float, f"Expected int and float speeds to match. Got {as_int} and {as_float}"
+    assert as_int == as_float, (
+        f"Expected int and float speeds to match."
+        f"Got {as_int} and {as_float}"
+    )
     slow = travel_at_speed("mars", 0.5)
     assert slow != as_int, f"Expected a slower speed to give a different time. Both were {slow}"
     assert isinstance(as_float, str), f"Expected a string. Instead, it returned {as_float!r}"
@@ -106,7 +109,10 @@ def test_drive_to():
     assert actual == "89 years", f"Expected '89 years'. Instead, it returned {actual}"
     actual = drive_to("moon")
     expected = travel_at_speed("moon", CAR_SPEED_KMH)
-    assert actual == expected, f"Expected drive_to to use car speed ({expected}). Instead, it returned {actual}"
+    assert actual == expected, (
+        f"Expected drive_to to use car speed ({expected})." 
+        f"Instead, it returned {actual}"
+    )
     actual = drive_to("Venus")
     assert actual == "47 years", f"Expected '47 years'. Instead, it returned {actual}"
     with pytest.raises(ValueError, match="No such planet"):
@@ -121,7 +127,10 @@ def test_fly_to():
     assert actual == "18 days", f"Expected '18 days'. Instead, it returned {actual}"
     actual = fly_to("saturn")
     expected = travel_at_speed("saturn", PLANE_SPEED_KMH)
-    assert actual == expected, f"Expected fly_to to use plane speed ({expected}). Instead, it returned {actual}"
+    assert actual == expected, (
+        f"Expected fly_to to use plane speed ({expected})."
+        f"Instead, it returned {actual}"
+    )
     with pytest.raises(TypeError, match="planet must be a string"):
         fly_to(3)
 

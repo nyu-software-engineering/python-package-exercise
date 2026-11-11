@@ -155,4 +155,3 @@ def arrival_age(planet: str, speed_kmh: float, current_age: float, on_date=None)
     hours = distance_from_earth(planet, on_date) / speed_kmh
     years = hours / (365.25 * 24)
     return round(current_age + years, 2)
-

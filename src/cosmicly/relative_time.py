@@ -15,8 +15,6 @@ def relative_time(planet, now=None):
         ValueError: If planet is unknown.
     """
 
-    
-    
     if not isinstance(planet, str):
         raise TypeError("planet must be a string")
 
@@ -36,7 +34,3 @@ def relative_time(planet, now=None):
     minutes, seconds = divmod(remainder, 60)
 
     return f"{hours:02d}:{minutes:02d}:{seconds:02d}"
-
-
-if __name__ == "__main__":
-    print(relative_time("mars"))
