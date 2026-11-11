@@ -1,8 +1,16 @@
-# Python Package Exercise
+# Cosmicly
 
 ![Tests](https://github.com/software-students-fall2026/python-package-exercise-LCDJ/actions/workflows/tests.yml/badge.svg?event=pull_request)
 
-# cosmicly
+**Cosmicly** is a Python package that answers the important questions in life:
+
+- How much would I weigh on Jupiter?
+- How old would I be on Mercury?
+- What time is it on Mars right now?
+- How long would it take to *drive* to Neptune?
+
+It uses real planetary data, so the numbers are (mostly) real, even if the questions are strange.
+
 
 Find out how old you would be on Mars, how much you would weigh on the Moon, or how long it would take to fly to Jupiter at airplane speed. **cosmicly** is a Python package that uses orbital periods, gravity, and solar day lengths to explore the eight planets and Earth's Moon.
 
