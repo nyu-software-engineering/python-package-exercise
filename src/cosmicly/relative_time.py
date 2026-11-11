@@ -31,7 +31,7 @@ def relative_time(planet, now=None):
     day_seconds = PLANETS[planet]["solar_day_hours"] * 3600
 
     fraction_of_day = (earth_seconds % day_seconds) / day_seconds
-    clock_seconds = int(fraction_of_day * 86400)
+    clock_seconds = round(fraction_of_day * 86400) % 86400
     hours, remainder = divmod(clock_seconds, 3600)
     minutes, seconds = divmod(remainder, 60)
 
