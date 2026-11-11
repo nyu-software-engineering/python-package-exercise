@@ -68,7 +68,7 @@ normalize_category("Non Committal")   # "non-committal"
 ```
 
 ### Example Program
-See [`examples/example.py`](./examples/example.py) for a program that uses every function. Run it from the project folder:
+See See [`examples/example.py`](https://github.com/software-students-fall2026/python-package-exercise-csyy/blob/main/examples/example.py) for a program that uses every function. Run it from the project folder: for a program that uses every function. Run it from the project folder:
 
 ```bash
 python -m examples.example
@@ -117,4 +117,4 @@ No environment variables, `.env` files, or database are needed.
 
 ## License
 
-[GPL-3.0](./LICENSE)
+[GPL-3.0](https://github.com/software-students-fall2026/python-package-exercise-csyy/blob/main/LICENSE)
