@@ -60,7 +60,8 @@ class Window(QLabel):
 
     def update_speech_position(self) -> None:
         bubble = self.speech_bubble
-        if bubble is not None and bubble.isVisible():
+    
+        if bubble is not None:
             x = self.x() + (self.width() - bubble.width()) // 2
             y = self.y() - bubble.height() - 10
             bubble.move(x, y)
