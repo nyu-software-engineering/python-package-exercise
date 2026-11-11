@@ -5,6 +5,7 @@ from terminal_pet_respin import (
     get_stage,
     pet_says,
 )
+from terminal_pet_respin.draw_pet import MOODS
 
 
 def show_pet(pet, with_message=False):
@@ -53,6 +54,18 @@ def main():
     print("\nYou can also give your pet a custom message:")
     
     print(draw_pet(pet["stage"], message="Thanks for helping me grow!"))
+
+    print("\nYour pet can show different moods:")
+
+    for mood in MOODS:
+
+        print(f"\nMood: {mood}")
+
+        print(draw_pet(pet["stage"], mood=mood))
+
+    print("\nOn Easter, the egg gets decorated:")
+
+    print(draw_pet("egg", easter_override=True))
 
 
 if __name__ == "__main__":
