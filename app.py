@@ -4,12 +4,15 @@ import sqlite3
 
 from flask import Flask, jsonify, render_template, request, session
 
+from progression import calculate_level
 from quest_manager import change_quest_duration, create_quest, get_quest, rename_quest
 from quest_validation import validate_quest_input
 from storage import (
+    complete_quest,
     delete_pending_quest,
     initialize_database,
     insert_quest,
+    load_progress,
     load_quests,
     update_pending_quest,
 )
@@ -80,6 +83,41 @@ def create_app(database_path="quests.db"):
             return jsonify(error="Could not load quests."), 500
 
         return jsonify(quest)
+
+    @app.get("/progress")
+    def progress_detail():
+        try:
+            progress = load_progress(database_path)
+            level = calculate_level(progress["totalXP"])
+        except (ValueError, sqlite3.Error):
+            app.logger.exception("Could not load progress")
+            return jsonify(error="Could not load progress."), 500
+
+        response = jsonify(totalXP=progress["totalXP"], level=level)
+        response.headers["Cache-Control"] = "no-store"
+        return response
+
+    @app.post("/quests/<quest_id>/complete")
+    def finish_quest(quest_id):
+        if not quest_id.strip():
+            return jsonify(error="Enter a quest ID."), 400
+
+        if request.get_data():
+            payload = request.get_json(silent=True)
+            if not isinstance(payload, dict) or payload:
+                return jsonify(error="Send no body or an empty JSON object."), 400
+
+        try:
+            result = complete_quest(database_path, quest_id)
+        except KeyError:
+            return jsonify(error="Quest not found."), 404
+        except (ValueError, sqlite3.Error):
+            app.logger.exception("Could not complete quest")
+            return jsonify(error="Could not complete the quest."), 500
+
+        response = jsonify(result)
+        response.headers["Cache-Control"] = "no-store"
+        return response
 
     @app.patch("/quests/<quest_id>")
     def patch_quest(quest_id):
@@ -175,3 +213,4 @@ def create_app(database_path="quests.db"):
 
 if __name__ == "__main__":
     create_app().run(host="127.0.0.1", port=8000)
+

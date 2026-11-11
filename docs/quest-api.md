@@ -90,15 +90,79 @@ can be deleted. Success returns `{"deleted": "<id>"}` with status 200.
 Completed quests return 409. Unknown or already-deleted IDs return 404.
 Deletion preserves other quests and total XP.
 
+## Completing and reading progress
+
+`POST /quests/<id>/complete` needs the same session's request token header.
+Send no body or an empty JSON object (`{}`). Quest fields, rewards, timestamps,
+and total XP are read from storage; do not send those values in the request.
+Other bodies, including malformed JSON, JSON null, and non-JSON content, return
+JSON 400. Blank IDs return 400 and unknown IDs return 404.
+
+Success returns status 200 with this shape:
+
+```json
+{
+  "quest": {
+    "id": "saved-quest-id",
+    "title": "Study math",
+    "durationMinutes": 60,
+    "fantasyDescription": "Decipher an Ancient Scroll",
+    "status": "completed",
+    "xpReward": 60,
+    "completedAt": "2026-11-10T21:00:00+00:00"
+  },
+  "totalXP": 60,
+  "level": 1,
+  "awardedXP": 60
+}
+```
+
+The route uses `storage.complete_quest` to save completion and progress in one
+transaction. It awards XP using the latest saved duration. A retry also returns
+200, with `awardedXP: 0` and the original completion time. Its total XP and level
+reflect current saved progress, including rewards from other quests. Failed
+saves roll back, and concurrent requests cannot award the same quest twice.
+Completed quests remain read-only through the editing and deletion endpoints.
+
+`GET /progress` returns `{"totalXP": 0, "level": 1}` for a new database, or
+the current saved total and calculated level. It needs no token and does not
+award XP or change saved data. Successful completion and progress responses
+include `Cache-Control: no-store`.
+
+For browser JavaScript on the app's own origin:
+
+```javascript
+const { csrfToken } = await fetch("/csrf-token").then(response => response.json());
+const response = await fetch(`/quests/${encodeURIComponent(questId)}/complete`, {
+  method: "POST",
+  headers: { "X-CSRF-Token": csrfToken },
+});
+const result = await response.json();
+if (!response.ok) {
+  throw new Error(result.error);
+}
+console.log(result.quest, result.totalXP, result.level, result.awardedXP);
+
+const progress = await fetch("/progress").then(response => response.json());
+console.log(progress.totalXP, progress.level);
+```
+
+The existing creation page does not yet have completion or progress controls.
+These endpoints are ready for the later list/detail UI integration.
+
 ## Errors and tests
 
 Errors use a JSON `error` field. Database failures return a generic 500 message;
 paths, SQL details, and traces are logged server-side rather than returned.
+Completion also returns a generic 500 if saved progress is missing or the XP
+total would exceed SQLite's signed 64-bit integer limit. Neither case completes
+the quest. Reload or retry after the storage problem is resolved.
 
 Run `pipenv run python -m pytest` for the full source suite. The Flask app is
 not part of the installable Python library, so the CI wheel-only phase excludes
 the source-only API and form test modules. It still runs them in the source phase.
 
-These routes do not implement completion or award earned XP yet. Completion
-and progress routes are the next backend steps. Editing/deleting controls will
-be connected in the later UI steps.
+`tests/test_quest_completion_api.py` covers the completion/progress routes and
+the create → edit → complete → retry flow through the HTTP API. List/detail,
+editing/deleting, and completion controls will be connected in the UI steps.
+

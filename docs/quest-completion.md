@@ -64,5 +64,8 @@ The example uses a temporary database. Tests cover retries from another Python
 process, concurrent completions, changed durations, level boundaries, failed
 saves, integer overflow, and completed-quest protection.
 
-This change supplies the Python storage function. Completion and progress HTTP
-routes and their browser controls are separate integration work.
+The Flask demo exposes this function through `POST /quests/<id>/complete` and
+provides saved XP and level through `GET /progress`. See the
+[HTTP API](quest-api.md) for request tokens, response fields, and errors.
+Browser controls are still separate integration work.
+

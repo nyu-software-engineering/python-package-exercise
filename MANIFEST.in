@@ -5,3 +5,5 @@ include examples/quest_completion.py
 include docs/quest-management.md
 include docs/quest-completion.md
 include docs/progression.md
+include docs/quest-api.md
+

@@ -58,8 +58,9 @@ See [saved quest completion](quest-completion.md) for usage and error rules.
 ## Completion acceptance checks
 
 These storage acceptance checks are covered by `tests/test_quest_completion.py`.
-They are not implemented by the calculation helper alone. HTTP completion
-routes and browser controls still need separate integration checks.
+They are not implemented by the calculation helper alone. Completion and
+progress HTTP routes are covered by `tests/test_quest_completion_api.py`;
+browser controls still need separate integration checks.
 
 Start each independent scenario with 90 total XP and a pending quest
 worth 60 XP, with `completedAt` set to `None`.
@@ -85,3 +86,4 @@ From the repository root:
 pipenv install --dev
 pipenv run python -m pytest -q
 ```
+
