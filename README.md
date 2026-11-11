@@ -174,10 +174,11 @@ Displays a textbox above the cat with message text.
 
 
 ```python
-from desktop_cat import Window
+from desktop_cat import Cat, Window
 
+cat = Cat()
+window = Window(cat)
 
-window = Window()
 window.say("Hello! Nice to meet you!")
 ```
 
