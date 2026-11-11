@@ -5,6 +5,8 @@ A Python package for creating and interacting with a virtual desktop cat.
 
 [![CodeQL](https://github.com/software-students-fall2026/python-package-exercise-busy-bees/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/software-students-fall2026/python-package-exercise-busy-bees/actions/workflows/github-code-scanning/codeql)
 
+[![CI](https://github.com/software-students-fall2026/python-package-exercise-busy-bees/actions/workflows/ci.yml/badge.svg)](https://github.com/software-students-fall2026/python-package-exercise-busy-bees/actions/workflows/ci.yml)
+
 ## PyPI Package
 
 
@@ -18,6 +20,7 @@ A Python package for creating and interacting with a virtual desktop cat.
 
 
 - Python 3.11 or newer
+- No environment variables or secret configuration files are required to install, run, or develop the package.
 
 
 ### Installation
@@ -124,14 +127,15 @@ print(cat.foods_eaten)
 ```
 
 
-#### `pet(area, times)`
+#### `pet(area, times=1)`
 
 
-Pets the cat in an available area. The cat may enjoy it, or get annoyed or angry, depending on how many times it is pet.
+Pets the cat in an available area. The `times` argument controls how many times the cat is petted, and defaults to `1`. The cat may enjoy it, or get annoyed or angry, depending on how many times it is pet.
 
 
 ```python
-cat.pet("head", 3)
+cat.pet("head")
+cat.pet("belly", times=5)
 ```
 
 
@@ -146,21 +150,22 @@ cat.sleep(4)
 ```
 
 
-#### `status()`
+#### `status(long=False)`
 
 
-Returns a string that describes the cat's mood, hunger, sleepiness, times petted, and meals eaten.
+Returns a string that describes the cat's mood. Set `long=True` to include hunger, sleepiness, times petted, and meals eaten.
 
 
 ```python
 print(cat.status())
+print(cat.status(long=True))
 ```
 
 
 #### `Cat.say(message)`
 
 
-Prints the message and prints the cat's message.
+Prints the message, followed by the cat's ASCII art.
 
 
 ```python
@@ -168,26 +173,11 @@ cat.say("Hello! Nice to meet you!")
 ```
 
 
-#### `Window.say(message)`
-
-
-Displays a textbox above the cat with message text.
-
-
-```python
-from desktop_cat import Cat, Window
-
-cat = Cat()
-window = Window(cat)
-
-window.say("Hello! Nice to meet you!")
-```
-
 
 #### `render()`
 
 
-Returns an ASCII art of the cat based on the cat's mood.
+Returns an ASCII art of the cat. The appearance normally reflects its mood. Hunger of `8` or higher displays the hungry appearance, while sleepiness of `8` or higher displays the tired appearance. An active action appearance (such as eating, petting, or sleeping) takes priority over mood and these threshold displays.
 
 
 ```python
@@ -195,10 +185,49 @@ print(cat.render())
 ```
 
 
+
+#### `Window(cat, size=150)`
+
+Creates and displays a desktop window for the `Cat` object. Optional `size` argument sets the window size in pixels, and defaults to `150`. Requires the GUI extra.
+
+```python
+from desktop_cat import Cat, Window
+
+cat = Cat()
+window = Window(cat)
+```
+
+
+
+#### `Window.say(message, duration=3000)`
+
+
+Displays a textbox above the desktop cat with message text. The optional duration argument controls how long the bubble remains visible, in milliseconds. Requires the GUI extra.
+
+
+```python
+window.say("Hello! Nice to meet you!")
+```
+
+
+
+#### `run()`
+
+Starts the GUI event loop. Call this after creating the window to keep the desktop cat running. Requires the GUI extra.
+
+```python
+from desktop_cat import Cat, Window
+
+cat = Cat()
+window = Window(cat)
+run()
+```
+
+
 ### Example Program
 
 
-See the [example Python program](https://github.com/software-students-fall2026/python-package-exercise-busy-bees/blob/16639eacf80e33b3268a9e686cb9f8f151a08131/tests/example_program.py) demonstrating package usage.
+See the [example Python program](https://github.com/software-students-fall2026/python-package-exercise-busy-bees/blob/main/example.py) demonstrating package usage.
 
 
 ## Contributing and Development Setup
