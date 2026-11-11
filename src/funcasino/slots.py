@@ -1,15 +1,25 @@
 import random
+import sys
+import time
+from funcasino.wallet import Wallet
 
 class Slots:
-    SYMBOLS = ["CHERRY", "LEMON", "BELL", "STAR", "SEVEN"]
-    PAYOUTS = {"CHERRY": 2, "LEMON": 3, "BELL": 5, "STAR": 10, "SEVEN": 50}
+    SYMBOLS = ["🍒", "🍋", "🔔", "⭐", "💎"]
+    PAYOUTS = {"🍒": 2, "🍋": 3, "🔔": 5, "⭐": 10, "💎": 50}
 
-    def __init__(self, balance=100):
-            self.balance = balance
+    def __init__(self, wallet=None):
+        self.wallet = wallet or Wallet()
 
     def spin(self):        
         return [random.choice(self.SYMBOLS) for _ in range(3)]
 
+    def animate_spin(self, result, frames=12):
+        for i in range(frames):
+            sys.stdout.write("\r🎰 " + " | ".join(self.spin()))
+            sys.stdout.flush()
+            time.sleep(0.05 + i * 0.02)
+            
+        sys.stdout.write("\r🎰 " + " | ".join(result) + "\n")
 
     def payout(self, result, bet):
         if bet <= 0:
@@ -22,23 +32,24 @@ class Slots:
 
 
     def play(self):
-        while self.balance > 0:
-            bet = input(f"Balance: ${self.balance}. Enter bet (or q to quit): $")
+        while self.wallet.balance > 0:
+            bet = input(f"Balance: ${self.wallet.balance}. Enter bet (or q to quit): $")
             if bet == "q":
                 break
-            if not bet.isdigit() or not 0 < int(bet) <= self.balance:
+            if not bet.isdigit() or not self.wallet.can_afford(int(bet)):
                 print("Invalid bet.")
                 continue
 
             bet = int(bet)
+            self.wallet.withdraw(bet)
             result = self.spin()
             winnings = self.payout(result, bet)
-            self.balance += winnings - bet
+            self.wallet.deposit(winnings)
 
-            print(" | ".join(result))
+            self.animate_spin(result)
             print(f"You won ${winnings}!" if winnings else f"You lost ${bet}.")
 
-        print("Thank you for your donation!")
+        print("Thank you for your generous donation to the house!")
 
 
 if __name__ == "__main__":
