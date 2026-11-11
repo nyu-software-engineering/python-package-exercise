@@ -25,7 +25,7 @@ def shuffle_deck(deck):
 def sum_hand(hand):
     sum = 0
     aces = 0
-    
+
     for card in hand:
         sum += card[1]['value']
         if card[1]['rank'] == "A":
@@ -71,7 +71,7 @@ def play_blackjack(init_balance=100):
         if balance <= 0:
             raise ValueError("Initial balance must be above $0")
     except ValueError:
-        raise("Initial balance must be a whole number")
+        raise ValueError("Initial balance must be a whole number")
 
     print("Welcome to Blackjack!")
     play_again = "y"
@@ -112,7 +112,6 @@ def play_blackjack(init_balance=100):
             display_hand(dealer_hand, hole)
 
         while hit == "h":
-            print(f"Deck has {len(deck)} cards")
             if len(player_hand) == 0:
                 init_round()
             else:
@@ -162,7 +161,3 @@ def play_blackjack(init_balance=100):
                     break    
     
     print(f"Walking away with ${balance:.2f}!")
-
-
-if __name__ == "__main__":
-    play_blackjack()
