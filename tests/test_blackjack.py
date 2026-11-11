@@ -2,23 +2,28 @@ import pytest, random
 from games_package.blackjack import (CARD_RANKS, CARD_SUITS, create_deck, display_hand, play_blackjack, shuffle_deck, sum_hand)
 
 class TestCreateDeck:
-    def test_create_deck_length():
+    def test_create_deck_length(self):
         deck = create_deck()
         assert len(deck) == 52
 
-    def test_each_card_present():
+    def test_each_card_present(self):
         deck = create_deck()
         for suit in CARD_SUITS:
             for rank in CARD_RANKS:
                 assert f"{rank} of {suit[0]}" in deck
 
-    def test_card_structure():
+    def test_card_structure(self):
         card = create_deck()["A of diamonds"]
         assert card == {"rank": "A", "suit": ("diamonds", "♦"), "value": 11}
 
+    def test_desk_consistency(self):
+        deck = create_deck()
+        deck2 = create_deck()
+        assert deck == deck2
+
 
 class TestShuffleDeck:
-    def test_shuffled_deck_length():
+    def test_shuffled_deck_length(self):
         shuffled = shuffle_deck(create_deck())
         assert shuffled is not None
         assert len(shuffled) == 52
@@ -26,57 +31,96 @@ class TestShuffleDeck:
             assert card is not None
             assert len(card) == 2
  
-    def test_no_lost_cards():
+    def test_no_lost_cards(self):
         deck = create_deck()
         shuffled = shuffle_deck(deck)
         assert sorted(card[0] for card in shuffled) == sorted(deck)
  
-    def test_shuffle():
+    def test_shuffle(self):
         deck = create_deck()
         assert shuffle_deck(deck) != list(deck.items())
 
-    def test_two_shuffled_decks():
+    def test_two_shuffled_decks(self):
         deck = create_deck()
         shuffled1 = shuffle_deck(deck)
         shuffled2 = shuffle_deck(deck)
         assert shuffled1 != shuffled2
 
 class TestSumHand:
-    def test_sum_empty_hand():
+    def test_sum_empty_hand(self):
         hand = []
         assert sum_hand(hand) == 0
  
     @pytest.mark.parametrize(
-        ("ranks, correct"), 
+        "hand", 
         [
-            (["10", "A"], 21),
-            (["10", "A", "A", "2"], 14),
-            (["10", "Q", "5"], 25),
-            (["10", "A", "9", "A", "A"], 22),
+            [('10 of clubs', {'rank': '10', 'suit': ('clubs', '♣'), 'value': 10}), 
+            ('10 of clubs', {'rank': '10', 'suit': ('clubs', '♣'), 'value': 10}),
+            ('10 of clubs', {'rank': '10', 'suit': ('clubs', '♣'), 'value': 10}),
+            ('10 of clubs', {'rank': '10', 'suit': ('clubs', '♣'), 'value': 10}),
+            ('10 of clubs', {'rank': '10', 'suit': ('clubs', '♣'), 'value': 10})]
+        ]
+    )
+    def test_invalid_hand_sum(self, hand):
+        with pytest.raises(ValueError):
+            sum_hand(hand)
+
+    @pytest.mark.parametrize(
+        ("ranks", "suites", "correct"), 
+        [
+            (["10", "A"], ["hearts", "diamonds"], 21),
+            (["10", "A", "A", "2"], ["hearts", "diamonds", "spades", "hearts"], 14),
+            (["10", "Q", "5"], ["hearts", "diamonds", "spades"], 25),
+            (["10", "A", "9", "A", "A"], ["hearts", "diamonds", "hearts", "spades", "clubs"], 22),
         ],
     )
-    def test_sums(ranks, correct):
-        hand = []
+    def test_sums(self, ranks, suites, correct):
         deck = create_deck()
-        for rank in ranks:
-            hand.append(deck[f"{rank} of hearts"])
+        testing_cards = {}
+        for i, rank in enumerate(ranks):
+            testing_cards[f"{rank} of {suites[i]}"] = deck[f"{rank} of {suites[i]}"]
+        
+        hand = list(testing_cards.items())
         assert sum_hand(hand) == correct
 
 class TestSetup:
+    def test_blank_init_balance(self, capsys, monkeypatch):
+        inputs = ["1", "s"] 
+
+        def filler(_):
+            if inputs:
+                return inputs.pop(0)
+            if not hasattr(filler, "done"):
+                filler.done_playing = True
+                return "n"
+            return ""
+
+        monkeypatch.setattr('builtins.input', filler)
+        play_blackjack()
+        printed = capsys.readouterr().out
+        assert "Welcome to Blackjack!" in printed
+        assert "Balance: $100.00" in printed
+
     @pytest.mark.parametrize("balance", ["abc", 0, -5, 0.5])
-    def test_invalid_init_balance(balance):
+    def test_invalid_init_balance(self, balance):
         with pytest.raises(ValueError):
             play_blackjack(balance)
  
     @pytest.mark.parametrize("balance", [100, 200, 500, 4])
-    def test_valid_init_balance(balance):
+    def test_valid_init_balance(self, balance, capsys, monkeypatch):
+        inputs = ["1", "s"] 
+
+        def filler(_):
+            if inputs:
+                return inputs.pop(0)
+            if not hasattr(filler, "done"):
+                filler.done_playing = True
+                return "n"
+            return ""
+
+        monkeypatch.setattr('builtins.input', filler)
         play_blackjack(balance)
         printed = capsys.readouterr().out
         assert "Welcome to Blackjack!" in printed
         assert f"Balance: ${balance:.2f}" in printed
     
-    def test_blank_init_balance():
-        play_blackjack()
-        printed = capsys.readouterr().out
-        assert "Welcome to Blackjack!" in printed
-        assert "Balance: $100.00" in printed

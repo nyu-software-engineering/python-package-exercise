@@ -23,10 +23,15 @@ def shuffle_deck(deck):
     return shuffled
 
 def sum_hand(hand):
+    ranks_seen = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     sum = 0
     aces = 0
 
     for card in hand:
+        i = CARD_RANKS.index(card[1]['rank'])
+        ranks_seen[i] += 1
+        if ranks_seen[i] > 4:
+            raise ValueError("Invalid hand: more than 4 cards of one rank")
         sum += card[1]['value']
         if card[1]['rank'] == "A":
             aces += 1
