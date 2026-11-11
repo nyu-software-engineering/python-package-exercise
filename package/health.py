@@ -1,3 +1,4 @@
+from .history import record_event
 from .pet import MAX_STAT, STATS, check_count, check_pet, clamp
 
 HEALTHY_STAT = 60  # baseline health stat level
@@ -21,7 +22,6 @@ def _all_healthy(pet):
 
 def wellness(pet):
     """Average of hunger, energy, hygiene and happiness, from 0 to 100."""
-    
     _check_full_pet(pet)
     scores = [
         MAX_STAT - pet["hunger"],
@@ -34,7 +34,6 @@ def wellness(pet):
 
 def update_health(pet, ticks=1):
     """Apply `ticks` rounds of health change and return the new health."""
-    
     _check_full_pet(pet)
     check_count(ticks, "ticks")
 
@@ -45,7 +44,16 @@ def update_health(pet, ticks=1):
             change = REGEN_PER_TICK
         else:
             change = -int(max(SICK_WELLNESS - wellness(pet), 0) // DAMAGE_DIVISOR)
+        before = pet["health"]
         pet["health"] = clamp(pet["health"] + change)
+        if pet["health"] != before:
+            record_event(
+                pet,
+                "stat",
+                stat="health",
+                before=before,
+                after=pet["health"],
+            )
         if pet["health"] <= DEATH_HEALTH:
             pet["alive"] = False
     return pet["health"]
