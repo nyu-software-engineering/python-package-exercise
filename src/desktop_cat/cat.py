@@ -35,7 +35,18 @@ class Cat:
         self.last_action = "idle"  # render() will read this to pick a frame to draw
 
     def set_mood(self, mood):
-        raise NotImplementedError
+        if not isinstance(mood, str):
+            raise TypeError("Mood must be a string.")
+
+        mood = mood.strip().lower()
+
+        if mood not in MOODS:
+            raise ValueError(f"Invalid mood: {mood}")
+
+        self.mood = mood
+        self.last_action = "idle"
+
+        return f"{self.name} is now feeling {self.mood}!"
 
     def feed(self, food):
         if not isinstance(food, str):
