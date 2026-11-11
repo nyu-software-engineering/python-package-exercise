@@ -1,10 +1,6 @@
 from desktop_cat import Cat, MOODS, FOODS, PET_AREAS
 
 
-import inspect
-print(inspect.getfile(Cat))
-print(inspect.signature(Cat.pet))
-
 
 def main():
    # Create a cat
@@ -24,10 +20,18 @@ def main():
 
 
    # Demonstrate render
-   cat.render()
+   print("\nCat appearance:")
+   print(cat.render())
+
+
+   # Demonstrate changing mood
+   print("\nChanging mood:")
+   print(cat.set_mood("hungry"))
+   print(cat.status())
 
 
    # Demonstrate feeding
+   print("\nFeeding:")
    print(cat.feed("fish"))
    print(cat.feed("kibble"))
 
@@ -37,7 +41,8 @@ def main():
 
 
    # Demonstrate petting
-   print("\n" + cat.pet("belly", times=5))
+   print("\nPetting:")
+   print(cat.pet("belly", times=5))
    print(cat.status())
    print(cat.pet("head", times=3))
    print(cat.status())
@@ -45,7 +50,9 @@ def main():
 
 
    # Demonstrate sleeping
+   print("\nSleeping:")
    print("\n" +cat.sleep(2))
+   print("\n" + cat.sleep(2))
 
 
    # Demonstrate status
