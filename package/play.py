@@ -18,18 +18,24 @@ def play(pet, name, play_type):
 
     # valid arguments
     if play_type == "1": # pet
+        if pet["energy"] <= 0:
+            return f"\033[1m*{name} is too tired to play.*\033[0m"
         before = pet["happiness"]
         increase_happiness(pet, 15)
         _spend_energy(pet, 5)
         record_event(pet, "play", detail="pet", stat="happiness", before=before, after=pet["happiness"])
         return(f"\033[1m*You pet {name}, they love it!*\033[0m")
     elif play_type == "2": # catch
+        if pet["energy"] <= 0:
+            return f"\033[1m*{name} is too tired to play.*\033[0m"
         before = pet["happiness"]
         increase_happiness(pet, 10)
         _spend_energy(pet, 10)
         record_event(pet, "play", detail="catch", stat="happiness", before=before, after=pet["happiness"])
         return(f"\033[1m*You throw a ball to {name}, they catch it and happily bring it back to you!*\033[0m")
     elif play_type == "3": # walk
+        if pet["energy"] <= 0:
+            return f"\033[1m*{name} is too tired to play.*\033[0m"
         before = pet["happiness"]
         increase_happiness(pet, 5)
         _spend_energy(pet, 15)
