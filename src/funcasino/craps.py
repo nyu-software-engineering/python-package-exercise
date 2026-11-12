@@ -1,6 +1,5 @@
 import random
-import sys
-import time
+from funcasino.wallet import Wallet
 
 dice_art = {
     1: ("┌─────────┐",
@@ -35,72 +34,89 @@ dice_art = {
         "└─────────┘")
 }
 
-def print_dice (dice1, dice2):
-    for line in range(5):
-        print(dice_art[dice1][line] + "  " + dice_art[dice2][line])
 
+class Craps:
+    def __init__(self, wallet=None):
+        self.wallet = wallet or Wallet()
 
-def play_craps(balance):
-    print("------ Welcome to CRAPS ------ ")
-    while True:
-        bet_input = input(f"Enter your Pass Line bet (Current Balance: ${balance}): $").strip()
-        try:
-            bet = int(bet_input)
-            if bet <= 0:
-                print("Bet must be greater than $0.")
-                continue
-            if bet > balance:
-                print(f"You don't have enough money! Current balance is ${balance}.")
-                continue
-            break  
-        except ValueError:
-            print("Please enter a valid number (e.g., 10).")
-    
-    input("Press enter to roll your die!")
-    dice1 = random.randint(1, 6)
-    dice2 = random.randint(1, 6)
-    sum1 = dice1+dice2
-    
-    print_dice(dice1, dice2)
-    print (f"Your total is {sum1}")
+    def print_dice(self, dice1, dice2):
+        for line in range(5):
+            print(dice_art[dice1][line] + "  " + dice_art[dice2][line])
 
-    #first round of craps, either 2x, 0x, or advance to next phase
-    if (sum1) in (7,11):
-        return(f"You win! You have won ${bet*2}") 
-    elif (dice1+dice2) in (2,3,12):
-        return(f"You lose your bet of ${bet}")
-    else:
-        print (f"Your point is now: {sum1}, try to hit it before rolling a 7" )
-
-
-    #Second round
-    #Player can increase their bet and depending on their sum, different multipliers
-    #4 or 10 gives 3x
-    #5 or 9 gives 2.5x
-    #6 or 8 gives 2.2x
-
-    while True:
-        input("Press enter to roll again!")
+    def roll_dice(self):
         dice1 = random.randint(1, 6)
         dice2 = random.randint(1, 6)
-        sum2 = dice1 + dice2
+        self.print_dice(dice1, dice2)
+        return dice1, dice2, dice1 + dice2
 
-        print_dice(dice1, dice2)
+    def place_bet(self):
+        while True:
+            try:
+                bet = int(input(f"Balance: ${self.wallet.balance}. Enter bet: $"))
 
-        if sum1 == sum2:
-            balance += bet
-            print(f"You got {dice1} and {dice2}, so you WIN! Won ${bet}. New Balance: ${balance}")
-            return balance
+                if 0 < bet <= self.wallet.balance:
+                    return bet
 
-        if sum2 == 7:
-            balance -= bet
-            print(f"You got {dice1} and {dice2}, so you LOSE. Lost ${bet}. New Balance: ${balance}")
-            return balance
+                print("Invalid bet amount.")
 
-        print(f"You rolled a: {dice1} and {dice2}, not your point: {sum1} or 7, rerolling...\n")
+            except ValueError:
+                print("Please enter a valid number.")
 
-# testing
+    def play_round(self):
+        bet = self.place_bet()
+
+        input("Press Enter to roll the dice!")
+        dice1, dice2, sum1 = self.roll_dice()
+        print(f"Your total is {sum1}")
+
+        #first round, either 2x, 0x, or advances
+        if sum1 in (7, 11):
+            self.wallet.deposit(bet)
+            print(f"Natural {sum1}! You won ${bet}!")
+            return
+        elif sum1 in (2, 3, 12):
+            self.wallet.withdraw(bet)
+            print(f"Craps ({sum1})! You lost ${bet}!")
+            return
+
+        point = sum1
+        print(f"Your point is now: {point}. Try to hit {point} before rolling a 7!")
+
+        #second round
+        while True:
+            input("Press Enter to roll again!")
+            dice1, dice2, sum2 = self.roll_dice()
+
+            if sum2 == point:
+                self.wallet.deposit(bet)
+                print(f"You rolled {dice1} and {dice2} ({sum2}) , You hit your number! You won ${bet}!")
+                return
+
+            if sum2 == 7:
+                self.wallet.withdraw(bet)
+                print(f"You rolled {dice1} and {dice2} (7) , You sevened out unfortunately. You lost ${bet}!")
+                return
+
+            print(f"You rolled {sum2} ({dice1} and {dice2}), not {point} or 7. Rerolling...")
+
+    def play(self):
+        while self.wallet.balance > 0:
+            print("\n--- CRAPS ---")
+            print("1. Play")
+            print("2. Quit")
+
+            choice = input("Select an option: ")
+
+            if choice == "1":
+                self.play_round()
+            elif choice == "2":
+                break
+            else:
+                print("Invalid option.")
+
+        print("Thanks for playing!")
+
+
 if __name__ == "__main__":
-    print(play_craps(100))
-
-
+    game = Craps()
+    game.play()
