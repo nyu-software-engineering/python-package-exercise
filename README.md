@@ -1,4 +1,4 @@
-[![build](https://github.com/software-students-fall2026/python-package-exercise-forked/actions/workflows/build.yml/badge.svg)](https://github.com/software-students-fall2026/python-package-exercise-forked/actions/workflows/build.yml)
+[![CI](https://github.com/software-students-fall2026/python-package-exercise-forked/actions/workflows/ci.yml/badge.svg)](https://github.com/software-students-fall2026/python-package-exercise-forked/actions/workflows/ci.yml)
 
 # Fun Casino
 

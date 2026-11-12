@@ -31,7 +31,7 @@ class Blackjack:
             self.wallet.withdraw(bet)
             break
 
-        deck = Deck()
+        deck = Deck(8)
         deck.shuffle()
         dealer_hand = [deck.deal(), deck.deal()]
         player_hand = [deck.deal(), deck.deal()]
@@ -95,7 +95,7 @@ class Blackjack:
                 dealer_turn = False
                 
                 if dealer_card_value > 21:
-                    println("\nDealer busts! You win!")
+                    print("\nDealer busts! You win!")
                     self.wins += 1
                     self.wallet.deposit(bet * 2)
                 elif player_card_value > dealer_card_value:
@@ -138,6 +138,10 @@ class Blackjack:
                 break
             else:
                 print("Invalid option.")
+        
+        print("\nYou ran out of money. Thanks for playing!")
+        print("Here are your final stats!")
+        self.show_stats()
 
 if __name__ == "__main__":
     Blackjack().play()
