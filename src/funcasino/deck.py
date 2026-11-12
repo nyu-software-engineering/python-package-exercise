@@ -5,7 +5,6 @@ class Card:
         self.rank = rank
         self.suit = suit
 
-    @property
     def blackjack_value(self):
         if self.rank == "A":
             return 11
@@ -25,7 +24,7 @@ class Deck:
         self.cards = []
         for suit in suits:
             for rank in ranks:
-                cards.append(Card(rank, suit))
+                self.cards.append(Card(rank, suit))
         
     def shuffle(self):
         random.shuffle(self.cards)
