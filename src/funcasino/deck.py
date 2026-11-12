@@ -16,15 +16,21 @@ class Card:
         return f"{self.rank} of {self.suit}"
 
 class Deck:
-    def __init__(self):
+    def __init__(self, num_decks=1):
+        if not isinstance(num_decks, int):
+            raise TypeError("Number of decks must be an integer.")
+        if num_decks < 1:
+            raise ValueError("Number of decks must be at least 1.")
         suits = ("Hearts", "Diamonds", "Clubs", "Spades")
         ranks = ("2", "3", "4", "5", "6", "7", "8", "9",
                  "9", "10", "J", "Q", "K", "A")
         
         self.cards = []
-        for suit in suits:
-            for rank in ranks:
-                self.cards.append(Card(rank, suit))
+        self.num_decks = num_decks
+        for i in range(num_decks):
+            for suit in suits:
+                for rank in ranks:
+                    self.cards.append(Card(rank, suit))
         
     def shuffle(self):
         random.shuffle(self.cards)
