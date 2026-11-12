@@ -23,7 +23,7 @@ class Deck:
             raise ValueError("Number of decks must be at least 1.")
         suits = ("Hearts", "Diamonds", "Clubs", "Spades")
         ranks = ("2", "3", "4", "5", "6", "7", "8", "9",
-                 "9", "10", "J", "Q", "K", "A")
+                 "10", "J", "Q", "K", "A")
         
         self.cards = []
         self.num_decks = num_decks
