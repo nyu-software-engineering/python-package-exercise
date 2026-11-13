@@ -1,10 +1,15 @@
 import random
 import sys
+import threading
 import time
 from funcasino.wallet import Wallet
 
 LINE = " " + "─" * 39
 TITLE = " ♠ ♥ ♦ ♣        S L O T S        ♣ ♦ ♥ ♠"
+
+def wait_for_enter(stop):
+    input()
+    stop.set()
 
 class Slots:
     SYMBOLS = ["🍒", "🍋", "🔔", "⭐", "💎"]
@@ -52,17 +57,22 @@ class Slots:
         print("           └" + "─" * 16 + "┘")
         print("              " + "   ".join(bottom))
 
-    def animate_spin(self, grid, frames=12):
+    def animate_spin(self, grid):
         print()
         print(TITLE)
         print(LINE)
+        print("   Press Enter to stop the reels!")
 
-        for i in range(frames):
+        stop = threading.Event()
+        threading.Thread(target=wait_for_enter, args=(stop,), daemon=True).start()
+
+        while not stop.is_set():
             self.draw_grid(self.spin_grid())
             sys.stdout.flush()
-            time.sleep(0.05 + i * 0.02)
+            time.sleep(0.08)
             sys.stdout.write("\033[5F")
 
+        sys.stdout.write("\033[F")
         self.draw_grid(grid)
         print(LINE)
 
@@ -104,7 +114,7 @@ class Slots:
             bet = input(f"   Balance: ${self.wallet.balance}. Enter bet (q to go back): $")
             if bet == "q":
                 return
-            
+                
             if not bet.isdigit() or not self.wallet.can_afford(int(bet)):
                 print("   Invalid bet.")
                 continue
