@@ -8,7 +8,7 @@ from .history import get_history
 from .hunger import feed
 from .hygiene import clean
 from .pet import MIN_STAT, MAX_STAT
-from .happy import play
+from .happy import play, decrease_happiness
 from .save_load import load_pet, save_pet
 from .time_passed import apply_time
 from .diagnosis import diagnose_pet, recommend_action
@@ -82,6 +82,7 @@ PLAY_FRAMES = {
     "3": WALK_FRAMES,
 }
 
+
 def create_pet():
     """Initializes pet and gives it a name chosen by the user"""
     print(f"{BOLD}What would you like to name your pet?{UNBOLD}")
@@ -100,6 +101,7 @@ def create_pet():
         "hygiene": MAX_STAT,
     }
 
+
 def get_pet():
     """Loads the saved pet if there is one, otherwise creates a new pet."""
     if SAVE_FILE.exists():
@@ -107,9 +109,12 @@ def get_pet():
             pet = load_pet(SAVE_FILE)
             return pet, f"{BOLD}Welcome back, {pet['name']}!{UNBOLD}"
         except (ValueError, TypeError):
-            print(f"{BOLD}Your save file couldn't be read, so let's start a new pet.{UNBOLD}")
+            print(
+                f"{BOLD}Your save file couldn't be read, so let's start a new pet.{UNBOLD}"
+            )
     pet = create_pet()
     return pet, f"{BOLD}Say hi to {pet['name']}!{UNBOLD}"
+
 
 def history_text(pet):
     """Return the recent history as one block of text."""
@@ -125,16 +130,19 @@ def history_text(pet):
         lines.append(f"{BOLD}{event['action']}{detail}{change}{UNBOLD}")
     return "\n".join(lines)
 
+
 def _fit(lines):
     """Pad or trim lines so a box has seven rows."""
     fitted = [line[:INNER].ljust(INNER) for line in lines[:7]]
     return fitted + [" " * INNER] * (7 - len(fitted))
+
 
 def _box(lines):
     """Return one asterisk box as a list of rows."""
     rows = _fit(lines)
     edge = "*" * (INNER + 4)
     return [edge, *[f"* {row} *" for row in rows], edge]
+
 
 def _screen(pet, menu_lines, pet_lines=None):
     """Build the menu, pet, and stats boxes on one row."""
@@ -152,6 +160,7 @@ def _screen(pet, menu_lines, pet_lines=None):
         for one, two, three in zip(left, middle, right)
     )
 
+
 def draw_screen(pet, message, menu_lines, pet_lines=None):
     """Clear the terminal and redraw the three boxes, then the last message."""
     print(CLEAR, end="")
@@ -160,11 +169,13 @@ def draw_screen(pet, message, menu_lines, pet_lines=None):
         print(f"\n{message}")
     print(flush=True)
 
+
 def animate(pet, frames, message, menu_lines):
     """Redraw the middle box once per frame."""
     for frame in frames:
         draw_screen(pet, message, menu_lines, frame)
         time.sleep(0.45)
+
 
 def pass_time(pet):
     """Apply minutes since last_seen and save the pet when anything changed."""
@@ -172,6 +183,7 @@ def pass_time(pet):
     if minutes:
         save_pet(pet, SAVE_FILE)
     return minutes
+
 
 # Primary function
 def main():
@@ -185,10 +197,16 @@ def main():
         draw_screen(pet, message, MENU_LINES)
         choice = input("> ").strip()
         if choice == "1":
-            animate(pet, SLEEP_FRAMES, f"{BOLD}{pet['name']} is falling asleep...{UNBOLD}", MENU_LINES)
+            animate(
+                pet,
+                SLEEP_FRAMES,
+                f"{BOLD}{pet['name']} is falling asleep...{UNBOLD}",
+                MENU_LINES,
+            )
             before = pet["energy"]
             restore_energy(pet, 10)
             message = f"{BOLD}{pet['name']} woke up. Energy {before} -> {pet['energy']}.{UNBOLD}"
+            decrease_happiness(pet)
             save_pet(pet, SAVE_FILE)
         elif choice == "2":
             draw_screen(pet, f"{BOLD}Choose a type of play.{UNBOLD}", PLAY_LINES)
@@ -203,33 +221,43 @@ def main():
             message = play(pet, pet["name"], play_type)
             save_pet(pet, SAVE_FILE)
         elif choice == "3":
-            animate(pet, FEED_FRAMES, f"{BOLD}{pet['name']} is eating...{UNBOLD}", MENU_LINES)
+            animate(
+                pet,
+                FEED_FRAMES,
+                f"{BOLD}{pet['name']} is eating...{UNBOLD}",
+                MENU_LINES,
+            )
             feed(pet)
             message = f"{BOLD}You fed {pet['name']}.{UNBOLD}"
+            decrease_happiness(pet)
             save_pet(pet, SAVE_FILE)
         elif choice == "4":
-            animate(pet, CLEAN_FRAMES, f"{BOLD}{pet['name']} is getting clean...{UNBOLD}", MENU_LINES)
+            animate(
+                pet,
+                CLEAN_FRAMES,
+                f"{BOLD}{pet['name']} is getting clean...{UNBOLD}",
+                MENU_LINES,
+            )
             clean(pet)
             message = f"{BOLD}You cleaned {pet['name']}.{UNBOLD}"
+            decrease_happiness(pet)
             save_pet(pet, SAVE_FILE)
         elif choice == "5":
             message = history_text(pet)
         elif choice == "6":
             issues = diagnose_pet(pet)
             recommendation = recommend_action(pet)
-
             message = (
                 f"{BOLD}Health Diagnosis:{UNBOLD}\n"
                 + "\n".join(f"- {issue}" for issue in issues)
                 + f"\n\n{BOLD}Recommendation:{UNBOLD}\n"
                 + recommendation
             )
-
         elif choice == "7":
             save_pet(pet, SAVE_FILE)
             print(f"{BOLD}See you later, {pet['name']} will miss you!{UNBOLD}")
             break
-                
+
 
 # run by typing: python3 -m package.interaction
 if __name__ == "__main__":

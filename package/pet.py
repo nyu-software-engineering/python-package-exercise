@@ -31,6 +31,7 @@ def check_count(value, name):
     if value < 0:
         raise ValueError(f"{name} can't be negative")
 
+
 def check_pet(pet, stat):
     """Validate that pet has the given stat with a valid integer value."""
     if not isinstance(pet, dict) or stat not in pet:
@@ -42,6 +43,4 @@ def check_pet(pet, stat):
         raise TypeError(f"{stat} must be an int")
 
     if value < MIN_STAT or value > MAX_STAT:
-        raise ValueError(
-            f"{stat} must be between {MIN_STAT} and {MAX_STAT}"
-        )
+        raise ValueError(f"{stat} must be between {MIN_STAT} and {MAX_STAT}")

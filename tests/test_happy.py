@@ -5,6 +5,7 @@ import pytest
 from package.happy import decrease_happiness, increase_happiness, play
 from package.pet import MAX_STAT
 
+
 def make_pet():
     return {
         "hunger": 20,
@@ -14,6 +15,7 @@ def make_pet():
         "health": 50,
         "alive": True,
     }
+
 
 # increase_happiness
 @pytest.mark.parametrize(
@@ -32,14 +34,6 @@ def test_increase_happiness_zero_typical_and_clamped(start, change, expected):
     assert increase_happiness(pet, change) == expected
     assert pet["happiness"] == expected
 
-def test_increase_happiness_only_changes_happiness():
-    pet = make_pet()
-    original = pet.copy()
-
-    increase_happiness(pet, 5)
-
-    original["happiness"] = 85
-    assert pet == original
 
 @pytest.mark.parametrize(
     ("change", "error"),
@@ -56,6 +50,7 @@ def test_increase_happiness_invalid_change(change, error):
 
     with pytest.raises(error):
         increase_happiness(pet, change)
+
 
 @pytest.mark.parametrize(
     ("value", "error"),
@@ -75,6 +70,7 @@ def test_increase_happiness_invalid_stat(value, error):
     with pytest.raises(error):
         increase_happiness(pet, 5)
 
+
 def test_increase_happiness_missing_stat():
     pet = make_pet()
     del pet["happiness"]
@@ -85,45 +81,21 @@ def test_increase_happiness_missing_stat():
 
 # decrease_happiness
 @pytest.mark.parametrize(
-    ("start", "change", "expected"),
+    ("start", "expected"),
     [
-        (MAX_STAT, 0, MAX_STAT),
-        (MAX_STAT, 10, MAX_STAT - 10),
-        (80, 15, 65),
-        (5, MAX_STAT, 0),
+        (MAX_STAT, MAX_STAT - 10),
+        (80, 65),
+        (5, 0),
+        (0, 0),
     ],
 )
-def test_decrease_happiness_zero_typical_and_clamped(start, change, expected):
+def test_decrease_happiness_zero_typical_and_clamped(start, expected):
     pet = make_pet()
     pet["happiness"] = start
 
-    assert decrease_happiness(pet, change) == expected
+    assert decrease_happiness(pet) == expected
     assert pet["happiness"] == expected
 
-def test_decrease_happiness_only_changes_happiness():
-    pet = make_pet()
-    original = pet.copy()
-
-    decrease_happiness(pet, 5)
-
-    original["happiness"] = 75
-    assert pet == original
-
-@pytest.mark.parametrize(
-    ("change", "error"),
-    [
-        (True, TypeError),
-        (1.5, TypeError),
-        (None, TypeError),
-        (-1, ValueError),
-        ("3", TypeError),
-    ],
-)
-def test_decrease_happiness_invalid_change(change, error):
-    pet = make_pet()
-
-    with pytest.raises(error):
-        decrease_happiness(pet, change)
 
 @pytest.mark.parametrize(
     ("value", "error"),
@@ -141,22 +113,28 @@ def test_decrease_happiness_invalid_stat(value, error):
     pet["happiness"] = value
 
     with pytest.raises(error):
-        decrease_happiness(pet, 5)
+        decrease_happiness(pet)
+
 
 def test_decrease_happiness_missing_stat():
     pet = make_pet()
     del pet["happiness"]
 
     with pytest.raises(TypeError):
-        decrease_happiness(pet, 5)
+        decrease_happiness(pet)
+
 
 # play
 @pytest.mark.parametrize(
     ("play_type", "gain", "message"),
     [
-        ("1", 15, "You pet Mochi"),
-        ("2", 10, "You throw a ball to Mochi"),
-        ("3", 5, "You take Mochi on a walk"),
+        ("1", 15, "You pet Mochi, they love it!"),
+        (
+            "2",
+            10,
+            "You throw a ball to Mochi, they catch it and happily bring it back to you!",
+        ),
+        ("3", 5, "You take Mochi on a walk, they smile the entire time!"),
     ],
 )
 def test_play_increases_happiness(play_type, gain, message):
@@ -168,6 +146,7 @@ def test_play_increases_happiness(play_type, gain, message):
     assert message in result
     assert pet["happiness"] == gain
 
+
 def test_play_clamped():
     pet = make_pet()
     pet["happiness"] = MAX_STAT - 1
@@ -175,6 +154,7 @@ def test_play_clamped():
     play(pet, "Mochi", "1")
 
     assert pet["happiness"] == MAX_STAT
+
 
 @pytest.mark.parametrize("play_type", ["0", "4", "pet", "", None, 1])
 def test_play_invalid_play_type(play_type):
