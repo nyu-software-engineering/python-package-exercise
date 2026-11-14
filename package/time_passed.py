@@ -4,6 +4,8 @@ import time
 
 from .history import record_event
 from .pet import check_pet, clamp
+from .energy import drain_energy
+from package import pet
 
 HUNGER_PER_MINUTE = 1
 ENERGY_PER_MINUTE = 1
@@ -38,8 +40,6 @@ def apply_time(pet, now=None):
     if pet["hunger"] != before_hunger:
         record_event(pet, "stat", stat="hunger", before=before_hunger, after=pet["hunger"])
 
-    before_energy = pet["energy"]
-    pet["energy"] = clamp(before_energy - minutes * ENERGY_PER_MINUTE)
-    if pet["energy"] != before_energy:
-        record_event(pet, "stat", stat="energy", before=before_energy, after=pet["energy"])
+    drain_energy(pet, minutes * ENERGY_PER_MINUTE)
+
     return minutes

@@ -1,3 +1,4 @@
+
 import pytest
 
 from package.history import get_history
@@ -15,7 +16,10 @@ def test_two_minutes_changes_hunger_and_energy():
     assert pet["hunger"] == 12
     assert pet["energy"] == 48
     assert pet["last_seen"] == 1120
-    assert [event["stat"] for event in get_history(pet, 5)] == ["hunger", "energy"]
+
+    assert [
+        event["stat"] for event in get_history(pet, 5)
+    ] == ["hunger", "energy"]
 
 
 def test_less_than_a_minute_changes_nothing():
@@ -55,5 +59,71 @@ def test_apply_time_rejects_a_bad_clock():
 
     with pytest.raises(TypeError):
         apply_time(pet, now=True)
+
     with pytest.raises(TypeError):
         apply_time(pet, now=1.5)
+
+
+def test_energy_decreases_over_time():
+    pet = create_pet("Mochi")
+    pet["energy"] = 80
+    pet["last_seen"] = 1000
+
+    apply_time(pet, now=1300)
+
+    assert pet["energy"] == 75
+
+
+def test_energy_history_records_time_drain():
+    pet = create_pet("Mochi")
+    pet["energy"] = 80
+    pet["last_seen"] = 1000
+
+    apply_time(pet, now=1120)
+
+    energy_events = [
+        event for event in get_history(pet, 5)
+        if event["stat"] == "energy"
+    ]
+
+    assert len(energy_events) == 1
+    assert energy_events[0]["before"] == 80
+    assert energy_events[0]["after"] == 78
+
+
+def test_multiple_time_updates():
+    pet = create_pet("Mochi")
+    pet["energy"] = 80
+    pet["last_seen"] = 1000
+
+    assert apply_time(pet, now=1120) == 2
+    assert pet["energy"] == 78
+
+    assert apply_time(pet, now=1240) == 2
+    assert pet["energy"] == 76
+    assert pet["hunger"] == 4
+
+
+def test_no_energy_below_zero():
+    pet = create_pet("Mochi")
+    pet["energy"] = 2
+    pet["last_seen"] = 1000
+
+    apply_time(pet, now=1600)
+
+    assert pet["energy"] == 0
+
+
+def test_no_energy_history_when_already_zero():
+    pet = create_pet("Mochi")
+    pet["energy"] = 0
+    pet["last_seen"] = 1000
+
+    apply_time(pet, now=1120)
+
+    energy_events = [
+        event for event in get_history(pet, 5)
+        if event["stat"] == "energy"
+    ]
+
+    assert energy_events == []

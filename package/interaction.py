@@ -187,7 +187,7 @@ def main():
         if choice == "1":
             animate(pet, SLEEP_FRAMES, f"{BOLD}{pet['name']} is falling asleep...{UNBOLD}", MENU_LINES)
             before = pet["energy"]
-            restore_energy(pet, 10)
+            restore_energy(pet)
             message = f"{BOLD}{pet['name']} woke up. Energy {before} -> {pet['energy']}.{UNBOLD}"
             save_pet(pet, SAVE_FILE)
         elif choice == "2":

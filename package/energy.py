@@ -1,37 +1,43 @@
+
 from .history import record_event
 from .pet import check_count, check_pet, clamp
 
-FREE_LINES = 50  # commits this size or smaller cost no energy
-LINES_PER_POINT = 10  # every 10 lines over FREE_LINES costs 1 energy
-MAX_DRAIN = 40  # most energy a single commit can take
-
-POINTS_PER_PASS = 2
-POINTS_PER_FAIL = 1
+REST_ENERGY = 20
 
 
-def drain_energy(pet, lines_changed):
-    """Lower the pet's energy based on how big a commit was."""
+def drain_energy(pet, amount):
+    """Decrease energy by a given amount."""
     check_pet(pet, "energy")
-    check_count(lines_changed, "lines_changed")
+    check_count(amount, "amount")
 
-    extra_lines = max(lines_changed - FREE_LINES, 0)
-    drain = min(extra_lines // LINES_PER_POINT, MAX_DRAIN)
     before = pet["energy"]
-    pet["energy"] = clamp(pet["energy"] - drain)
+    pet["energy"] = clamp(before - amount)
+
     if pet["energy"] != before:
-        record_event(pet, "stat", stat="energy", before=before, after=pet["energy"])
+        record_event(
+            pet, "stat",
+            stat="energy",
+            before=before,
+            after=pet["energy"]
+        )
+
     return pet["energy"]
 
 
-def restore_energy(pet, tests_passed, tests_failed=0):
-    """Raise the pet's energy based on test results."""
+def restore_energy(pet, amount=REST_ENERGY):
+    """Restore energy by a given amount."""
     check_pet(pet, "energy")
-    check_count(tests_passed, "tests_passed")
-    check_count(tests_failed, "tests_failed")
+    check_count(amount, "amount")
 
-    gain = tests_passed * POINTS_PER_PASS - tests_failed * POINTS_PER_FAIL
     before = pet["energy"]
-    pet["energy"] = clamp(pet["energy"] + max(gain, 0))
+    pet["energy"] = clamp(before + amount)
+
     if pet["energy"] != before:
-        record_event(pet, "stat", stat="energy", before=before, after=pet["energy"])
+        record_event(
+            pet, "stat",
+            stat="energy",
+            before=before,
+            after=pet["energy"]
+        )
+
     return pet["energy"]
